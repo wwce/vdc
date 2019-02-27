@@ -1,16 +1,16 @@
 # Deploying the simulated on-premises environment
 
-All of the sample shared services and spoke deployments included in the VDC Automation
-Toolkit are preconfigured to work with a simulated on-premises
-environment by default. 
+All of the sample archetypes, inclduing the shared services, included in the Azure Virtual Datacenter Automation Toolkit are configured to work with a simulated on-premises
+environment. 
 
-This environment provides a basic Azure hosted virtual network with a VPN
-gateway and hosting a single VM. This VM is configured as the Contoso primary
-domain controller and will provide domain services to the entire VDC once the
-shared services network is connected to this simulated on-premises environment. As the VDC
-will be isolated, the only way to access VDC hosted workloads or network
-resources will be through the domain controller VM after the shared services network is
-connected.
+This environment provides a virtual network with a VPN
+gateway and a single VM. This VM is configured as the **Contoso** primary
+domain controller and will provide domain services to all other resources once the
+shared services network is connected to this simulated on-premises environment. 
+
+In the default configuration provided by the toolkit, any resources deployed with the sample archetypes will be be isolated from the internet except for the simulated on-premises. The only way to access these isolated resources will be through the domain controller VM after the shared services network is connected. 
+
+This is intended to simulate the experience of a trusted datacenter extension, where none of the public cloud resources can communicate directly with the internet and all traffic is routed through the on-premises environment.
 
 If you're planning to use a simulated on-premises, deploy it before starting the
 sample shared services deployment.

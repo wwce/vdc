@@ -10,23 +10,25 @@ Microsoft Azure Virtual Datacenter (VDC) is an approach for designing a foundati
 
 This repository contains the _Azure Virtual Datacenter Automation Toolkit_. The toolkit is set of deployment artifacts, Azure Resource Manager templates and scripts, and an orchestration engine. It allows you to deploy an example shared services infrastructure environment and example workload environments capable of hosting different applications. It also allows you to deploy a simulated on-premises environment, hosted in Azure, for testing purposes.
 
-## Contents
-- [Prerequisites](documentation/01-prerequisites.md)
-- [How VDC automation works](documentation/02-how-vdc-automation-works.md)
-- [Parameters files](documentation/03-parameters-files.md)
-- [Creating subscription roles](documentation/04-creating-subscription-roles.md)
-- [Launching the main automation script](documentation/05-launching-the-main-automation-script.md)
-- [Deploying the simulated on-premises environment](documentation/06-deploying-the-simulated-on-premises-environment.md)
-- [Deploying the sample VDC shared services and central IT infrastructure](documentation/07-deploying-the-sample-vdc-shared-service.md)
-- [Deploying workloads](documentation/08-deploying-spokes.md)
-    - [Workload example 1: PaaS N-tier architecture](documentation/08-deploying-workloads-example1-paas-n-tier-architecture.md)
-    - [Workload example 2: IaaS N-tier architecture](documentation/08-deploying-workloads-example2-iaas-n-tier-architecture.md)
-    - [Workload example 3: Hadoop deployment](documentation/08-deploying-workloads-example3-hadoop-deployment.md)
-    - [Workload example 4: SAP HANA deployment](documentation/08-deploying-workloads-example4-sap-hana-deployment.md)
-- [Post-deployment subscription policy updates](documentation/09-post-deployment-subscription-policy-updates.md)
-- [Extending the Azure VDC Automation Toolkit](documentation/10-extending-the-azure-vdc-automation-toolkit.md)
-- [Deployment validation](documentation/11-deployment-validation.md)
-- [Integration testing](documentation/12-integration-testing.md)
+## Getting started
+
+We recommended that you start reading the documentation.
+
+- [Understanding the concepts](./understand/readme.md)
+    - Azure knowledge prerequisites
+    - Toolkit concepts
+    - Environment types in the toolkit
+    - Roles & permissions in the toolkit
+- [Setting up the toolkit](./setup/readme.md)
+    - Docker (recommended)
+    - Local
+    - Running your first deployment
+- Extending the toolkit
+- Reference
+    - vdc.py
+    - role-creation.py
+    - poliy-assignment.py
+    - create-subscription.py
 
 # Contributing
 
