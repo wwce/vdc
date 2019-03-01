@@ -1,0 +1,59 @@
+{
+    "deployment-prefix": {
+        "value": "${general.organization-name}-${workload.deployment-name}"
+    },
+    "k8s-name": {
+        "value": "${workload.resource-group-prefix}-k8s"
+    },
+    "resource-group-id": {
+        "value": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${workload.resource-group-prefix}-k8s-rg"
+    },
+    "location": {
+        "value": "${workload.region}"
+    },
+    "insights-workspace-resource-id": {
+        "value": "/subscriptions/${general.workload.subscription-id}/resourceGroups/kn-ssvcs-la-rg/providers/Microsoft.OperationalInsights/workspaces/kn-ssvcs-la"
+    },
+    "diagnostic-workspace-resource-id": {
+        "value": ""
+    },
+    "diagnostic-storage-account-id": {
+        "value": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${workload.diagnostics.resource-group-name}/providers/Microsoft.Storage/storageAccounts/${workload.diagnostics.storage.name}"
+    },
+    "diagnostic-event-hub": {
+        "value": "${workload.diagnostics.event-hub.name}"
+    },
+    "diagnostic-event-hub-auth-rule": {
+        "value": ""
+    },
+    "storage-account-name": {
+        "value": "${workload.diagnostics.storage.name}"
+    },
+    "event-hub-name": {
+        "value": "${workload.diagnostics.event-hub.name}"
+    },
+    "workspace-id": {
+        "value": ""
+    },
+    "namespace-name": {
+        "value": "${workload.diagnostics.event-hub.namespace}"
+    },
+    "eventhub-sku": {
+        "value": "${workload.diagnostics.event-hub.sku}"
+    },
+    "sku-capacity": {
+        "value": 1
+    },
+    "consumer-group-name": {
+        "value": "kn-vdc-eventhub-group"
+    },
+    "authorizationrules-root-manage-shared-access-key-name": {
+        "value": "RootManageSharedAccessKey"
+    },
+    "service-tier": {
+        "value": "Standalone"
+    },
+    "data-retention": {
+        "value": 7
+    }
+}

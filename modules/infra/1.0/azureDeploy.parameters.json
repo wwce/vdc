@@ -1,0 +1,38 @@
+{
+    "tenant-id": {
+        "value": "${general.tenant-id}"
+    },
+    "deployment-prefix": {
+        "value": "${general.organization-name}-standalone"
+    },
+    "location": {
+        "value": "${workload.region}"
+    },
+    "os-disk-size-gb": {
+        "value": 30
+    },
+    "jumpbox-vm-size": {
+        "value": "Standard_DS2_v2"
+    },
+    "os-type": {
+        "value": "${workload.kubernetes.os-type}"
+    },
+    "subscription-id": {
+        "value": "${workload.subscription-id}"
+    },
+    "shared-services-subscription-id": {
+        "value": "${shared-services.subscription-id}"
+    },
+    "shared-services-vnet-rg": {
+        "value": "${shared-services.network.resource-group-name}"
+    },
+    "shared-services-vnet-name": {
+        "value": "${shared-services.network.name}"
+    },
+    "deployment-name": {
+        "value": "${workload.deployment-name}"
+    },
+    "shared-services-network-address-prefix": {
+        "value": "${shared-services.network.address-prefix}"
+    }
+}

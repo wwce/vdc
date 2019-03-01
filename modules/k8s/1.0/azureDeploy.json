@@ -1,0 +1,471 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "deployment-prefix": {
+            "type": "string",
+            "metadata": {
+                "description": "Deployment prefix. E.g. Organization-DeploymentType"
+            }
+        },
+        "resource-name": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Managed Cluster resource."
+            }
+        },
+        "resource-group-id": {
+            "type": "string",
+            "metadata": {
+                "description": "The id of the Managed Cluster resource group."
+            }
+        },
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "The location of AKS resource."
+            }
+        },
+        "dns-prefix": {
+            "type": "string",
+            "metadata": {
+                "description": "Optional DNS prefix to use with hosted Kubernetes API server FQDN."
+            }
+        },
+        "os-disk-size-gb": {
+            "defaultValue": 0,
+            "minValue": 0,
+            "maxValue": 1023,
+            "type": "int",
+            "metadata": {
+                "description": "Disk size (in GB) to provision for each of the agent pool nodes. This value ranges from 0 to 1023. Specifying 0 will apply the default disk size for that agentVMSize."
+            }
+        },
+        "agent-count": {
+            "defaultValue": 3,
+            "minValue": 1,
+            "maxValue": 50,
+            "type": "int",
+            "metadata": {
+                "description": "The number of agent nodes for the cluster."
+            }
+        },
+        "agent-vm-size": {
+            "defaultValue": "Standard_D2_v2",
+            "type": "string",
+            "metadata": {
+                "description": "The size of the Virtual Machine."
+            }
+        },
+        "service-principal-client-id": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Client ID (used by cloudprovider)."
+            }
+        },
+        "service-principal-client-secret": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The Service Principal Client Secret."
+            }
+        },
+        "os-type": {
+            "defaultValue": "Linux",
+            "allowedValues": [
+                "Linux"
+            ],
+            "type": "string",
+            "metadata": {
+                "description": "The type of operating system."
+            }
+        },
+        "kubernetes-version": {
+            "defaultValue": "1.7.7",
+            "type": "string",
+            "metadata": {
+                "description": "The version of Kubernetes."
+            }
+        },
+        "network-plugin": {
+            "allowedValues": [
+                "azure",
+                "kubenet"
+            ],
+            "type": "string",
+            "metadata": {
+                "description": "Network plugin used for building Kubernetes network."
+            }
+        },
+        "enable-rbac": {
+            "defaultValue": true,
+            "type": "bool",
+            "metadata": {
+                "description": "Boolean flag to turn on and off of RBAC."
+            }
+        },
+        "enable-http-application-routing": {
+            "defaultValue": true,
+            "type": "bool",
+            "metadata": {
+                "description": "Boolean flag to turn on and off of http application routing."
+            }
+        },
+        "enable-oms-agent": {
+            "defaultValue": true,
+            "type": "bool",
+            "metadata": {
+                "description": "Boolean flag to turn on and off of omsagent addon."
+            }
+        },
+        "oms-workspace-id": {
+            "type": "string",
+            "metadata": {
+                "description": "Specify the resource id of the OMS workspace."
+            }
+        },
+        "vnet-subnet-id": {
+            "type": "string",
+            "metadata": {
+                "description": "Resource ID of virtual network subnet used for nodes and/or pods IP assignment."
+            }
+        },
+        "service-cidr": {
+            "type": "string",
+            "metadata": {
+                "description": "A CIDR notation IP range from which to assign service cluster IPs."
+            }
+        },
+        "dns-service-ip": {
+            "type": "string",
+            "metadata": {
+                "description": "Containers DNS server IP address."
+            }
+        },
+        "docker-bridge-cidr": {
+            "type": "string",
+            "metadata": {
+                "description": "A CIDR notation IP for Docker bridge."
+            }
+        },
+        "insights-workspace-resource-id": {
+            "type": "string",
+            "metadata": {
+                "description": "Resource ID containing the insights"
+            }
+        },
+        "diagnostic-workspace-resource-id": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "diagnostic-storage-account-id": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "diagnostic-event-hub": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "diagnostic-event-hub-auth-rule": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "logic-app-name": {
+            "type": "string",
+            "metadata": {
+              "description": "Name of the Logic App that will be created."
+            }
+        },
+        "test-uri": {
+            "type": "string",
+            "defaultValue": "https://azure.microsoft.com/status/feed/"
+        },
+        "setting-name": {
+            "type": "string",
+            "metadata": {
+              "description": "Name of the setting. Name for the diagnostic setting resource. Eg. 'archiveToStorage' or 'forSecurityTeam'."
+            }
+        },
+        "storage-account-name": {
+            "type": "string",
+            "metadata": {
+              "description": "Name of the Storage Account in which Diagnostic Logs should be saved."
+            }
+        },
+        "event-hub-authorization-rule-id": {
+            "type": "string",
+            "metadata": {
+              "description": "Resource ID of the event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+            }
+        },
+        "event-hub-name": {
+            "type": "string",
+            "metadata": {
+              "description": "Optional. Name of the event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category."
+            }
+        },
+        "workspace-id": {
+            "type": "string",
+            "metadata": {
+              "description": "Log Analytics workspace ID for the Log Analytics workspace to which logs will be sent."
+            }
+        },
+        "namespace-name": {
+            "type": "string",
+            "metadata": {
+              "description": "Name of EventHub namespace"
+            }
+        },
+        "eventhub-sku": {
+            "type": "string",
+            "allowedValues": ["Basic", "Standard"],
+            "defaultValue": "Standard",
+            "metadata": {
+              "description": "The messaging tier for service Bus namespace"
+            }
+        },
+        "sku-capacity": {
+            "type": "int",
+            "allowedValues": [1, 2, 4],
+            "defaultValue": 1,
+            "metadata": {
+              "description": "MessagingUnits for premium namespace"
+            }
+        },
+        "consumer-group-name": {
+            "type": "string",
+            "metadata": {
+              "description": "Name of Consumer Group"
+            }
+        },
+        "authorizationrules-root-manage-shared-access-key-name": {
+            "defaultValue": "RootManageSharedAccessKey",
+            "type": "string"
+        },
+        "namespaces-knvdcnamespaceeventhub-name": {
+            "defaultValue": "knvdcnamespaceeventhub",
+            "type": "string"
+        }
+    },
+    "variables": {
+        "auth-rule-resource-id": "[parameters('event-hub-authorization-rule-id')]",
+        "reader": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+        "azure-kubernetes-service-cluster-admin-role": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '0ab0b1a8-8aac-4efd-b8c2-3ee1fb270be8')]",
+        "azure-kubernetes-service-cluster-user-role": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '4abbcc35-e782-43d8-92c5-2d3f1bd2253f')]",
+        "emptyContent": {},
+        "omsAgentConfig": {
+            "omsagent": {
+                "enabled": true,
+                "config": {
+                    "logAnalyticsWorkspaceResourceID": "[parameters('insights-workspace-resource-id')]"
+                }
+            }
+        },
+        "diagnostic-storage-account-id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/vdc-storage-rg/providers/Microsoft.Storage/storageAccounts/knvdcstorage')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.ContainerService/managedClusters",
+            "name": "[parameters('resource-name')]",
+            "apiVersion": "2018-03-31",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "properties": {
+                "kubernetesVersion": "[parameters('kubernetes-version')]",
+                "enableRBAC": "[parameters('enable-rbac')]",
+                "dnsPrefix": "[parameters('dns-prefix')]",
+                "agentPoolProfiles": [
+                    {
+                        "name": "agentpool",
+                        "osDiskSizeGB": "[parameters('os-disk-size-gb')]",
+                        "count": "[parameters('agent-count')]",
+                        "vmSize": "[parameters('agent-vm-size')]",
+                        "osType": "[parameters('os-type')]",
+                        "storageProfile": "ManagedDisks",
+                        "vnetSubnetID": "[parameters('vnet-subnet-id')]"
+                    }
+                ],
+                "servicePrincipalProfile": {
+                    "ClientId": "[parameters('service-principal-client-id')]",
+                    "Secret": "[parameters('service-principal-client-secret')]"
+                },
+                "networkProfile": {
+                    "networkPlugin": "[parameters('network-plugin')]",
+                    "serviceCidr": "[parameters('service-cidr')]",
+                    "dnsServiceIP": "[parameters('dns-service-ip')]",
+                    "dockerBridgeCidr": "[parameters('docker-bridge-cidr')]"
+                },
+                "addonProfiles": "[if( empty(parameters('insights-workspace-resource-id')) , variables('emptyContent'), variables('omsAgentConfig'))]"
+                
+            },
+            "resources": [
+                {
+                    "type": "Microsoft.ContainerService/managedClusters/providers/diagnosticSettings",
+                    "name": "[concat(parameters('resource-name'), '/Microsoft.Insights/service')]",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.ContainerService/managedClusters', parameters('resource-name'))]"
+                    ],
+                    "apiVersion": "2017-05-01-preview",
+                    "properties": {
+                        "workspaceId": "/subscriptions/dc6e7f5d-e2cd-41df-b079-b99a20de7c6d/resourcegroups/defaultresourcegroup-eus/providers/microsoft.operationalinsights/workspaces/maintenance-workspace",
+                        "storageAccountId": "[variables('diagnostic-storage-account-id')]",
+                        "eventHubName": "[parameters('diagnostic-event-hub')]",
+                        "eventHubAuthorizationRuleId": "[parameters('event-hub-authorization-rule-id')]",
+                        "logs": [
+                            {
+                                "category": "kube-apiserver",
+                                "enabled": true,
+                                "retentionPolicy": {
+                                    "days": 0,
+                                    "enabled": false
+                                }
+                            },
+                            {
+                                "category": "kube-controller-manager",
+                                "enabled": true,
+                                "retentionPolicy": {
+                                    "days": 0,
+                                    "enabled": false
+                                }
+                            },
+                            {
+                                "category": "cluster-autoscaler",
+                                "enabled": true,
+                                "retentionPolicy": {
+                                    "days": 0,
+                                    "enabled": false
+                                }
+                            },
+                            {
+                                "category": "kube-scheduler",
+                                "enabled": true,
+                                "retentionPolicy": {
+                                    "days": 0,
+                                    "enabled": false
+                                }
+                            },
+                            {
+                                "category": "kube-audit",
+                                "enabled": true,
+                                "retentionPolicy": {
+                                    "days": 0,
+                                    "enabled": false
+                                }
+                            },
+                            {
+                                "category": "guard",
+                                "enabled": true,
+                                "retentionPolicy": {
+                                    "days": 0,
+                                    "enabled": false
+                                }
+                            }
+                        ],
+                        "metrics": [
+                            {
+                                "timeGrain": "PT1M",
+                                "enabled": true,
+                                "retentionPolicy": {
+                                    "enabled": false,
+                                    "days": 0
+                                }
+                            }
+                        ]
+                    }
+                }
+            ],
+            "dependsOn": [
+            ]
+        },
+        {
+            "comments": "Add aks-ref-arch-k8s-admins with Azure Kubernetes Service Cluster User Role",
+            "type": "Microsoft.Authorization/roleAssignments",
+            "apiVersion": "2017-05-01",
+            "name": "18429739-58bf-43ab-9c3f-37c2bd12491b",
+            "properties": {
+              "roleDefinitionId": "[variables('azure-kubernetes-service-cluster-user-role')]",
+              "principalId": "6899b6cf-3f98-4e6a-9575-4551a388bc4c",
+              "scope": "[parameters('resource-group-id')]"
+            }
+        },
+        {
+            "comments": "Add aks-ref-arch-k8s-noc with Azure Kubernetes Service Cluster User Role",
+            "type": "Microsoft.Authorization/roleAssignments",
+            "apiVersion": "2017-05-01",
+            "name": "b9d0b84d-6be2-4c86-90bf-7f67c1fd6cad",
+            "properties": {
+              "roleDefinitionId": "[variables('azure-kubernetes-service-cluster-user-role')]",
+              "principalId": "6f55a76f-29d7-468e-989e-bb18332deda7",
+              "scope": "[parameters('resource-group-id')]"
+            }
+        },
+        {
+            "comments": "Add aks-ref-arch-k8s-devs with Azure Kubernetes Service Cluster User Role",
+            "type": "Microsoft.Authorization/roleAssignments",
+            "apiVersion": "2017-05-01",
+            "name": "147015ba-c8f6-4d3a-a9be-d6199e186b7c",
+            "properties": {
+              "roleDefinitionId": "[variables('azure-kubernetes-service-cluster-user-role')]",
+              "principalId": "3c4d59df-feee-435f-b4ee-db35e9d410c4",
+              "scope": "[parameters('resource-group-id')]"
+            }
+        },
+        {
+            "comments": "Add aks-ref-arch-k8s-admins with Azure Kubernetes Service Cluster Admin Role",
+            "type": "Microsoft.Authorization/roleAssignments",
+            "apiVersion": "2017-05-01",
+            "name": "d519f17a-f608-49e3-967b-6db180e54613",
+            "properties": {
+              "roleDefinitionId": "[variables('azure-kubernetes-service-cluster-admin-role')]",
+              "principalId": "6899b6cf-3f98-4e6a-9575-4551a388bc4c",
+              "scope": "[parameters('resource-group-id')]"
+            }
+        },
+        {
+            "comments": "Add aks-ref-arch-k8s-admins with Reader Role",
+            "type": "Microsoft.Authorization/roleAssignments",
+            "apiVersion": "2017-05-01",
+            "name": "ef3f8371-2048-49c2-bb5c-d00af244f711",
+            "properties": {
+              "roleDefinitionId": "[variables('reader')]",
+              "principalId": "6899b6cf-3f98-4e6a-9575-4551a388bc4c",
+              "scope": "[parameters('resource-group-id')]"
+            }
+        },
+        {
+            "comments": "Add aks-ref-arch-k8s-noc with Reader Role",
+            "type": "Microsoft.Authorization/roleAssignments",
+            "apiVersion": "2017-05-01",
+            "name": "16750ce0-45c3-42cd-850e-58d03fe5af4f",
+            "properties": {
+              "roleDefinitionId": "[variables('reader')]",
+              "principalId": "6f55a76f-29d7-468e-989e-bb18332deda7",
+              "scope": "[parameters('resource-group-id')]"
+            }
+        },
+        {
+            "comments": "Add aks-ref-arch-k8s-devs with Reader Role",
+            "type": "Microsoft.Authorization/roleAssignments",
+            "apiVersion": "2017-05-01",
+            "name": "a1a74305-4acc-41c1-b324-61215c5379d7",
+            "properties": {
+              "roleDefinitionId": "[variables('reader')]",
+              "principalId": "3c4d59df-feee-435f-b4ee-db35e9d410c4",
+              "scope": "[parameters('resource-group-id')]"
+            }
+        }
+    ],
+    "outputs": {
+        "controlPlaneFQDN": {
+            "type": "string",
+            "value": "[reference(concat('Microsoft.ContainerService/managedClusters/', parameters('resource-name'))).fqdn]"
+        },
+        "NamespaceConnectionString": {
+            "type": "string",
+            "value": "[listkeys(variables('auth-rule-resource-id'), '2017-04-01').primaryConnectionString]"
+        },
+        "SharedAccessPolicyPrimaryKey": {
+            "type": "string",
+            "value": "[listkeys(variables('auth-rule-resource-id'), '2017-04-01').primaryKey]"
+        }
+    }
+}

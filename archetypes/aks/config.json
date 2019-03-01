@@ -1,0 +1,214 @@
+{
+    "general": {
+        "organization-name": "kn",
+        "tenant-id": "72f988bf-86f1-41af-91ab-2d7cd011db47",
+        "deployment-user-id": "4759d4e3-0aed-46cb-bfe0-64023c051bd5",
+        "vdc-storage-account-name": "knvdcstorage",
+        "vdc-storage-account-rg": "vdc-storage-rg",
+        "on-premises": {
+            "deployment-name": "ssvcs",
+            "subscription-id": "dc6e7f5d-e2cd-41df-b079-b99a20de7c6d",
+            "region": "West US 2",
+            "network": {
+                "address-prefix": "192.168.1.0/28"
+            },
+            "active-directory": {
+                "primaryDC-IP": "192.168.1.4"
+            },
+            "allow-rdp-address-range": "192.168.1.4"
+        },
+        "shared-services": {
+            "deployment-name": "ssvcs",
+            "subscription-id": "dc6e7f5d-e2cd-41df-b079-b99a20de7c6d",
+            "region": "West US 2",
+            "vm-configuration": {
+                "local-admin-user": "admin-user",
+                "enable-encryption": false,
+                "encryption-keys-for": []
+            },
+            "keyvault": {
+                "secrets": [
+                    {
+                        "secretName": "${general.shared-services.vm-configuration.local-admin-user}",
+                        "secretValue": "P@ssword2019"
+                    },
+                    {
+                        "secretName": "self-certificate-base64",
+                        "secretValue": "P@ssword2019"
+                    },
+                    {
+                        "secretName": "self-certificate-password",
+                        "secretValue": "P@ssword2019"
+                    }
+                ]
+            },
+            "log-analytics": {
+                "region": "West US 2"
+            },
+            "network": {
+                "address-prefix": "10.4.0.32/27"
+            }
+        },
+        "workload": {
+            "deployment-name": "aks",
+            "subscription-id": "dc6e7f5d-e2cd-41df-b079-b99a20de7c6d",
+            "region": "West US 2",
+            "kubernetes": {
+                "kubernetes-version": "1.12.5",
+                "os-type": "Linux",
+                "network-plugin": "azure",
+                "max-pods": 30,
+                "enable-rbac": false,
+                "enable-http-application-routing": false,
+                "enable-oms-agent": true
+            },
+            "acr": {
+                "name": "standaloneacr",
+                "admin-user-enabled": true,
+                "sku": "Standard"
+            },
+            "diagnostics": {
+                "storage": {
+                },
+                "log-analytics": {
+
+                },
+                "event-hub": {
+                    "sku": "Standard"
+                }
+            }
+        }
+    },
+    "orchestration": {
+        "modules-to-deploy": [
+            "infra",
+            "management",
+            "acr",
+            "aks-la",
+            "k8s",
+            
+        ],
+        "module-validation-dependencies": [
+        ],
+        "module-configuration": {
+            "import-modules": "file(modules)",
+            "custom-scripts": "file(scripts)",
+            "modules": [
+                {
+                    "module": "infra",
+                    "source": {
+                        "version": "1.0",
+                        "template-path": "file(modules/infra/1.0)",
+                        "parameters-path": "file(modules/infra/1.0)",
+                        "policy-path": "file(modules/infra/1.0)"
+                    },
+                    "dependencies": []
+                },
+                {
+                    "module": "management",
+                    "source": {
+                        "version": "1.0",
+                        "template-path": "file(modules/management/1.0)",
+                        "parameters-path": "file(modules/management/1.0)",
+                        "policy-path": "file(modules/management/1.0)"
+                    },
+                    "dependencies": []
+                },
+                {
+                    "module": "acr",
+                    "source": {
+                        "version": "1.0",
+                        "template-path": "file(modules/acr/1.0)",
+                        "parameters-path": "file(modules/acr/1.0)",
+                        "policy-path": "file(modules/acr/1.0)"
+                    },
+                    "dependencies": []
+                },
+                {
+                    "module": "k8s",
+                    "source": {
+                        "version": "1.0",
+                        "template-path": "file(modules/k8s/1.0)",
+                        "parameters-path": "file(modules/k8s/1.0)",
+                        "policy-path": "file(modules/k8s/1.0)"
+                    },
+                    "dependencies": []
+                }
+            ]
+        }
+    },
+    "on-premises": {
+        "subscription-id": "${general.on-premises.subscription-id}",
+        "deployment-name": "${general.on-premises.deployment-name}",
+        "region": "${general.on-premises.region}",
+        "network": {
+            "address-prefix": "192.168.1.0/28",
+            "resource-group-name": "${general.organization-name}-${on-premises.deployment-name}-net-rg",
+            "virtual-gateway": {
+                "gateway-name": "${general.organization-name}-${on-premises.deployment-name}-gw"
+            }
+        },
+        "allow-rdp-address-range": "192.168.1.4"
+    },
+    "shared-services": {
+        "subscription-id": "${general.shared-services.subscription-id}",
+        "deployment-name": "${general.shared-services.deployment-name}",
+        "region": "${general.shared-services.region}",
+        "adds": {
+            "vm-ip-address-start": "10.4.0.46"
+        },
+        "vm-configuration": {
+            "local-admin-user": "${general.shared-services.vm-configuration.local-admin-user}",
+            "enable-encryption": "${general.shared-services.vm-configuration.enable-encryption}",
+            "encryption-keys-for": "${general.shared-services.vm-configuration.encryption-keys-for}"
+        },
+        "log-analytics": {
+            "region": "${general.shared-services.log-analytics.region}"
+        },
+        "keyvault": "${general.shared-services.keyvault}",
+        "network": {
+            "resource-group-name": "${general.organization-name}-${general.shared-services.deployment-name}-net-rg",
+            "name": "${general.organization-name}-${general.shared-services.deployment-name}-vnet",
+            "address-prefix": "${general.shared-services.network.address-prefix}"
+        }
+    },
+    "workload": {
+        "subscription-id": "${general.workload.subscription-id}",
+        "deployment-name": "${general.workload.deployment-name}",
+        "resource-group-prefix": "${general.organization-name}-${general.workload.deployment-name}",
+        "region": "${general.workload.region}",
+        "dns-prefix": "aks",
+        "workspace": {
+            "region": "${general.workload.region}",
+            "sku": "standalone"
+        },
+        "kubernetes": {
+            "kubernetes-version": "${general.workload.kubernetes.kubernetes-version}",
+            "os-type": "${general.workload.kubernetes.os-type}",
+            "network-plugin": "${general.workload.kubernetes.network-plugin}",
+            "max-pods": "${general.workload.kubernetes.max-pods}",
+            "enable-rbac": "${general.workload.kubernetes.enable-rbac}",
+            "enable-http-application-routing": "${general.workload.kubernetes.enable-http-application-routing}",
+            "enable-oms-agent": "${general.workload.kubernetes.enable-oms-agent}"
+        },
+        "acr": {
+            "name": "${general.workload.acr.name}",
+            "admin-user-enabled": "${general.workload.acr.admin-user-enabled}",
+            "sku": "${general.workload.acr.sku}"
+        },
+        "diagnostics": {
+            "resource-group-name": "${workload.resource-group-prefix}-aks-la-rg",
+            "storage": {
+                "name": "${general.organization-name}diagnosticsstorage"
+            },
+            "log-analytics": {
+                "name": "${workload.resource-group-prefix}-diagnostics-la"
+            },
+            "event-hub": {
+                "namespace": "${general.organization-name}eventhubnamespace",
+                "name": "${general.organization-name}-diagnostics-eventhub",
+                "sku": "${general.workload.diagnostics.event-hub.sku}"
+            }
+        }
+    }
+}

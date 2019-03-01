@@ -1,0 +1,252 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "deployment-prefix": {
+            "type": "string",
+            "metadata": {
+                "description": "Deployment prefix. E.g. Organization-DeploymentType"
+            }
+        },
+        "k8s-name": {
+            "type": "string",
+            "metadata": {
+                "description": "The name of the Managed Cluster resource."
+            }
+        },
+        "resource-group-id": {
+            "type": "string",
+            "metadata": {
+                "description": "The id of the Managed Cluster resource group."
+            }
+        },
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "The location of AKS resource."
+            }
+        },
+        "insights-workspace-resource-id": {
+            "type": "string",
+            "metadata": {
+                "description": "Resource ID containing the insights"
+            }
+        },
+        "diagnostic-workspace-resource-id": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "diagnostic-storage-account-id": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "diagnostic-event-hub": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "diagnostic-event-hub-auth-rule": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "storage-account-name": {
+            "type": "string",
+            "metadata": {
+              "description": "Name of the Storage Account in which Diagnostic Logs should be saved."
+            }
+        },
+        "event-hub-name": {
+            "type": "string",
+            "metadata": {
+              "description": "Optional. Name of the event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category."
+            }
+        },
+        "workspace-id": {
+            "type": "string",
+            "metadata": {
+              "description": "Log Analytics workspace ID for the Log Analytics workspace to which logs will be sent."
+            }
+        },
+        "namespace-name": {
+            "type": "string",
+            "metadata": {
+              "description": "Name of EventHub namespace"
+            }
+        },
+        "eventhub-sku": {
+            "type": "string",
+            "allowedValues": ["Basic", "Standard"],
+            "defaultValue": "Standard",
+            "metadata": {
+              "description": "The messaging tier for service Bus namespace"
+            }
+        },
+        "sku-capacity": {
+            "type": "int",
+            "allowedValues": [1, 2, 4],
+            "defaultValue": 1,
+            "metadata": {
+              "description": "MessagingUnits for premium namespace"
+            }
+        },
+        "consumer-group-name": {
+            "type": "string",
+            "metadata": {
+              "description": "Name of Consumer Group"
+            }
+        },
+        "authorizationrules-root-manage-shared-access-key-name": {
+            "defaultValue": "RootManageSharedAccessKey",
+            "type": "string"
+        },
+        "service-tier": {
+            "type": "string",
+            "allowedValues": [
+                "Free",
+                "Standalone",
+                "PerNode"
+            ],
+            "metadata": {
+                "description": "Service Tier: Free, Standalone, or PerNode"
+            }
+        },
+        "data-retention": {
+            "type": "int",
+            "defaultValue": 30,
+            "minValue": 7,
+            "maxValue": 730,
+            "metadata": {
+                "description": "Number of days data will be retained for."
+            }
+        }
+    },
+    "variables": {
+        "default-sas-key-name": "RootManageSharedAccessKey",
+        "auth-rule-resource-id": "[resourceId('Microsoft.EventHub/namespaces/authorizationRules', parameters('namespace-name'), variables('default-sas-key-name'))]",
+        "workload-vnet-name": "[concat(parameters('deployment-prefix'), '-vnet')]",
+        "reader": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+        "azure-kubernetes-service-cluster-admin-role": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '0ab0b1a8-8aac-4efd-b8c2-3ee1fb270be8')]",
+        "azure-kubernetes-service-cluster-user-role": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '4abbcc35-e782-43d8-92c5-2d3f1bd2253f')]",
+        "scope": "[resourceGroup().id]",
+        "emptyContent": {},
+        "omsAgentConfig": {
+            "omsagent": {
+                "enabled": true,
+                "config": {
+                    "logAnalyticsWorkspaceResourceID": "[parameters('insights-workspace-resource-id')]"
+                }
+            }
+        },
+        "k8s-workspace-name": "[concat(parameters('deployment-prefix'), '-diagnostics-la')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "BlobStorage",
+            "name": "[parameters('storage-account-name')]",
+            "apiVersion": "2018-07-01",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "scale": null,
+            "properties": {
+                "isHnsEnabled": false,
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                    "services": {
+                        "file": {
+                            "enabled": true
+                        },
+                        "blob": {
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                },
+                "accessTier": "Cool"
+            },
+            "dependsOn": []
+        },
+        {
+            "apiVersion": "2017-03-15-preview",
+            "name": "[variables('k8s-workspace-name')]",
+            "location": "[parameters('location')]",
+            "tags": {
+                
+            },
+            "type": "Microsoft.OperationalInsights/workspaces",
+            "properties": {
+                "sku": {
+                    "Name": "[parameters('service-tier')]"
+                },
+                "retention": "[parameters('data-retention')]"
+            }
+        },
+        {
+            "apiVersion": "2017-04-01",
+            "name": "[parameters('namespace-name')]",
+            "type": "Microsoft.EventHub/namespaces",
+            "location": "[parameters('location')]",
+            "sku": {
+              "name": "[parameters('eventhub-sku')]",
+              "tier": "[parameters('eventhub-sku')]",
+              "capacity": "[parameters('sku-capacity')]"
+            },
+            "tags": {
+              "tag1": "value1",
+              "tag2": "value2"
+            },
+            "properties": {},
+            "resources": [
+              {
+                "apiVersion": "2017-04-01",
+                "name": "[parameters('event-hub-name')]",
+                "type": "eventhubs",
+                "dependsOn": [
+                  "[concat('Microsoft.EventHub/namespaces/', parameters('namespace-name'))]"
+                ],
+                "properties": {},
+                "resources": [
+                  {
+                    "apiVersion": "2017-04-01",
+                    "name": "[parameters('consumer-group-name')]",
+                    "type": "consumergroups",
+                    "dependsOn": ["[parameters('event-hub-name')]"],
+                    "properties": {
+                      "userMetadata": "User Metadata goes here"
+                    }
+                  }
+                ]
+              }
+            ]
+        },
+        {
+            "type": "Microsoft.EventHub/namespaces/AuthorizationRules",
+            "name": "[concat(parameters('namespace-name'), '/', parameters('authorizationrules-root-manage-shared-access-key-name'))]",
+            "apiVersion": "2017-04-01",
+            "location": "West US 2",
+            "scale": null,
+            "properties": {
+                "rights": [
+                    "Listen",
+                    "Manage",
+                    "Send"
+                ]
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.EventHub/namespaces', parameters('namespace-name'))]"
+            ]
+        }
+    ],
+    "outputs": {
+       
+    }
+}

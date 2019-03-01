@@ -1,0 +1,14 @@
+{
+    "location": {
+        "value": "${workload.region}"
+    },
+     "acr-name": {
+      "value": "${workload.acr.name}"
+    },
+    "acr-admin-user-enabled": {
+      "value": "${workload.acr.admin-user-enabled}"
+    },
+    "acr-sku": {
+        "value": "${workload.acr.sku}"
+    }
+}

@@ -1,0 +1,276 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "tenant-id": {
+            "type": "string",
+            "metadata": {
+                "description": "Tenant ID"
+            }
+        },
+        "deployment-prefix": {
+            "type": "string",
+            "metadata": {
+                "description": "Deployment prefix. E.g. Organization-DeploymentType"
+            }
+        },
+        "location": {
+            "type": "string",
+            "metadata": {
+                "description": "The location of AKS resource."
+            }
+        },
+        "os-disk-size-gb": {
+            "defaultValue": 0,
+            "minValue": 0,
+            "maxValue": 1023,
+            "type": "int",
+            "metadata": {
+                "description": "Disk size (in GB) to provision for each of the agent pool nodes. This value ranges from 0 to 1023. Specifying 0 will apply the default disk size for that agentVMSize."
+            }
+        },
+        "jumpbox-vm-size": {
+            "defaultValue": "Standard_D2_v2",
+            "type": "string",
+            "metadata": {
+                "description": "The size of the Virtual Machine."
+            }
+        },
+        "os-type": {
+            "defaultValue": "Linux",
+            "allowedValues": [
+                "Linux",
+                "Windows"
+            ],
+            "type": "string",
+            "metadata": {
+                "description": "The type of operating system."
+            }
+        },
+        "shared-services-vnet-rg": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "shared-services-vnet-name": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "shared-services-subscription-id": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "deployment-name": {
+            "type": "string",
+            "metadata": {
+                "description": "Workload deployment name"
+            }
+        },
+        "subscription-id": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "shared-services-network-address-prefix": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        }
+    },
+    "variables": {
+        "network-security-group-name": "[concat(parameters('deployment-prefix'), '-ssh-nsg')]",
+        "workload-vnet-name": "[concat(parameters('deployment-prefix'), '-vnet')]",
+        "workload-kv-name": "[concat(parameters('deployment-prefix'), '-kv')]",
+        "jumpbox-name": "[concat(parameters('deployment-prefix'), '-jumpbox')]",
+        "jumpbox-os-disk-name": "[concat(parameters('deployment-prefix'), '-jumpbox-os-disk')]",
+        "jumpbox-pip-name": "[concat(parameters('deployment-prefix'), '-jumpbox-pip')]",
+        "jumpbox-nic-name": "[concat(parameters('deployment-prefix'), '-jumpbox-VMNic')]",
+        "shared-services-vnet-id": "[resourceId(parameters('shared-services-subscription-id'), parameters('shared-services-vnet-rg'), 'Microsoft.Network/virtualNetworks', parameters('shared-services-vnet-name'))]",
+        "workload-shared-services-peering-name": "[concat(variables('workload-vnet-name'), '/peering-to-shared-services-vnet')]",
+        "shared-services-workload-peering-name": "[concat(parameters('shared-services-vnet-name'), concat('/peering-to-', parameters('deployment-name'), '-vnet'))]",
+        "local-rg-name": "[resourceGroup().name]",
+        "workload-vnet-id": "[resourceId('Microsoft.Network/virtualNetworks','kn-standalone-vnet')]", 
+        "subnetRef": "[concat(variables('workload-vnet-id'),'/subnets/admin')]" 
+      },
+    "resources": [
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[variables('network-security-group-name')]",
+            "apiVersion": "2017-06-01",
+            "location": "[parameters('location')]",
+            "properties": {
+              "securityRules": [
+                {
+                    "name": "allow-ssh",
+                    "properties": {
+                        "access": "Allow",
+                        "destinationAddressPrefixes": [],
+                        "destinationAddressPrefix": "VirtualNetwork",
+                        "destinationPortRange": "22",
+                        "destinationPortRanges":[],
+                        "destinationApplicationSecurityGroups": [],
+                        "direction": "Inbound",
+                        "priority": 210,
+                        "protocol": "Tcp",
+                        "sourcePortRange": "*",
+                        "sourcePortRanges": [],
+                        "sourceAddressPrefix": "[parameters('shared-services-network-address-prefix')]",
+                        "sourceApplicationSecurityGroups":[]
+                    }
+                }
+              ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "name": "[variables('workload-vnet-name')]",
+            "apiVersion": "2018-08-01",
+            "location": "[parameters('location')]",
+            "tags": {},
+            "properties": {
+                "subnets": [
+                    {
+                        "name": "k8s",
+                        "id": "/subscriptions/dc6e7f5d-e2cd-41df-b079-b99a20de7c6d/resourceGroups/kn-standalone-infra/providers/Microsoft.Network/virtualNetworks/kn-standalone-vnet/subnets/k8s",
+                        "properties": {
+                            "addressPrefix": "10.2.0.0/23"
+                        }
+                    },
+                    {
+                        "name": "admin",
+                        "id": "/subscriptions/dc6e7f5d-e2cd-41df-b079-b99a20de7c6d/resourceGroups/kn-standalone-infra/providers/Microsoft.Network/virtualNetworks/kn-standalone-vnet/subnets/admin",
+                        "properties": {
+                            "addressPrefix": "10.2.2.0/24"
+                        }
+                    },
+                    {
+                        "name": "vms",
+                        "id": "/subscriptions/dc6e7f5d-e2cd-41df-b079-b99a20de7c6d/resourceGroups/kn-standalone-infra/providers/Microsoft.Network/virtualNetworks/kn-standalone-vnet/subnets/vms",
+                        "properties": {
+                            "addressPrefix": "10.2.4.0/24"
+                        }
+                    }
+                ],
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.2.0.0/16"
+                    ]
+                }
+            }
+        },
+        {
+            "apiVersion": "2016-06-01",
+            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+            "name": "[variables('workload-shared-services-peering-name')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', variables('workload-vnet-name'))]"
+            ],
+            "properties": {
+                "allowVirtualNetworkAccess": true,
+                "allowForwardedTraffic": true,
+                "allowGatewayTransit": false,
+                "useRemoteGateways": true,
+                "remoteVirtualNetwork": {
+                    "id": "[variables('shared-services-vnet-id')]"
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "nestedDeploySharedServicesWorkloadPeering",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[parameters('shared-services-vnet-rg')]",
+            "subscriptionId": "[parameters('shared-services-subscription-id')]",
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', variables('workload-vnet-name'))]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {},
+                    "variables": {},
+                    "resources": [
+                        {
+                            "apiVersion": "2016-06-01",
+                            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+                            "name": "[variables('shared-services-workload-peering-name')]",
+                            "location": "[resourceGroup().location]",
+                            "properties": {
+                                "allowVirtualNetworkAccess": true,
+                                "allowForwardedTraffic": true,
+                                "allowGatewayTransit": true,
+                                "useRemoteGateways": false,
+                                "remoteVirtualNetwork": {
+                                    "id": "[resourceId(parameters('subscription-id'), variables('local-rg-name'), 'Microsoft.Network/virtualNetworks', variables('workload-vnet-name'))]"
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.KeyVault/vaults",
+            "name": "[variables('workload-kv-name')]",
+            "apiVersion": "2018-02-14",
+            "location": "[parameters('location')]",
+            "properties": {
+              "enabledForDeployment": false,
+              "enabledForDiskEncryption": true,
+              "enabledForTemplateDeployment": true,
+              "tenantId": "[parameters('tenant-id')]",
+              "accessPolicies": [
+                {
+                  "objectId": "88f988bf-86f1-41af-91ab-2d7cd011db47",
+                  "tenantId": "[parameters('tenant-id')]",
+                  "permissions": {
+                    "keys": [
+                        "get",
+                        "create",
+                        "delete",
+                        "list",
+                        "update",
+                        "import",
+                        "backup",
+                        "restore",
+                        "recover"
+                    ],
+                    "secrets": [
+                        "get",
+                        "list",
+                        "set",
+                        "delete",
+                        "backup",
+                        "restore",
+                        "recover"
+                    ]
+                  }
+                }
+              ],
+              "sku": {
+                "name": "standard",
+                "family": "A"
+              },
+              "networkAcls": {
+                "value": {
+                  "defaultAction": "Allow",
+                  "bypass": "AzureServices"
+                }
+              }
+            }
+        }
+    ],
+    "outputs": {
+        
+    }
+}
