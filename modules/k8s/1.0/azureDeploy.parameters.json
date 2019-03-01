@@ -41,15 +41,6 @@
     "enable-rbac": {
         "value": "${workload.kubernetes.enable-rbac}"
     },
-    "enable-http-application-routing": {
-        "value": "${workload.kubernetes.enable-http-application-routing}"
-    },
-    "enable-oms-agent": {
-        "value": "${workload.kubernetes.enable-oms-agent}"
-    },
-    "oms-workspace-id": {
-        "value": "/subscriptions/${general.workload.subscription-id}/resourceGroups/DefaultResourceGroup-EUS/providers/Microsoft.OperationalInsights/workspaces/DefaultWorkspace-${general.workload.subscription-id}-EUS"
-    },
     "vnet-subnet-id": {
         "value": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${workload.resource-group-prefix}-infra-rg/providers/Microsoft.Network/virtualNetworks/kn-standalone-vnet/subnets/k8s"
     },
@@ -65,55 +56,10 @@
     "insights-workspace-resource-id": {
         "value": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${workload.diagnostics.resource-group-name}/providers/Microsoft.OperationalInsights/workspaces/${workload.diagnostics.log-analytics.name}"
     },
-    "diagnostic-workspace-resource-id": {
-        "value": "/subscriptions/${general.workload.subscription-id}/resourcegroups/${workload.diagnostics.resource-group-name}/providers/microsoft.operationalinsights/workspaces/${workload.diagnostics.log-analytics.name}"
-    },
-    "diagnostic-storage-account-id": {
-        "value": "/subscriptions/${workload.subscription-id}/resourceGroups/${workload.diagnostics.resource-group-name}/providers/Microsoft.Storage/storageAccounts/${workload.diagnostics.storage.name}"
-    },
     "diagnostic-event-hub": {
         "value": "${workload.diagnostics.event-hub.name}"
     },
-    "diagnostic-event-hub-auth-rule": {
-        "value": ""
-    },
-    "logic-app-name": {
-        "value": ""
-    },
-    "test-uri": {
-        "value": "https://azure.microsoft.com/status/feed/"
-    },
-    "setting-name": {
-        "value": ""
-    },
-    "storage-account-name": {
-        "value": ""
-    },
     "event-hub-authorization-rule-id": {
         "value": "/subscriptions/${workload.subscription-id}/resourceGroups/${workload.diagnostics.resource-group-name}/providers/Microsoft.EventHub/namespaces/${workload.diagnostics.event-hub.namespace}/authorizationRules/RootManageSharedAccessKey"
-    },
-    "workspace-id": {
-        "value": ""
-    },
-    "namespace-name": {
-        "value": "${workload.diagnostics.event-hub.name}"
-    },
-    "eventhub-sku": {
-        "value": "${workload.diagnostics.event-hub.sku}"
-    },
-    "sku-capacity": {
-        "value": 1
-    },
-    "event-hub-name": {
-        "value": "${workload.diagnostics.event-hub.name}"
-    },
-    "consumer-group-name": {
-        "value": "kn-vdc-eventhub-group"
-    },
-    "authorizationrules-root-manage-shared-access-key-name": {
-        "value": "RootManageSharedAccessKey"
-    },
-    "namespaces-knvdcnamespaceeventhub-name": {
-        "value": "${workload.diagnostics.event-hub.namespace}"
     }
 }

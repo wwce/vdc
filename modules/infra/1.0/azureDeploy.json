@@ -20,33 +20,6 @@
                 "description": "The location of AKS resource."
             }
         },
-        "os-disk-size-gb": {
-            "defaultValue": 0,
-            "minValue": 0,
-            "maxValue": 1023,
-            "type": "int",
-            "metadata": {
-                "description": "Disk size (in GB) to provision for each of the agent pool nodes. This value ranges from 0 to 1023. Specifying 0 will apply the default disk size for that agentVMSize."
-            }
-        },
-        "jumpbox-vm-size": {
-            "defaultValue": "Standard_D2_v2",
-            "type": "string",
-            "metadata": {
-                "description": "The size of the Virtual Machine."
-            }
-        },
-        "os-type": {
-            "defaultValue": "Linux",
-            "allowedValues": [
-                "Linux",
-                "Windows"
-            ],
-            "type": "string",
-            "metadata": {
-                "description": "The type of operating system."
-            }
-        },
         "shared-services-vnet-rg": {
             "type": "string",
             "metadata": {
@@ -88,16 +61,10 @@
         "network-security-group-name": "[concat(parameters('deployment-prefix'), '-ssh-nsg')]",
         "workload-vnet-name": "[concat(parameters('deployment-prefix'), '-vnet')]",
         "workload-kv-name": "[concat(parameters('deployment-prefix'), '-kv')]",
-        "jumpbox-name": "[concat(parameters('deployment-prefix'), '-jumpbox')]",
-        "jumpbox-os-disk-name": "[concat(parameters('deployment-prefix'), '-jumpbox-os-disk')]",
-        "jumpbox-pip-name": "[concat(parameters('deployment-prefix'), '-jumpbox-pip')]",
-        "jumpbox-nic-name": "[concat(parameters('deployment-prefix'), '-jumpbox-VMNic')]",
         "shared-services-vnet-id": "[resourceId(parameters('shared-services-subscription-id'), parameters('shared-services-vnet-rg'), 'Microsoft.Network/virtualNetworks', parameters('shared-services-vnet-name'))]",
         "workload-shared-services-peering-name": "[concat(variables('workload-vnet-name'), '/peering-to-shared-services-vnet')]",
         "shared-services-workload-peering-name": "[concat(parameters('shared-services-vnet-name'), concat('/peering-to-', parameters('deployment-name'), '-vnet'))]",
-        "local-rg-name": "[resourceGroup().name]",
-        "workload-vnet-id": "[resourceId('Microsoft.Network/virtualNetworks','kn-standalone-vnet')]", 
-        "subnetRef": "[concat(variables('workload-vnet-id'),'/subnets/admin')]" 
+        "local-rg-name": "[resourceGroup().name]"
       },
     "resources": [
         {

@@ -85,8 +85,7 @@
             "management",
             "acr",
             "aks-la",
-            "k8s",
-            
+            "k8s"
         ],
         "module-validation-dependencies": [
         ],

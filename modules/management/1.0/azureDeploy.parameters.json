@@ -1,12 +1,9 @@
 {
-    "tenant-id": {
-        "value": "${general.tenant-id}"
+    "subscription-id": {
+        "value": "${workload.subscription-id}"
     },
     "deployment-prefix": {
         "value": "${general.organization-name}-standalone"
-    },
-    "location": {
-        "value": "${workload.region}"
     },
     "os-disk-size-gb": {
         "value": 30

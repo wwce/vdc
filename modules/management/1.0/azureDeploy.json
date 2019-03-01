@@ -2,22 +2,16 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "tenant-id": {
+        "subscription-id": {
             "type": "string",
             "metadata": {
-                "description": "Tenant ID"
+                "description": "Subscription id for the resources"
             }
         },
         "deployment-prefix": {
             "type": "string",
             "metadata": {
                 "description": "Deployment prefix. E.g. Organization-DeploymentType"
-            }
-        },
-        "location": {
-            "type": "string",
-            "metadata": {
-                "description": "The location of AKS resource."
             }
         },
         "os-disk-size-gb": {
@@ -49,13 +43,11 @@
         }
     },
     "variables": {
-        "network-security-group-name": "[concat(parameters('deployment-prefix'), '-ssh-nsg')]",
-        "workload-vnet-name": "[concat(parameters('deployment-prefix'), '-vnet')]",
         "jumpbox-name": "[concat(parameters('deployment-prefix'), '-jumpbox')]",
         "jumpbox-os-disk-name": "[concat(parameters('deployment-prefix'), '-jumpbox-os-disk')]",
         "jumpbox-nic-name": "[concat(parameters('deployment-prefix'), '-jumpbox-VMNic')]",
-        "workload-vnet-id": "[resourceId('Microsoft.Network/virtualNetworks','kn-standalone-vnet')]", 
-        "subnetRef": "[concat(variables('workload-vnet-id'),'/subnets/admin')]" 
+        "jumpbox-subnet-id": "[concat('/subscriptions/', parameters('subscription-id'), '/resourceGroups/kn-aks-infra-rg/providers/Microsoft.Network/virtualNetworks/kn-standalone-vnet/subnets/admin')]",
+        "jumpbox-nsg-id": "[concat('/subscriptions/', parameters('subscription-id'), '/resourceGroups/kn-aks-infra-rg/providers/Microsoft.Network/networkSecurityGroups/kn-standalone-ssh-nsg')]"
       },
     "resources": [
         {
@@ -70,14 +62,14 @@
                   "name": "ipconfigstandalone-jumpbox",
                   "properties": {
                     "privateIPAllocationMethod": "Dynamic",
-                    "subnet": { "id": "/subscriptions/dc6e7f5d-e2cd-41df-b079-b99a20de7c6d/resourceGroups/kn-aks-infra-rg/providers/Microsoft.Network/virtualNetworks/kn-standalone-vnet/subnets/admin" },
+                    "subnet": { "id": "[variables('jumpbox-subnet-id')]" },
                     "primary": true,
                     "privateIPAddressVersion": "IPv4"
                   }
                 }
               ],
               "networkSecurityGroup": {
-                "id": "/subscriptions/dc6e7f5d-e2cd-41df-b079-b99a20de7c6d/resourceGroups/kn-aks-infra-rg/providers/Microsoft.Network/networkSecurityGroups/kn-standalone-ssh-nsg"
+                "id": "[variables('jumpbox-nsg-id')]"
                 },
                 "primary": true,
                 "tapConfigurations": []
@@ -86,7 +78,7 @@
           {
             "apiVersion": "2016-04-30-preview",
             "type": "Microsoft.Compute/virtualMachines",
-            "name": "kn-standalone-jumpbox",
+            "name": "[variables('jumpbox-name')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
               "[resourceId('Microsoft.Network/networkInterfaces/', variables('jumpbox-nic-name'))]"

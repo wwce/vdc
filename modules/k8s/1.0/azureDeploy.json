@@ -103,26 +103,6 @@
                 "description": "Boolean flag to turn on and off of RBAC."
             }
         },
-        "enable-http-application-routing": {
-            "defaultValue": true,
-            "type": "bool",
-            "metadata": {
-                "description": "Boolean flag to turn on and off of http application routing."
-            }
-        },
-        "enable-oms-agent": {
-            "defaultValue": true,
-            "type": "bool",
-            "metadata": {
-                "description": "Boolean flag to turn on and off of omsagent addon."
-            }
-        },
-        "oms-workspace-id": {
-            "type": "string",
-            "metadata": {
-                "description": "Specify the resource id of the OMS workspace."
-            }
-        },
         "vnet-subnet-id": {
             "type": "string",
             "metadata": {
@@ -153,97 +133,15 @@
                 "description": "Resource ID containing the insights"
             }
         },
-        "diagnostic-workspace-resource-id": {
-            "type": "string",
-            "defaultValue": ""
-        },
-        "diagnostic-storage-account-id": {
-            "type": "string",
-            "defaultValue": ""
-        },
         "diagnostic-event-hub": {
             "type": "string",
             "defaultValue": ""
-        },
-        "diagnostic-event-hub-auth-rule": {
-            "type": "string",
-            "defaultValue": ""
-        },
-        "logic-app-name": {
-            "type": "string",
-            "metadata": {
-              "description": "Name of the Logic App that will be created."
-            }
-        },
-        "test-uri": {
-            "type": "string",
-            "defaultValue": "https://azure.microsoft.com/status/feed/"
-        },
-        "setting-name": {
-            "type": "string",
-            "metadata": {
-              "description": "Name of the setting. Name for the diagnostic setting resource. Eg. 'archiveToStorage' or 'forSecurityTeam'."
-            }
-        },
-        "storage-account-name": {
-            "type": "string",
-            "metadata": {
-              "description": "Name of the Storage Account in which Diagnostic Logs should be saved."
-            }
         },
         "event-hub-authorization-rule-id": {
             "type": "string",
             "metadata": {
               "description": "Resource ID of the event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
             }
-        },
-        "event-hub-name": {
-            "type": "string",
-            "metadata": {
-              "description": "Optional. Name of the event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category."
-            }
-        },
-        "workspace-id": {
-            "type": "string",
-            "metadata": {
-              "description": "Log Analytics workspace ID for the Log Analytics workspace to which logs will be sent."
-            }
-        },
-        "namespace-name": {
-            "type": "string",
-            "metadata": {
-              "description": "Name of EventHub namespace"
-            }
-        },
-        "eventhub-sku": {
-            "type": "string",
-            "allowedValues": ["Basic", "Standard"],
-            "defaultValue": "Standard",
-            "metadata": {
-              "description": "The messaging tier for service Bus namespace"
-            }
-        },
-        "sku-capacity": {
-            "type": "int",
-            "allowedValues": [1, 2, 4],
-            "defaultValue": 1,
-            "metadata": {
-              "description": "MessagingUnits for premium namespace"
-            }
-        },
-        "consumer-group-name": {
-            "type": "string",
-            "metadata": {
-              "description": "Name of Consumer Group"
-            }
-        },
-        "authorizationrules-root-manage-shared-access-key-name": {
-            "defaultValue": "RootManageSharedAccessKey",
-            "type": "string"
-        },
-        "namespaces-knvdcnamespaceeventhub-name": {
-            "defaultValue": "knvdcnamespaceeventhub",
-            "type": "string"
         }
     },
     "variables": {
