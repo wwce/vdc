@@ -8,9 +8,18 @@ This integration testing feature is built using the [Azure SDK for Python's test
 
 Before using the toolkit's integration testing functionality, you will need to make sure several types of files are in place and properly configured.
 
+### Dependency Modules Installation
+
+Install the dependency modules / packages if you are running the tests outside the docker container. 
+
+Start the dependency installation by navigating to the toolkit root folder in a terminal or command-line interface and running the following command 
+```
+pip install -r requirements.txt
+```
+
 ### Test deployment parameters files
 
-Each of the sample deployments contains a top level *azureDeploy.test.parameters.json* test file that is used during integration testing. This file contains placeholders for a number of important fields used during deployments such subscription IDs or user names, and is used as the basis for the actual *azureDeploy.parameters.json* you will have created to use in your actual deployments.
+Each of the sample deployments contains a top level *archetype.test.json* test file that is used during integration testing. This file contains placeholders for a number of important fields used during deployments such subscription IDs or user names, and is used as the basis for the actual *archetype.json* you will have created to use in your actual deployments.
 
 For integration testing to work, these test files should only be modified to include new parameter fields you may have added to your real top-level deployment parameters file as you've extended or modified a deployment. 
 
@@ -76,21 +85,21 @@ Integration tests use [pytest](https://docs.pytest.org/en/latest/) test runner p
 
 [Linux/OSX]
 
->   *python3 -m pytest tests/integration_tests/{deployment test folder}/test_all_resources.py*
+>   *python3 -m pytest tests/integration_tests/{deployment test folder}/{test file name}.py*
 
 [Windows]
 
->   *py -m pytest tests/integration_tests/{deployment test folder}/test_all_resources.py*
+>   *py -m pytest tests/integration_tests/{deployment test folder}/{test file name}.py*
 
 [Docker]
 
->   *python -m pytest tests/integration_tests/{deployment test folder}/test_all_resources.py*
+>   *python -m pytest tests/integration_tests/{deployment test folder}/{test file name}.py*
 
 An offline test should take less than 30 seconds to complete.
 
 ## Recording test output
 
-Running a test in online (recording mode) will deploy all resources defined in the relevant *test_all_resources.py* file. This deployment process will use the subscription, tenant, and user information stored in your *vdc_settings_real.py* .  Other settings will be pulled from the deployment's *azureDeploy.test.parameters.json* file.
+Running a test in online (recording mode) will deploy all resources defined in the relevant *test_all_resources.py* file. This deployment process will use the subscription, tenant, and user information stored in your *vdc_settings_real.py* .  Other settings will be pulled from the deployment's *archetype.test.json* file.
 
 The test will record all HTTP traffic to and from the Azure Resource Manager APIs during this deployment and update the data in recordings folder for later use in offline testing. Make sure your online deployment completely succeeds before checking in recording files to your code repository.
 
@@ -98,15 +107,15 @@ To set the integration testing to online mode, update your *testsettings_local.c
 
 [Linux/OSX]
 
->   *python3 -m pytest tests/integration_tests/{deployment test folder}/test_all_resources.py*
+>   *python3 -m pytest tests/integration_tests/{deployment test folder}/{test file name}.py*
 
 [Windows]
 
->   *py -m pytest tests/integration_tests/{deployment test folder}/test_all_resources.py*
+>   *py -m pytest tests/integration_tests/{deployment test folder}/{test file name}.py*
 
 [Docker]
 
->   *python -m pytest tests/integration_tests/{deployment test folder}/test_all_resources.py*
+>   *python -m pytest tests/integration_tests/{deployment test folder}/{test file name}.py*
 
 Online mode can take a long time as it will provision all of the resources for a deployment.
 
@@ -129,7 +138,7 @@ _configuration_path* depending on the deployment type) that will need to point t
         if self.is_live:
             parameters_file = 'archetype.json'
         else:
-            parameters_file = 'config.test.json'
+            parameters_file = 'archetype.test.json'
         
         self._workload_path = join(
                 Path(__file__).parents[3],
