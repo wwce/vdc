@@ -151,6 +151,24 @@
             "metadata": {
                 "description": "Storage account for the diagnostics events"
             }
+        },
+        "aks-admin-user-id": {
+            "type": "string",
+            "metadata": {
+                "description": "Principal Id for Admin User"
+            }
+        },
+        "aks-noc-user-id": {
+            "type": "string",
+            "metadata": {
+                "description": "Principal Id for NOC User"
+            }
+        },
+        "aks-devs-user-id": {
+            "type": "string",
+            "metadata": {
+                "description": "Principal Id for Devs User"
+            }
         }
     },
     "variables": {
@@ -289,7 +307,7 @@
             "name": "18429739-58bf-43ab-9c3f-37c2bd12491b",
             "properties": {
               "roleDefinitionId": "[variables('azure-kubernetes-service-cluster-user-role')]",
-              "principalId": "6899b6cf-3f98-4e6a-9575-4551a388bc4c",
+              "principalId": "[parameters('aks-admin-user-id')]",
               "scope": "[concat(subscription().id, '/resourceGroups/', resourceGroup().name)]"
             }
         },
@@ -300,7 +318,7 @@
             "name": "b9d0b84d-6be2-4c86-90bf-7f67c1fd6cad",
             "properties": {
               "roleDefinitionId": "[variables('azure-kubernetes-service-cluster-user-role')]",
-              "principalId": "6f55a76f-29d7-468e-989e-bb18332deda7",
+              "principalId": "[parameters('aks-noc-user-id')]",
               "scope": "[concat(subscription().id, '/resourceGroups/', resourceGroup().name)]"
             }
         },
@@ -311,7 +329,7 @@
             "name": "147015ba-c8f6-4d3a-a9be-d6199e186b7c",
             "properties": {
               "roleDefinitionId": "[variables('azure-kubernetes-service-cluster-user-role')]",
-              "principalId": "3c4d59df-feee-435f-b4ee-db35e9d410c4",
+              "principalId": "[parameters('aks-devs-user-id')]",
               "scope": "[concat(subscription().id, '/resourceGroups/', resourceGroup().name)]"
             }
         },
@@ -322,7 +340,7 @@
             "name": "d519f17a-f608-49e3-967b-6db180e54613",
             "properties": {
               "roleDefinitionId": "[variables('azure-kubernetes-service-cluster-admin-role')]",
-              "principalId": "6899b6cf-3f98-4e6a-9575-4551a388bc4c",
+              "principalId": "[parameters('aks-admin-user-id')]",
               "scope": "[concat(subscription().id, '/resourceGroups/', resourceGroup().name)]"
             }
         },
@@ -333,7 +351,7 @@
             "name": "ef3f8371-2048-49c2-bb5c-d00af244f711",
             "properties": {
               "roleDefinitionId": "[variables('reader')]",
-              "principalId": "6899b6cf-3f98-4e6a-9575-4551a388bc4c",
+              "principalId": "[parameters('aks-admin-user-id')]",
               "scope": "[concat(subscription().id, '/resourceGroups/', resourceGroup().name)]"
             }
         },
@@ -344,7 +362,7 @@
             "name": "16750ce0-45c3-42cd-850e-58d03fe5af4f",
             "properties": {
               "roleDefinitionId": "[variables('reader')]",
-              "principalId": "6f55a76f-29d7-468e-989e-bb18332deda7",
+              "principalId": "[parameters('aks-noc-user-id')]",
               "scope": "[concat(subscription().id, '/resourceGroups/', resourceGroup().name)]"
             }
         },
@@ -355,7 +373,7 @@
             "name": "a1a74305-4acc-41c1-b324-61215c5379d7",
             "properties": {
               "roleDefinitionId": "[variables('reader')]",
-              "principalId": "3c4d59df-feee-435f-b4ee-db35e9d410c4",
+              "principalId": "[parameters('aks-devs-user-id')]",
               "scope": "[concat(subscription().id, '/resourceGroups/', resourceGroup().name)]"
             }
         }

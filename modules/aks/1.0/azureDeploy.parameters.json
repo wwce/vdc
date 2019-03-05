@@ -52,5 +52,14 @@
     },
     "docker-bridge-cidr": {
         "value": "172.17.0.1/16"
+    },
+    "aks-admin-user-id": {
+        "value": "${workload.kubernetes.aks-admin-user-id}"
+    },
+    "aks-noc-user-id": {
+        "value": "${workload.kubernetes.aks-noc-user-id}"
+    },
+    "aks-devs-user-id": {
+        "value": "${workload.kubernetes.aks-devs-user-id}"
     }
 }

@@ -72,7 +72,10 @@
                 "max-pods": 30,
                 "enable-rbac": false,
                 "enable-http-application-routing": false,
-                "enable-oms-agent": true
+                "enable-oms-agent": true,
+                "aks-admin-user-id": "00000000-0000-0000-0000-000000000000",
+                "aks-noc-user-id": "00000000-0000-0000-0000-000000000000",
+                "aks-devs-user-id": "00000000-0000-0000-0000-000000000000"
             },
             "acr": {
                 "admin-user-enabled": true,
@@ -98,7 +101,8 @@
             "workload-net",
             "kv",
             "acr",
-            "aks"
+            "aks",
+            "tiller-helm"
         ],
         "module-validation-dependencies": [
         ],
@@ -106,13 +110,6 @@
             "import-modules": "file(modules)",
             "custom-scripts": "file(scripts)",
             "modules": [
-                {
-                    "module": "kubectl",
-                    "type": "bash",
-                    "command": "scripts/aks/install-kubectl.sh",
-                    "dependencies": [
-                    ]
-                },
                 {
                     "module": "la",
                     "resource-group-name": "${general.organization-name}-${workload.deployment-name}-la-rg",
@@ -403,7 +400,10 @@
             "max-pods": "${general.workload.kubernetes.max-pods}",
             "enable-rbac": "${general.workload.kubernetes.enable-rbac}",
             "enable-http-application-routing": "${general.workload.kubernetes.enable-http-application-routing}",
-            "enable-oms-agent": "${general.workload.kubernetes.enable-oms-agent}"
+            "enable-oms-agent": "${general.workload.kubernetes.enable-oms-agent}",
+            "aks-admin-user-id": "${general.workload.kubernetes.aks-admin-user-id}",
+            "aks-noc-user-id": "${general.workload.kubernetes.aks-noc-user-id}",
+            "aks-devs-user-id": "${general.workload.kubernetes.aks-devs-user-id}"
         },
         "acr": {
             "name": "${general.organization-name}${workload.deployment-name}acr",
