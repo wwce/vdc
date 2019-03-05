@@ -146,7 +146,7 @@
               "description": "Resource ID of the event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
             }
         },
-        "oms-id": {
+        "oms-storage-id": {
             "type": "string",
             "metadata": {
                 "description": "Storage account for the diagnostics events"
@@ -166,8 +166,7 @@
                     "logAnalyticsWorkspaceResourceID": "[parameters('oms-id')]"
                 }
             }
-        },
-        "diagnostic-storage-account-id": "[parameters('oms-id')]"
+        }
     },
     "resources": [
         {
@@ -214,7 +213,7 @@
                     "apiVersion": "2017-05-01-preview",
                     "properties": {
                         "workspaceId": "[parameters('oms-id')]",
-                        "storageAccountId": "[variables('diagnostic-storage-account-id')]",
+                        "storageAccountId": "[parameters('oms-storage-id')]",
                         "eventHubName": "[parameters('diagnostic-event-hub-name')]",
                         "eventHubAuthorizationRuleId": "[parameters('diagnostics-event-hub-auth-rule-id')]",
                         "logs": [
