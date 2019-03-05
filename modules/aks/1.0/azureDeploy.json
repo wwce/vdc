@@ -127,25 +127,34 @@
                 "description": "A CIDR notation IP for Docker bridge."
             }
         },
-        "insights-workspace-resource-id": {
+        "oms-id": {
             "type": "string",
             "metadata": {
                 "description": "Resource ID containing the insights"
             }
         },
-        "diagnostic-event-hub": {
+        "diagnostic-event-hub-name": {
             "type": "string",
-            "defaultValue": ""
+            "defaultValue": "",
+            "metadata": {
+                "description": "Event Hub Name for the diagnostics events"
+            }
         },
-        "event-hub-authorization-rule-id": {
+        "diagnostics-event-hub-auth-rule-id": {
             "type": "string",
             "metadata": {
               "description": "Resource ID of the event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
             }
+        },
+        "oms-id": {
+            "type": "string",
+            "metadata": {
+                "description": "Storage account for the diagnostics events"
+            }
         }
     },
     "variables": {
-        "auth-rule-resource-id": "[parameters('event-hub-authorization-rule-id')]",
+        "auth-rule-resource-id": "[parameters('diagnostics-event-hub-auth-rule-id')]",
         "reader": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
         "azure-kubernetes-service-cluster-admin-role": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '0ab0b1a8-8aac-4efd-b8c2-3ee1fb270be8')]",
         "azure-kubernetes-service-cluster-user-role": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '4abbcc35-e782-43d8-92c5-2d3f1bd2253f')]",
@@ -154,11 +163,11 @@
             "omsagent": {
                 "enabled": true,
                 "config": {
-                    "logAnalyticsWorkspaceResourceID": "[parameters('insights-workspace-resource-id')]"
+                    "logAnalyticsWorkspaceResourceID": "[parameters('oms-id')]"
                 }
             }
         },
-        "diagnostic-storage-account-id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/vdc-storage-rg/providers/Microsoft.Storage/storageAccounts/knvdcstorage')]"
+        "diagnostic-storage-account-id": "[parameters('oms-id')]"
     },
     "resources": [
         {
@@ -192,7 +201,7 @@
                     "dnsServiceIP": "[parameters('dns-service-ip')]",
                     "dockerBridgeCidr": "[parameters('docker-bridge-cidr')]"
                 },
-                "addonProfiles": "[if( empty(parameters('insights-workspace-resource-id')) , variables('emptyContent'), variables('omsAgentConfig'))]"
+                "addonProfiles": "[if( empty(parameters('oms-id')) , variables('emptyContent'), variables('omsAgentConfig'))]"
                 
             },
             "resources": [
@@ -204,10 +213,10 @@
                     ],
                     "apiVersion": "2017-05-01-preview",
                     "properties": {
-                        "workspaceId": "/subscriptions/dc6e7f5d-e2cd-41df-b079-b99a20de7c6d/resourcegroups/defaultresourcegroup-eus/providers/microsoft.operationalinsights/workspaces/maintenance-workspace",
+                        "workspaceId": "[parameters('oms-id')]",
                         "storageAccountId": "[variables('diagnostic-storage-account-id')]",
-                        "eventHubName": "[parameters('diagnostic-event-hub')]",
-                        "eventHubAuthorizationRuleId": "[parameters('event-hub-authorization-rule-id')]",
+                        "eventHubName": "[parameters('diagnostic-event-hub-name')]",
+                        "eventHubAuthorizationRuleId": "[parameters('diagnostics-event-hub-auth-rule-id')]",
                         "logs": [
                             {
                                 "category": "kube-apiserver",
@@ -282,7 +291,7 @@
             "properties": {
               "roleDefinitionId": "[variables('azure-kubernetes-service-cluster-user-role')]",
               "principalId": "6899b6cf-3f98-4e6a-9575-4551a388bc4c",
-              "scope": "[parameters('resource-group-id')]"
+              "scope": "[concat(subscription().id, '/resourceGroups/', resourceGroup().name)]"
             }
         },
         {
@@ -293,7 +302,7 @@
             "properties": {
               "roleDefinitionId": "[variables('azure-kubernetes-service-cluster-user-role')]",
               "principalId": "6f55a76f-29d7-468e-989e-bb18332deda7",
-              "scope": "[parameters('resource-group-id')]"
+              "scope": "[concat(subscription().id, '/resourceGroups/', resourceGroup().name)]"
             }
         },
         {
@@ -304,7 +313,7 @@
             "properties": {
               "roleDefinitionId": "[variables('azure-kubernetes-service-cluster-user-role')]",
               "principalId": "3c4d59df-feee-435f-b4ee-db35e9d410c4",
-              "scope": "[parameters('resource-group-id')]"
+              "scope": "[concat(subscription().id, '/resourceGroups/', resourceGroup().name)]"
             }
         },
         {
@@ -315,7 +324,7 @@
             "properties": {
               "roleDefinitionId": "[variables('azure-kubernetes-service-cluster-admin-role')]",
               "principalId": "6899b6cf-3f98-4e6a-9575-4551a388bc4c",
-              "scope": "[parameters('resource-group-id')]"
+              "scope": "[concat(subscription().id, '/resourceGroups/', resourceGroup().name)]"
             }
         },
         {
@@ -326,7 +335,7 @@
             "properties": {
               "roleDefinitionId": "[variables('reader')]",
               "principalId": "6899b6cf-3f98-4e6a-9575-4551a388bc4c",
-              "scope": "[parameters('resource-group-id')]"
+              "scope": "[concat(subscription().id, '/resourceGroups/', resourceGroup().name)]"
             }
         },
         {
@@ -337,7 +346,7 @@
             "properties": {
               "roleDefinitionId": "[variables('reader')]",
               "principalId": "6f55a76f-29d7-468e-989e-bb18332deda7",
-              "scope": "[parameters('resource-group-id')]"
+              "scope": "[concat(subscription().id, '/resourceGroups/', resourceGroup().name)]"
             }
         },
         {
@@ -348,7 +357,7 @@
             "properties": {
               "roleDefinitionId": "[variables('reader')]",
               "principalId": "3c4d59df-feee-435f-b4ee-db35e9d410c4",
-              "scope": "[parameters('resource-group-id')]"
+              "scope": "[concat(subscription().id, '/resourceGroups/', resourceGroup().name)]"
             }
         }
     ],

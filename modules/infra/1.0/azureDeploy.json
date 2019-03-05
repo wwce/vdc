@@ -67,177 +67,24 @@
         "local-rg-name": "[resourceGroup().name]"
       },
     "resources": [
-        {
-            "type": "Microsoft.Network/networkSecurityGroups",
-            "name": "[variables('network-security-group-name')]",
-            "apiVersion": "2017-06-01",
-            "location": "[parameters('location')]",
-            "properties": {
-              "securityRules": [
-                {
-                    "name": "allow-ssh",
-                    "properties": {
-                        "access": "Allow",
-                        "destinationAddressPrefixes": [],
-                        "destinationAddressPrefix": "VirtualNetwork",
-                        "destinationPortRange": "22",
-                        "destinationPortRanges":[],
-                        "destinationApplicationSecurityGroups": [],
-                        "direction": "Inbound",
-                        "priority": 210,
-                        "protocol": "Tcp",
-                        "sourcePortRange": "*",
-                        "sourcePortRanges": [],
-                        "sourceAddressPrefix": "[parameters('shared-services-network-address-prefix')]",
-                        "sourceApplicationSecurityGroups":[]
-                    }
-                }
-              ]
-            }
-        },
-        {
-            "type": "Microsoft.Network/virtualNetworks",
-            "name": "[variables('workload-vnet-name')]",
-            "apiVersion": "2018-08-01",
-            "location": "[parameters('location')]",
-            "tags": {},
-            "properties": {
-                "subnets": [
-                    {
-                        "name": "k8s",
-                        "id": "/subscriptions/dc6e7f5d-e2cd-41df-b079-b99a20de7c6d/resourceGroups/kn-standalone-infra/providers/Microsoft.Network/virtualNetworks/kn-standalone-vnet/subnets/k8s",
-                        "properties": {
-                            "addressPrefix": "10.2.0.0/23"
-                        }
-                    },
-                    {
-                        "name": "admin",
-                        "id": "/subscriptions/dc6e7f5d-e2cd-41df-b079-b99a20de7c6d/resourceGroups/kn-standalone-infra/providers/Microsoft.Network/virtualNetworks/kn-standalone-vnet/subnets/admin",
-                        "properties": {
-                            "addressPrefix": "10.2.2.0/24"
-                        }
-                    },
-                    {
-                        "name": "vms",
-                        "id": "/subscriptions/dc6e7f5d-e2cd-41df-b079-b99a20de7c6d/resourceGroups/kn-standalone-infra/providers/Microsoft.Network/virtualNetworks/kn-standalone-vnet/subnets/vms",
-                        "properties": {
-                            "addressPrefix": "10.2.4.0/24"
-                        }
-                    }
-                ],
-                "addressSpace": {
-                    "addressPrefixes": [
-                        "10.2.0.0/16"
-                    ]
-                }
-            }
-        },
-        {
-            "apiVersion": "2016-06-01",
-            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-            "name": "[variables('workload-shared-services-peering-name')]",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/virtualNetworks/', variables('workload-vnet-name'))]"
-            ],
-            "properties": {
-                "allowVirtualNetworkAccess": true,
-                "allowForwardedTraffic": true,
-                "allowGatewayTransit": false,
-                "useRemoteGateways": true,
-                "remoteVirtualNetwork": {
-                    "id": "[variables('shared-services-vnet-id')]"
-                }
-            }
-        },
-        {
-            "apiVersion": "2017-05-10",
-            "name": "nestedDeploySharedServicesWorkloadPeering",
-            "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[parameters('shared-services-vnet-rg')]",
-            "subscriptionId": "[parameters('shared-services-subscription-id')]",
-            "dependsOn": [
-                "[concat('Microsoft.Network/virtualNetworks/', variables('workload-vnet-name'))]"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "parameters": {},
-                    "variables": {},
-                    "resources": [
-                        {
-                            "apiVersion": "2016-06-01",
-                            "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
-                            "name": "[variables('shared-services-workload-peering-name')]",
-                            "location": "[resourceGroup().location]",
-                            "properties": {
-                                "allowVirtualNetworkAccess": true,
-                                "allowForwardedTraffic": true,
-                                "allowGatewayTransit": true,
-                                "useRemoteGateways": false,
-                                "remoteVirtualNetwork": {
-                                    "id": "[resourceId(parameters('subscription-id'), variables('local-rg-name'), 'Microsoft.Network/virtualNetworks', variables('workload-vnet-name'))]"
-                                }
-                            }
-                        }
-                    ]
-                }
-            }
-        },
-        {
-            "type": "Microsoft.KeyVault/vaults",
-            "name": "[variables('workload-kv-name')]",
-            "apiVersion": "2018-02-14",
-            "location": "[parameters('location')]",
-            "properties": {
-              "enabledForDeployment": false,
-              "enabledForDiskEncryption": true,
-              "enabledForTemplateDeployment": true,
-              "tenantId": "[parameters('tenant-id')]",
-              "accessPolicies": [
-                {
-                  "objectId": "88f988bf-86f1-41af-91ab-2d7cd011db47",
-                  "tenantId": "[parameters('tenant-id')]",
-                  "permissions": {
-                    "keys": [
-                        "get",
-                        "create",
-                        "delete",
-                        "list",
-                        "update",
-                        "import",
-                        "backup",
-                        "restore",
-                        "recover"
-                    ],
-                    "secrets": [
-                        "get",
-                        "list",
-                        "set",
-                        "delete",
-                        "backup",
-                        "restore",
-                        "recover"
-                    ]
-                  }
-                }
-              ],
-              "sku": {
-                "name": "standard",
-                "family": "A"
-              },
-              "networkAcls": {
-                "value": {
-                  "defaultAction": "Allow",
-                  "bypass": "AzureServices"
-                }
-              }
-            }
-        }
+       
     ],
     "outputs": {
-        
+        "workload-vnet-id": {
+            "type": "string",
+            "value": "[resourceId('Microsoft.Network/virtualNetworks', variables('workload-vnet-name'))]"
+        },
+        "worklaod-vnet-name": {
+            "type": "string",
+            "value": "[variables('workload-vnet-name')]"
+        },
+        "workload-infra-resource-group-id": {
+            "type": "string",
+            "value": "[resourceGroup().id]"
+        },
+        "workload-infra-resource-group-name": {
+            "type": "string",
+            "value": "[resourceGroup().name]"
+        }
     }
 }

@@ -40,14 +40,38 @@
             "metadata": {
                 "description": "The type of operating system."
             }
+        },
+        "workload-vnet-id": {
+            "type": "string",
+            "metadata": {
+                "description": "Virtual Network Id for the workload."
+            }
+        },
+        "worklaod-vnet-name": {
+            "type": "string",
+            "metadata": {
+                "description": "Virtual Network Name for the workload."
+            }
+        },
+        "workload-infra-resource-group-id": {
+            "type": "string",
+            "metadata": {
+                "description": "Virtual Network's Resource Group Name for the workload."
+            }
+        },
+        "workload-infra-resource-group-name": {
+            "type": "string",
+            "metadata": {
+                "description": "Virtual Network's Resource Group Name for the workload."
+            }
         }
     },
     "variables": {
         "jumpbox-name": "[concat(parameters('deployment-prefix'), '-jumpbox')]",
         "jumpbox-os-disk-name": "[concat(parameters('deployment-prefix'), '-jumpbox-os-disk')]",
         "jumpbox-nic-name": "[concat(parameters('deployment-prefix'), '-jumpbox-VMNic')]",
-        "jumpbox-subnet-id": "[concat('/subscriptions/', parameters('subscription-id'), '/resourceGroups/kn-aks-infra-rg/providers/Microsoft.Network/virtualNetworks/kn-standalone-vnet/subnets/admin')]",
-        "jumpbox-nsg-id": "[concat('/subscriptions/', parameters('subscription-id'), '/resourceGroups/kn-aks-infra-rg/providers/Microsoft.Network/networkSecurityGroups/kn-standalone-ssh-nsg')]"
+        "jumpbox-subnet-id": "[concat(parameters('workload-vnet-id'), '/subnets/admin')]",
+        "jumpbox-nsg-id": "[concat(parameters('workload-infra-resource-group-id'), '/providers/Microsoft.Network/networkSecurityGroups/kn-standalone-ssh-nsg')]"
       },
     "resources": [
         {

@@ -6,7 +6,7 @@
         "value": "${workload.resource-group-prefix}-k8s"
     },
     "resource-group-id": {
-        "value": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${workload.resource-group-prefix}-k8s-rg"
+        "value": "[resourceGroup().id]"
     },
     "location": {
         "value": "${workload.region}"
@@ -42,7 +42,7 @@
         "value": "${workload.kubernetes.enable-rbac}"
     },
     "vnet-subnet-id": {
-        "value": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${workload.resource-group-prefix}-infra-rg/providers/Microsoft.Network/virtualNetworks/kn-standalone-vnet/subnets/k8s"
+        "value": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${workload.resource-group-prefix}-net-rg/providers/Microsoft.Network/virtualNetworks/${workload.resource-group-prefix}-vnet/subnets/default"
     },
     "service-cidr": {
         "value": "10.0.0.0/16"
@@ -52,14 +52,5 @@
     },
     "docker-bridge-cidr": {
         "value": "172.17.0.1/16"
-    },
-    "insights-workspace-resource-id": {
-        "value": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${workload.diagnostics.resource-group-name}/providers/Microsoft.OperationalInsights/workspaces/${workload.diagnostics.log-analytics.name}"
-    },
-    "diagnostic-event-hub": {
-        "value": "${workload.diagnostics.event-hub.name}"
-    },
-    "event-hub-authorization-rule-id": {
-        "value": "/subscriptions/${workload.subscription-id}/resourceGroups/${workload.diagnostics.resource-group-name}/providers/Microsoft.EventHub/namespaces/${workload.diagnostics.event-hub.namespace}/authorizationRules/RootManageSharedAccessKey"
     }
 }

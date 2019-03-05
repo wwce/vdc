@@ -1,14 +1,14 @@
 {
     "location": {
-        "value": "${workload.region}"
+        "value": "${ENV:ENVIRONMENT-TYPE.region}"
     },
      "acr-name": {
-      "value": "${workload.acr.name}"
+      "value": "${ENV:ENVIRONMENT-TYPE.acr.name}"
     },
     "acr-admin-user-enabled": {
-      "value": "${workload.acr.admin-user-enabled}"
+      "value": "${ENV:ENVIRONMENT-TYPE.acr.admin-user-enabled}"
     },
     "acr-sku": {
-        "value": "${workload.acr.sku}"
+        "value": "${ENV:ENVIRONMENT-TYPE.acr.sku}"
     }
 }

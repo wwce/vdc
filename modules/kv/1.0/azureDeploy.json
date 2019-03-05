@@ -135,6 +135,12 @@
               "sku":{  
                 "name":"[parameters('vault-sku')]",
                 "family":"A"
+              },
+              "networkAcls": {
+                "value": {
+                  "defaultAction": "Allow",
+                  "bypass": "AzureServices"
+                }
               }          
             },
             "resources":[  
