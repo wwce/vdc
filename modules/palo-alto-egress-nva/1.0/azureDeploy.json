@@ -31,8 +31,7 @@
             "metadata": {
                 "description": "HUB Virtual Network resource Id"
             }
-        },
-        
+        },        
         "vnet-resourceGroup": {
             "type": "string",
             "metadata": {
@@ -88,7 +87,7 @@
             }
         },
         "admin-password": {
-            "type": "string",
+            "type": "securestring",
             "metadata": {
                 "description": "The password given to the admin user."
             }
@@ -345,7 +344,7 @@
                 "displayName": "[concat(variables('virtualMachine-name-prefix'), copyindex(1), '-nic1')]"
             },
             "copy": {
-                "name": "nic2Loop",
+                "name": "nic1Loop",
                 "count": "[parameters('virtualMachine-count')]"
             },
             "properties": {
@@ -383,7 +382,7 @@
                 "nicPipLoop"
             ],
             "copy": {
-                "name": "nic1Loop",
+                "name": "nic2Loop",
                 "count": "[parameters('virtualMachine-count')]"
             },
             "properties": {
@@ -418,7 +417,7 @@
                 "displayName": "[concat(variables('virtualMachine-name-prefix'), copyindex(1), '-nic3')]"
             },
             "copy": {
-                "name": "nic2Loop",
+                "name": "nic3Loop",
                 "count": "[parameters('virtualMachine-count')]"
             },
             "properties": {
@@ -445,7 +444,6 @@
                 ]
             }
         },
-
         {
             "name": "[concat(parameters('deployment-prefix'), 'app-insight')]",
             "type": "Microsoft.Insights/components",
@@ -479,10 +477,10 @@
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Compute/availabilitySets', variables('availabilitySet-name'))]",
-                "[concat('Microsoft.Network/networkInterfaces/', concat(variables('virtualMachine-name-prefix'), copyindex(1), '-nic1'))]",
-                "[concat('Microsoft.Network/networkInterfaces/', concat(variables('virtualMachine-name-prefix'), copyindex(1), '-nic2'))]",
-                "[concat('Microsoft.Network/networkInterfaces/', concat(variables('virtualMachine-name-prefix'), copyindex(1), '-nic3'))]",
-                "[resourceId('Microsoft.Storage/storageAccounts',variables('diagnostic-storageAccount-name'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts',variables('diagnostic-storageAccount-name'))]",
+                "nic1Loop",
+                "nic2Loop",
+                "nic3Loop"
             ],
             "properties": {
                 "availabilitySet": {

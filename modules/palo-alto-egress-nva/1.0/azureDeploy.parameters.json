@@ -17,10 +17,10 @@
         "value": "nva"
     },
     "palo-alto-egress-nva-lb-ip-address": {
-        "value": "${shared-services.network-virtual-appliance.palo-alto.egress.ip}"
+        "value": "${shared-services.network.network-virtual-appliance.palo-alto.egress.ip}"
     },
     "os-image": {
-        "value": "${shared-services.network-virtual-appliance.palo-alto.image}"
+        "value": "${shared-services.network.network-virtual-appliance.palo-alto.image}"
     },
     "os-type": {
         "value": "Linux"
@@ -50,10 +50,10 @@
         "value": "${shared-services.network.subnets[0].name}"
     },
     "nva-address-start": {
-        "value": "${shared-services.network-virtual-appliance.palo-alto.egress.vm-ip-address-start}"
+        "value": "${shared-services.network.network-virtual-appliance.palo-alto.egress.vm-ip-address-start}"
     },
     "enable-palo-alto-bootstrap": {
-        "value": "${shared-services.network-virtual-appliance.palo-alto.enable-bootstrap}"
+        "value": "${shared-services.network.network-virtual-appliance.palo-alto.enable-bootstrap}"
     },
     "shared-services-udr-name": {
         "value": "${shared-services.network.user-defined-routes[0].name}"

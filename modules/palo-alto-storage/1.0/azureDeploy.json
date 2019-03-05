@@ -84,7 +84,7 @@
             "properties": {
                 "containers": [
                     {
-                        "name": "[variables('containerName')]",
+                        "name": "[concat(variables('containerName'), '-share')]",
                         "properties": {
                             "image": "[variables('image')]",
                             "command": [
@@ -114,14 +114,14 @@
                         }
                     },
                     {
-                        "name": "[variables('containerName')]",
+                        "name": "[concat(variables('containerName'), '-ingress')]",
                         "properties": {
                             "image": "[variables('image')]",
                             "command": [
                                 "az",
                                 "storage",
-                                "share",
                                 "directory",
+                                "create",
                                 "--name",
                                 "ingress",
                                 "--share-name",
@@ -146,14 +146,14 @@
                         }
                     },
                     {
-                        "name": "[variables('containerName')]",
+                        "name": "[concat(variables('containerName'), '-egress')]",
                         "properties": {
                             "image": "[variables('image')]",
                             "command": [
                                 "az",
                                 "storage",
-                                "share",
                                 "directory",
+                                "create",
                                 "--name",
                                 "egress",
                                 "--share-name",
@@ -183,7 +183,7 @@
             }
         },
         {
-            "name": "[concat(variables('DircontainerIngressGroupName'), copyIndex())]",
+            "name": "[variables('DircontainerIngressGroupName')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
             "apiVersion": "2018-02-01-preview",
             "location": "[resourceGroup().location]",
@@ -191,49 +191,50 @@
                 "[variables('FScontainerGroupName')]"
             ],
             "properties": {
-
-                "copy": {
-                    "count": "[length(parameters('file-shares'))]",
-                    "name": "containers",
-                    "input": {
-                        "name": "[variables('containerName')]",
-                        "properties": {
-                            "image": "[variables('image')]",
-                            "command": [
-                                "az",
-                                "storage",
-                                "share",
-                                "directory",
-                                "--name",
-                                "[parameters('file-shares')[copyIndex()]]",
-                                "--share-name",
-                                "[concat(variables('share-name'), '/ingress')]"
-                            ],
-                            "environmentVariables": [
-                                {
-                                    "name": "AZURE_STORAGE_KEY",
-                                    "value": "[listKeys(variables('palo-alto-storage-name'),'2017-10-01').keys[0].value]"
-                                },
-                                {
-                                    "name": "AZURE_STORAGE_ACCOUNT",
-                                    "value": "[variables('palo-alto-storage-name')]"
-                                }
-                            ],
-                            "resources": {
-                                "requests": {
-                                    "cpu": "[variables('cpuCores')]",
-                                    "memoryInGb": "[variables('memoryInGb')]"
+                "restartPolicy": "OnFailure",
+                "osType": "Linux",
+                "copy": [
+                    {
+                        "name": "containers",
+                        "count": "[length(parameters('file-shares'))]",
+                        "input": {
+                            "name": "[concat(variables('containerName'), padLeft(copyIndex('containers', 1), 2, '0'))]",                        
+                            "properties": {
+                                "image": "[variables('image')]",
+                                "command": [
+                                    "az",
+                                    "storage",
+                                    "directory",
+                                    "create",
+                                    "--name",
+                                    "[parameters('file-shares')[copyIndex('containers')]]",
+                                    "--share-name",
+                                    "[concat(variables('share-name'), '/ingress')]"
+                                ],
+                                "environmentVariables": [
+                                    {
+                                        "name": "AZURE_STORAGE_KEY",
+                                        "value": "[listKeys(variables('palo-alto-storage-name'),'2017-10-01').keys[0].value]"
+                                    },
+                                    {
+                                        "name": "AZURE_STORAGE_ACCOUNT",
+                                        "value": "[variables('palo-alto-storage-name')]"
+                                    }
+                                ],
+                                "resources": {
+                                    "requests": {
+                                        "cpu": "[variables('cpuCores')]",
+                                        "memoryInGb": "[variables('memoryInGb')]"
+                                    }
                                 }
                             }
                         }
                     }
-                },
-                "restartPolicy": "OnFailure",
-                "osType": "Linux"
+                ]
             }
         },
         {
-            "name": "[concat(variables('DircontainerEgressGroupName'), copyIndex())]",
+            "name": "[variables('DircontainerEgressGroupName')]",
             "type": "Microsoft.ContainerInstance/containerGroups",
             "apiVersion": "2018-02-01-preview",
             "location": "[resourceGroup().location]",
@@ -241,44 +242,46 @@
                 "[variables('FScontainerGroupName')]"
             ],            
             "properties": {
-                "copy": {
-                    "count": "[length(parameters('file-shares'))]",
-                    "name": "containers",
-                    "input": {
-                        "name": "[variables('containerName')]",
-                        "properties": {
-                            "image": "[variables('image')]",
-                            "command": [
-                                "az",
-                                "storage",
-                                "share",
-                                "directory",
-                                "--name",
-                                "[parameters('file-shares')[copyIndex('containers')]]",
-                                "--share-name",
-                                "[concat(variables('share-name'), '/egress')]"
-                            ],
-                            "environmentVariables": [
-                                {
-                                    "name": "AZURE_STORAGE_KEY",
-                                    "value": "[listKeys(variables('palo-alto-storage-name'),'2017-10-01').keys[0].value]"
-                                },
-                                {
-                                    "name": "AZURE_STORAGE_ACCOUNT",
-                                    "value": "[variables('palo-alto-storage-name')]"
-                                }
-                            ],
-                            "resources": {
-                                "requests": {
-                                    "cpu": "[variables('cpuCores')]",
-                                    "memoryInGb": "[variables('memoryInGb')]"
+                "restartPolicy": "OnFailure",
+                "osType": "Linux",
+                "copy": [
+                    {
+                        "name": "containers",
+                        "count": "[length(parameters('file-shares'))]",
+                        "input": {
+                            "name": "[concat(variables('containerName'), padLeft(copyIndex('containers', 1), 2, '0'))]",
+                            "properties": {
+                                "image": "[variables('image')]",
+                                "command": [
+                                    "az",
+                                    "storage",
+                                    "directory",
+                                    "create",
+                                    "--name",
+                                    "[parameters('file-shares')[copyIndex('containers')]]",
+                                    "--share-name",
+                                    "[concat(variables('share-name'), '/egress')]"
+                                ],
+                                "environmentVariables": [
+                                    {
+                                        "name": "AZURE_STORAGE_KEY",
+                                        "value": "[listKeys(variables('palo-alto-storage-name'),'2017-10-01').keys[0].value]"
+                                    },
+                                    {
+                                        "name": "AZURE_STORAGE_ACCOUNT",
+                                        "value": "[variables('palo-alto-storage-name')]"
+                                    }
+                                ],
+                                "resources": {
+                                    "requests": {
+                                        "cpu": "[variables('cpuCores')]",
+                                        "memoryInGb": "[variables('memoryInGb')]"
+                                    }
                                 }
                             }
                         }
                     }
-                },
-                "restartPolicy": "OnFailure",
-                "osType": "Linux"
+                ]                
             }
         }
     ],

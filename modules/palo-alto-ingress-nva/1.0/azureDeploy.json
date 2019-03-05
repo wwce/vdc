@@ -8,12 +8,6 @@
                  "description": "Deployment prefix. E.g. Organization-DeploymentType"
              }
         },
-        "output-params-storage-key":{  
-            "type":"string",
-            "metadata":{  
-                "description":"Default storage account Key. Storage account that contains output parameters and common scripts"
-            }
-        },
         "output-params-storage-account-name":{  
             "type":"string",
             "metadata":{  
@@ -105,7 +99,7 @@
             }
         },
         "admin-password": {
-            "type": "string",
+            "type": "securestring",
             "metadata": {
                 "description": "The password given to the admin user."
             }
@@ -160,7 +154,6 @@
                  "description": "Specifies the shared services UDR"
              }
         },
-
         "bootstrap-storage-account": {
             "type": "string",
             "defaultValue": "",
@@ -214,8 +207,7 @@
         "mgmt-asg-id": "[resourceId(parameters('vnet-resourceGroup'),'Microsoft.Network/applicationSecurityGroups', concat(parameters('deployment-prefix'), '-', parameters('mgmt-asg-name'), '-asg'))]",
         "trust-asg-id": "[resourceId(parameters('vnet-resourceGroup'),'Microsoft.Network/applicationSecurityGroups', concat(parameters('deployment-prefix'), '-', parameters('trust-asg-name'), '-asg'))]",
         "untrust-asg-id": "[resourceId(parameters('vnet-resourceGroup'),'Microsoft.Network/applicationSecurityGroups', concat(parameters('deployment-prefix'), '-', parameters('untrust-asg-name'), '-asg'))]",
-        "custom-data-field": "[concat('storage-account=', parameters('bootstrap-storage-account'), ',access-key=', parameters('bootstrap-storage-account-access-key'), ',file-share=', parameters('bootstrap-storage-share-name'), ',share-directory=', concat(parameters('bootstrap-storage-share-name'), '/ingress'))]",
-        "ingress-file-uri": "[concat('https://', parameters('output-params-storage-account-name'), '.blob.core.windows.net', '/scripts/palo-alto/ingress-fw-bootstrap.xml?', parameters('sas-key'))]"
+        "custom-data-field": "[concat('storage-account=', parameters('bootstrap-storage-account'), ',access-key=', parameters('bootstrap-storage-account-access-key'), ',file-share=', parameters('bootstrap-storage-share-name'), ',share-directory=', concat(parameters('bootstrap-storage-share-name'), '/ingress'))]"
     },
     "resources": [
         {
@@ -349,7 +341,7 @@
                 "displayName": "[concat(variables('virtualMachine-name-prefix'), copyindex(1), '-nic1')]"
             },
             "copy": {
-                "name": "nic2Loop",
+                "name": "nic1Loop",
                 "count": "[parameters('virtualMachine-count')]"
             },
             "properties": {
@@ -386,7 +378,7 @@
                 "[concat('Microsoft.Network/loadBalancers/', variables('nva-lb-name'))]"
             ],
             "copy": {
-                "name": "nic1Loop",
+                "name": "nic2Loop",
                 "count": "[parameters('virtualMachine-count')]"
             },
             "properties": {
@@ -446,7 +438,6 @@
                 ]
             }
         },
-
         {
             "name": "[concat(parameters('deployment-prefix'), 'app-insight')]",
             "type": "Microsoft.Insights/components",
