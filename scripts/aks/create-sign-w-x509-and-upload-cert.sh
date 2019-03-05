@@ -6,9 +6,8 @@ PGM=$(basename $0)
 # Names set in set-environment-vars.sh:
 ENV_PREFIX="aks"
 ENV_NAME="standalone"
-KEY_VAULT_NAME="kn-${ENV_NAME}-kv"
-CA_CERT_NAME="kn-${ENV_PREFIX}-ca3"
-CA_CERT_LOCAL_PATH="C:/Users/kunachim/demo"
+KEY_VAULT_NAME="kn-${ENV_PREFIX}-kv"
+CA_CERT_NAME="kn-${ENV_PREFIX}-ca"
 
 #
 # Subject Alternative Names (SAN) need to be comma 
@@ -29,10 +28,10 @@ fi
 
 echo "$PGM: Getting CA key:$CA_CERT_NAME from vault:$KEY_VAULT_NAME .."
 CA_KEY_PAIR=$( \
-  az.cmd keyvault secret download \
+  az keyvault secret download \
     --name $CA_CERT_NAME \
     --vault-name $KEY_VAULT_NAME \
-    --file $CA_CERT_LOCAL_PATH
+    --file /dev/stdout
 )
 rc=$?
 if [[ $rc -ne 0 ]];then
@@ -59,11 +58,11 @@ echo "$PGM: Extracting keypair parts ..."
 CA_CERT=$(openssl x509 \
   -outform pem \
   -in <(echo "$CA_KEY_PAIR") \
-  -out $CA_CERT_LOCAL_PATH)
+  -out /dev/stdout)
 
 CA_KEY=$(openssl pkey \
   -in <(echo "$CA_KEY_PAIR") \
-  -out $CA_CERT_LOCAL_PATH)
+  -out /dev/stdout)
 
 # create the private key and convert to pkcs8 format
 # TODO: confirm with keyvault that we need pkcs8
@@ -112,7 +111,7 @@ CSR=$(openssl req \
   -sha256 \
   -key <(echo "$PK") \
   -subj "/CN=$CERT_NAME" \
-  -out $CA_CERT_LOCAL_PATH
+  -out /dev/stdout
 )
 rc=$?
 if [[ $rc -ne 0 ]];then
@@ -140,7 +139,7 @@ CERT=$(openssl x509 \
   -in <(echo "$CSR") \
   -extfile <(echo "$CONFIG_FILE") \
   -extensions req_ext \
-  -out $CA_CERT_LOCAL_PATH
+  -out /dev/stdout
 )
 rc=$?
 if [[ $rc -ne 0 ]];then
@@ -163,7 +162,7 @@ echo "$PGM: CERT is valid"
 # need to concatenate the key and cert into PEM
 echo "$PGM: Uploading certificate ..."
 UPLOAD=$( \
-  az.cmd keyvault certificate import \
+  az keyvault certificate import \
     --name $CERT_NAME \
     --vault-name $KEY_VAULT_NAME \
     --file <(echo -e "${PK}\n${CERT}" 2>&1)

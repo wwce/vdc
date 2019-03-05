@@ -6,10 +6,10 @@ PGM=$(basename $0)
 
 ENV_PREFIX="aks"
 ENV_NAME="standalone"
-KEY_VAULT_NAME="kn-${ENV_NAME}-kv"
+KEY_VAULT_NAME="kn-${ENV_PREFIX}-kv"
 CA_CERT_NAME="kn-${ENV_PREFIX}-ca"
 CLUSTER_NAME="kn-${ENV_PREFIX}-k8s"
-CLUSTER_RG="kn-${ENV_PREFIX}-k8s-rg"
+CLUSTER_RG="kn-${ENV_PREFIX}-rg"
 if [[ -z $2 ]];then
   echo "$PGM: usage environment target-namespace"
   exit 1
@@ -63,7 +63,7 @@ TILLER_KEY_FILE=$MY_TEMPDIR/key.pem
 # Get kubernetes admin credentials
 # 
 KUBECONFIG_FILE=$MY_TEMPDIR/config
-GET_CREDS_RESULT=$(az.cmd aks get-credentials --admin -n $CLUSTER_NAME -g $CLUSTER_RG --file $KUBECONFIG_FILE)
+GET_CREDS_RESULT=$(az aks get-credentials --admin -n $CLUSTER_NAME -g $CLUSTER_RG --file $KUBECONFIG_FILE)
 rc=$?
 if [[ $rc -ne 0 ]];then
   echo "$PGM: Error getting admin credentials:$GET_CREDS_RESULT"
@@ -76,7 +76,7 @@ echo "$PGM: Using temp file:$KUBECONFIG_FILE for kubeconfig"
 #
 echo "$PGM: Getting CA cert $CA_CERT_NAME from key vault:$KEY_VAULT_NAME"
 CA_CERT_DOWNLOAD=$(
-  az.cmd keyvault certificate download \
+  az keyvault certificate download \
   --name $CA_CERT_NAME \
   --vault-name $KEY_VAULT_NAME \
   -f $CA_CERT_FILE 2>&1 )
@@ -88,7 +88,7 @@ fi
 
 echo "$PGM: Getting tiller keypair"
 TILLER_KEY_PAIR=$( \
-  az.cmd keyvault secret download \
+  az keyvault secret download \
     --name $TILLER_CN \
     --vault-name $KEY_VAULT_NAME \
     --file /dev/stdout
