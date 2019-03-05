@@ -14,7 +14,7 @@
         "value": "${shared-services.vm-configuration.local-admin-user}"
     },
     "extension-name": {
-        "value": "nva"
+        "value": "egress-vm"
     },
     "palo-alto-egress-nva-lb-ip-address": {
         "value": "${shared-services.network.network-virtual-appliance.palo-alto.egress.ip}"

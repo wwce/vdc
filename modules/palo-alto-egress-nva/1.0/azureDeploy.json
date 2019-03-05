@@ -8,24 +8,6 @@
                  "description": "Deployment prefix. E.g. Organization-DeploymentType"
              }
         },
-        "output-params-storage-key":{  
-            "type":"string",
-            "metadata":{  
-                "description":"Default storage account Key. Storage account that contains output parameters and common scripts"
-            }
-        },
-        "output-params-storage-account-name":{  
-            "type":"string",
-            "metadata":{  
-                "description":"Default storage account name. Storage account that contains output parameters and common scripts"
-            }
-        },
-        "sas-key": {
-            "type":"string",
-            "metadata":{  
-                "description":"Default Storage Account SAS Key"
-            }
-        },
         "vnet-id": {
             "type": "string",
             "metadata": {
@@ -169,13 +151,6 @@
                  "description": "Specifies a bootstrap storage account file share"
              }
         },
-        "bootstrap-storage-account-file-share-directory": {
-            "type": "string",
-            "defaultValue": "egress",
-            "metadata": {
-                 "description": "Specifies a bootstrap storage account file share directory"
-             }
-        },
         "enable-palo-alto-bootstrap": {
             "type": "bool",
             "metadata": {
@@ -187,7 +162,7 @@
         "resource-prefix": "[concat(parameters('deployment-prefix'))]",
         "nva-lb-name": "[concat(variables('resource-prefix'), '-lb')]",
         "availabilitySet-name": "[concat(variables('resource-prefix'), '-as')]",
-        "virtualMachine-name-prefix": "[concat(variables('resource-prefix'), '-vm')]",
+        "virtualMachine-name-prefix": "[concat(variables('resource-prefix'), '-egress-vm')]",
         "shared-services-subnet-ID": "[concat(parameters('vnet-id'), '/subnets/', parameters('shared-services-subnet-name'))]",
         "untrust-subnet-ID": "[concat(parameters('vnet-id'), '/subnets/', parameters('untrust-subnet-name'))]",
         "uniqueString": "[uniqueString(subscription().id, resourceGroup().id)]",
@@ -202,7 +177,6 @@
         "trust-asg-id": "[resourceId(parameters('vnet-resourceGroup'),'Microsoft.Network/applicationSecurityGroups', concat(parameters('deployment-prefix'), '-', parameters('trust-asg-name'), '-asg'))]",
         "untrust-asg-id": "[resourceId(parameters('vnet-resourceGroup'),'Microsoft.Network/applicationSecurityGroups', concat(parameters('deployment-prefix'), '-', parameters('untrust-asg-name'), '-asg'))]",
         "custom-data-field": "[concat('storage-account=', parameters('bootstrap-storage-account'), ',access-key=', parameters('bootstrap-storage-account-access-key'), ',file-share=', parameters('bootstrap-storage-share-name'), ',share-directory=', concat(parameters('bootstrap-storage-share-name'), '/egress'))]",
-        "egress-file-uri": "[concat('https://', parameters('output-params-storage-account-name'), '.blob.core.windows.net/scripts/palo-alto/ingress-fw-bootstrap.xml?', parameters('sas-key'))]",
         "image": "centos",
         "containerName": "centossleep",
         "cpuCores": "1.0",

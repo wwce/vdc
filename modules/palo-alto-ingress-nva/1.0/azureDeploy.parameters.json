@@ -14,7 +14,7 @@
         "value": "${shared-services.vm-configuration.local-admin-user}"
     },
     "extension-name": {
-        "value": "nva"
+        "value": "ingress-vm"
     },
 
     "os-image": {
@@ -52,11 +52,5 @@
     },
     "enable-palo-alto-bootstrap": {
         "value": "${shared-services.network.network-virtual-appliance.palo-alto.enable-bootstrap}"
-    },
-    "shared-services-udr-name": {
-        "value": "${shared-services.network.user-defined-routes[0].name}"
-    },
-    "shared-services-routes": {
-        "value": "${shared-services.network.user-defined-routes[0].routes}"
     }
 }

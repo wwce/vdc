@@ -8,36 +8,6 @@
                  "description": "Deployment prefix. E.g. Organization-DeploymentType"
              }
         },
-        "output-params-storage-account-name":{  
-            "type":"string",
-            "metadata":{  
-                "description":"Default storage account name. Storage account that contains output parameters and common scripts"
-            }
-        },
-        "sas-key": {
-            "type":"string",
-            "metadata":{  
-                "description":"Default Storage Account SAS Key"
-            }
-        },
-        "oms-workspace-id": {
-            "type": "string",
-            "metadata": {
-                "description": "WorkspaceId or CustomerId value of OMS. This value is referenced in OMS VM Extension"
-            }
-        },
-        "oms-primary-shared-key": {
-            "type": "string",
-            "metadata": {
-                "description": "WorkspaceKey value of OMS. This value is referenced in OMS VM Extension"
-            }
-        },
-        "kv-id": {
-            "type": "string",
-            "metadata": {
-                "description": "AKV Resource Id"
-            }
-        },
         "vnet-id": {
             "type": "string",
             "metadata": {
@@ -142,18 +112,6 @@
                 "description": "Specifies the name of the Load Balancer backend pool"
             }
         },
-        "shared-services-udr-name": {
-            "type": "string",
-            "metadata": {
-                "description": "Name of the shared services UDR"
-            }
-        },
-        "shared-services-routes":{
-            "type": "array",
-            "metadata": {
-                 "description": "Specifies the shared services UDR"
-             }
-        },
         "bootstrap-storage-account": {
             "type": "string",
             "defaultValue": "",
@@ -175,13 +133,6 @@
                  "description": "Specifies a bootstrap storage account file share"
              }
         },
-        "bootstrap-storage-account-file-share-directory": {
-            "type": "string",
-            "defaultValue": "ingress",
-            "metadata": {
-                 "description": "Specifies a bootstrap storage account file share directory"
-             }
-        },
         "enable-palo-alto-bootstrap": {
             "type": "bool",
             "metadata": {
@@ -194,7 +145,7 @@
         "nva-lb-name": "[concat(variables('resource-prefix'), '-lb')]",
         "nva-lb-pip": "[concat(variables('resource-prefix'), '-lb-pip')]",
         "availabilitySet-name": "[concat(variables('resource-prefix'), '-as')]",
-        "virtualMachine-name-prefix": "[concat(variables('resource-prefix'), '-vm')]",
+        "virtualMachine-name-prefix": "[concat(variables('resource-prefix'), '-ingress-vm')]",
         "shared-services-subnet-ID": "[concat(parameters('vnet-id'), '/subnets/', parameters('shared-services-subnet-name'))]",
         "untrust-subnet-ID": "[concat(parameters('vnet-id'), '/subnets/', parameters('untrust-subnet-name'))]",
         "uniqueString": "[uniqueString(subscription().id, resourceGroup().id)]",
