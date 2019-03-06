@@ -8,12 +8,12 @@ PGM=$(basename $0)
 # VNET
 # KEY_VAULT_NAME
 # PRIVATE_DNS_ZONE
-# CA_CERT_NAME
+# CA_CERT_KEY_NAME
 # CA_NAME
 
-KEY_VAULT_NAME="kn-aks-kv"
-CA_CERT_NAME="kn-aks-ca"
-CA_NAME="kn-aks-ca"
+KEY_VAULT_NAME=$1
+CA_CERT_KEY_NAME=$2
+CA_NAME=$3
 
 # keyvault appears to need pkc8
 KEY_CONTENT=$(openssl genpkey \
@@ -72,7 +72,7 @@ echo "$PGM: CERT is valid"
 # upload cert with key to keyvault
 echo "$PGM: importing CA certificate to keyvault ..."
 IMPORT_RESULT=$(az keyvault certificate import \
-    --name $CA_CERT_NAME \
+    --name $CA_CERT_KEY_NAME \
     --vault-name $KEY_VAULT_NAME \
     --file <(echo "$CERT_WITH_KEY")
 )

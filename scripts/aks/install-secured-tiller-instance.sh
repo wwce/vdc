@@ -4,12 +4,11 @@ DIR=$(dirname $0)
 
 PGM=$(basename $0)
 
-ENV_PREFIX="aks"
-ENV_NAME="standalone"
-KEY_VAULT_NAME="kn-${ENV_PREFIX}-kv"
-CA_CERT_NAME="kn-${ENV_PREFIX}-ca"
-CLUSTER_NAME="kn-${ENV_PREFIX}-k8s"
-CLUSTER_RG="kn-${ENV_PREFIX}-rg"
+KEY_VAULT_NAME=$3
+CLUSTER_NAME=$4
+CLUSTER_RG=$5
+CA_CERT_KEY_NAME=$6
+
 if [[ -z $2 ]];then
   echo "$PGM: usage environment target-namespace"
   exit 1
@@ -50,9 +49,9 @@ if [[ $TARGET_NAMESPACE != "tiller" ]];then
     TILLER_NAMESPACE=$TILLER_CN
 fi
 echo "$PGM: Creating helm cert with CN:$HELM_CN"
-$DIR/../aks/create-sign-w-x509-and-upload-cert.sh $ENV_NAME $HELM_CN
+$DIR/../aks/create-sign-w-x509-and-upload-cert.sh $ENV_NAME $HELM_CN "" $KEY_VAULT_NAME $CA_CERT_KEY_NAME
 echo "$PGM: Creating tiller cert with CA:$TILLER_CN"
-$DIR/../aks/create-sign-w-x509-and-upload-cert.sh $ENV_NAME $TILLER_CN "IP:127.0.0.1"
+$DIR/../aks/create-sign-w-x509-and-upload-cert.sh $ENV_NAME $TILLER_CN "IP:127.0.0.1" $KEY_VAULT_NAME $CA_CERT_KEY_NAME
 # local names for cert/key files
 # the names match default names searched for in $HELM_HOME by helm when using --tls
 CA_CERT_FILE=$MY_TEMPDIR/ca.pem
@@ -74,10 +73,10 @@ echo "$PGM: Using temp file:$KUBECONFIG_FILE for kubeconfig"
 #
 # get the CA and tiller/helm certs from key vault
 #
-echo "$PGM: Getting CA cert $CA_CERT_NAME from key vault:$KEY_VAULT_NAME"
+echo "$PGM: Getting CA cert $CA_CERT_KEY_NAME from key vault:$KEY_VAULT_NAME"
 CA_CERT_DOWNLOAD=$(
   az keyvault certificate download \
-  --name $CA_CERT_NAME \
+  --name $CA_CERT_KEY_NAME \
   --vault-name $KEY_VAULT_NAME \
   -f $CA_CERT_FILE 2>&1 )
 rc=$?

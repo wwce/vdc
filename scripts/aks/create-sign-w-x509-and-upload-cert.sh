@@ -4,10 +4,8 @@ DIR=$(dirname $0)
 PGM=$(basename $0)
 
 # Names set in set-environment-vars.sh:
-ENV_PREFIX="aks"
-ENV_NAME="standalone"
-KEY_VAULT_NAME="kn-${ENV_PREFIX}-kv"
-CA_CERT_NAME="kn-${ENV_PREFIX}-ca"
+KEY_VAULT_NAME=$4
+CA_CERT_NAME=$5
 
 #
 # Subject Alternative Names (SAN) need to be comma 
