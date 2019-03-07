@@ -37,12 +37,8 @@
         "FScontainerGroupName": "createfs-aci",
         "DircontainerIngressGroupName": "dirIngress-aci",
         "DircontainerEgressGroupName": "dirEgress-aci",
-        "UploadcontainerGroupName": "createupl-containerinstance",
         "containerName": "createfileshare",
-        "share-name": "fwpaloalto",
-        "egress-blob-uri": "[concat('https://', parameters('output-params-storage-account-name'), '.blob.core.windows.net/scripts/palo-alto/egress/bootstrap.xml?', parameters('sas-key'))]",
-        "ingress-blob-uri": "[concat('https://', parameters('output-params-storage-account-name'), '.blob.core.windows.net/scripts/palo-alto/ingress/bootstrap.xml?', parameters('sas-key'))]",
-        "create-bootstrap-uri": "[concat('https://', parameters('output-params-storage-account-name'), '.blob.core.windows.net/scripts/palo-alto/create-bootstrap.sh?', parameters('sas-key'))]"
+        "share-name": "fwpaloalto"
     },
     "resources": [
         {

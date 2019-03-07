@@ -292,13 +292,33 @@
         {
             "apiVersion": "2017-08-01",
             "type": "Microsoft.Network/publicIPAddresses",
+            "name": "[concat(variables('virtualMachine-name-prefix'), copyindex(1), '-nic1-pip')]",
+            "location": "[resourceGroup().location]",
+            "sku":{
+                "name": "Standard"
+            },
+            "copy": {
+                "name": "nic1PipLoop",
+                "count": "[parameters('virtualMachine-count')]"
+            },
+            "tags": {
+                "displayName": "[concat(variables('virtualMachine-name-prefix'), copyindex(1), '-nic1-pip')]"
+            },
+            "properties": {
+                "publicIPAllocationMethod": "Static"  ,
+                "publicIPAddressVersion": "IPv4"              
+            }
+        },
+        {
+            "apiVersion": "2017-08-01",
+            "type": "Microsoft.Network/publicIPAddresses",
             "name": "[concat(variables('virtualMachine-name-prefix'), copyindex(1), '-nic2-pip')]",
             "location": "[resourceGroup().location]",
             "sku":{
                 "name": "Standard"
             },
             "copy": {
-                "name": "nicPipLoop",
+                "name": "nic2PipLoop",
                 "count": "[parameters('virtualMachine-count')]"
             },
             "tags": {
@@ -317,6 +337,9 @@
             "tags": {
                 "displayName": "[concat(variables('virtualMachine-name-prefix'), copyindex(1), '-nic1')]"
             },
+            "dependsOn": [
+                "nic1PipLoop"
+            ],
             "copy": {
                 "name": "nic1Loop",
                 "count": "[parameters('virtualMachine-count')]"
@@ -330,6 +353,9 @@
                         "properties": {
                             "privateIPAllocationMethod": "Static",
                             "privateIPAddress": "[vdc.nextIP(parameters('nva-address-start'), copyIndex())]",
+                            "publicIPAddress":{
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('virtualMachine-name-prefix'), copyindex(1), '-nic1-pip'))]"
+                            },
                             "subnet": {
                                 "id": "[variables('shared-services-subnet-id')]"
                             },
@@ -353,7 +379,7 @@
             },
             "dependsOn": [
                 "[concat('Microsoft.Network/loadBalancers/', variables('nva-lb-name'))]",
-                "nicPipLoop"
+                "nic2PipLoop"
             ],
             "copy": {
                 "name": "nic2Loop",
@@ -548,6 +574,7 @@
             "apiVersion": "2017-05-10",
             "name": "nestedDeploySharedSvcsUDR",
             "type": "Microsoft.Resources/deployments",
+            "condition": false,
             "resourceGroup": "[parameters('vnet-resourceGroup')]",
             "dependsOn": [
                 "ACISleep"
