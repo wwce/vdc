@@ -274,14 +274,6 @@
                                     "days": 0,
                                     "enabled": false
                                 }
-                            },
-                            {
-                                "category": "guard",
-                                "enabled": true,
-                                "retentionPolicy": {
-                                    "days": 0,
-                                    "enabled": false
-                                }
                             }
                         ],
                         "metrics": [

@@ -4,24 +4,24 @@ DIR=$(dirname $0)
 PGM=$(basename $0)
 
 # Names set in set-environment-vars.sh:
-KEY_VAULT_NAME=$4
-CA_CERT_NAME=$5
+KEY_VAULT_NAME=$3
+CA_CERT_NAME=$4
 
 #
 # Subject Alternative Names (SAN) need to be comma 
 # separated list type as prefix. e.g.
 # DNS:www.helm,DNS:helm,IP:127.0.0.1,IP:10.0.1.100
 #
-if [[ "$#" -ne 2 ]] && [[ "$#" -ne 3 ]];then
+if [[ "$#" -ne 4 ]] && [[ "$#" -ne 5 ]];then
    echo "$PGM usage: $PGM environment cert-name [SAN]"
    exit 1
 fi
 CERT_NAME=$2
 
 SAN=
-if [[ "$3" != "" ]];then
-  echo "$PGM: Using Subject Alternative Name (SAN) parameter :$3"
-  SAN=$3
+if [[ "$5" != "" ]];then
+  echo "$PGM: Using Subject Alternative Name (SAN) parameter :$5"
+  SAN=$5
 fi
 
 echo "$PGM: Getting CA key:$CA_CERT_NAME from vault:$KEY_VAULT_NAME .."

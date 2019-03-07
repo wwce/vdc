@@ -4,6 +4,7 @@ DIR=$(dirname $0)
 
 PGM=$(basename $0)
 
+ENV_NAME=$1
 KEY_VAULT_NAME=$3
 CLUSTER_NAME=$4
 CLUSTER_RG=$5
@@ -49,9 +50,9 @@ if [[ $TARGET_NAMESPACE != "tiller" ]];then
     TILLER_NAMESPACE=$TILLER_CN
 fi
 echo "$PGM: Creating helm cert with CN:$HELM_CN"
-$DIR/../aks/create-sign-w-x509-and-upload-cert.sh $ENV_NAME $HELM_CN "" $KEY_VAULT_NAME $CA_CERT_KEY_NAME
+$DIR/../aks/create-sign-w-x509-and-upload-cert.sh $ENV_NAME $HELM_CN $KEY_VAULT_NAME $CA_CERT_KEY_NAME
 echo "$PGM: Creating tiller cert with CA:$TILLER_CN"
-$DIR/../aks/create-sign-w-x509-and-upload-cert.sh $ENV_NAME $TILLER_CN "IP:127.0.0.1" $KEY_VAULT_NAME $CA_CERT_KEY_NAME
+$DIR/../aks/create-sign-w-x509-and-upload-cert.sh $ENV_NAME $TILLER_CN $KEY_VAULT_NAME $CA_CERT_KEY_NAME "IP:127.0.0.1"
 # local names for cert/key files
 # the names match default names searched for in $HELM_HOME by helm when using --tls
 CA_CERT_FILE=$MY_TEMPDIR/ca.pem
