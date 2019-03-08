@@ -16,7 +16,6 @@
     "extension-name": {
         "value": "ingress-vm"
     },
-
     "os-image": {
         "value": "${shared-services.network.network-virtual-appliance.palo-alto.image}"
     },
@@ -39,10 +38,13 @@
         "value": "${shared-services.network.application-security-groups[4].name}"
     },
     "untrust-subnet-name": {
-        "value": "${shared-services.network.subnets[1].name}"
+        "value": "${shared-services.network.subnets[2].name}"
     },
     "untrust-subnet-address-prefix": {
-        "value": "${shared-services.network.subnets[1].address-prefix}"
+        "value": "${shared-services.network.subnets[2].address-prefix}"
+    },
+    "trust-subnet-name": {
+        "value": "${shared-services.network.subnets[1].name}"
     },
     "shared-services-subnet-name": {
         "value": "${shared-services.network.subnets[0].name}"

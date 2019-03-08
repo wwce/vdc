@@ -38,6 +38,12 @@
                 "description": "ASG associated to the Virtual Appliance (Untrust Nic)"
             }
         },
+        "trust-subnet-name": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of Trust Subnet, this name is used to get the SubnetId"
+            }
+        },
         "shared-services-subnet-name": {
             "type": "string",
             "metadata": {
@@ -146,6 +152,7 @@
         "nva-lb-pip": "[concat(variables('resource-prefix'), '-lb-pip')]",
         "availabilitySet-name": "[concat(variables('resource-prefix'), '-as')]",
         "virtualMachine-name-prefix": "[concat(variables('resource-prefix'), '-ingress-vm')]",
+        "trust-subnet-ID": "[concat(parameters('vnet-id'), '/subnets/', parameters('trust-subnet-name'))]",
         "shared-services-subnet-ID": "[concat(parameters('vnet-id'), '/subnets/', parameters('shared-services-subnet-name'))]",
         "untrust-subnet-ID": "[concat(parameters('vnet-id'), '/subnets/', parameters('untrust-subnet-name'))]",
         "uniqueString": "[uniqueString(subscription().id, resourceGroup().id)]",
@@ -305,7 +312,7 @@
                             "privateIPAllocationMethod": "Static",
                             "privateIPAddress": "[vdc.nextIP(parameters('nva-address-start'), copyIndex())]",
                             "subnet": {
-                                "id": "[variables('shared-services-subnet-id')]"
+                                "id": "[variables('shared-services-subnet-ID')]"
                             },
                             "applicationSecurityGroups": [
                                 {
@@ -377,7 +384,7 @@
                         "properties": {
                             "privateIPAllocationMethod": "Dynamic",
                             "subnet": {
-                                "id": "[variables('shared-services-subnet-id')]"
+                                "id": "[variables('trust-subnet-id')]"
                             },
                             "applicationSecurityGroups": [
                                 {

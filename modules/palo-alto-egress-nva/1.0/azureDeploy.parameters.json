@@ -41,24 +41,21 @@
         "value": "${shared-services.network.application-security-groups[4].name}"
     },
     "untrust-subnet-name": {
-        "value": "${shared-services.network.subnets[1].name}"
+        "value": "${shared-services.network.subnets[2].name}"
     },
     "untrust-subnet-address-prefix": {
-        "value": "${shared-services.network.subnets[1].address-prefix}"
+        "value": "${shared-services.network.subnets[2].address-prefix}"
     },
     "shared-services-subnet-name": {
         "value": "${shared-services.network.subnets[0].name}"
+    },
+    "trust-subnet-name": {
+        "value": "${shared-services.network.subnets[1].name}"
     },
     "nva-address-start": {
         "value": "${shared-services.network.network-virtual-appliance.palo-alto.egress.vm-ip-address-start}"
     },
     "enable-palo-alto-bootstrap": {
         "value": "${shared-services.network.network-virtual-appliance.palo-alto.enable-bootstrap}"
-    },
-    "shared-services-udr-name": {
-        "value": "${shared-services.network.user-defined-routes[0].name}"
-    },
-    "shared-services-routes": {
-        "value": "${shared-services.network.user-defined-routes[0].routes}"
     }
 }

@@ -38,6 +38,12 @@
                 "description": "ASG associated to the Virtual Appliance (Untrust Nic)"
             }
         },
+        "trust-subnet-name": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of Trust Subnet, this name is used to get the SubnetId"
+            }
+        },
         "shared-services-subnet-name": {
             "type": "string",
             "metadata": {
@@ -112,18 +118,6 @@
                 "description": "Specifies the name of the Load Balancer backend pool"
             }
         },
-        "shared-services-udr-name": {
-            "type": "string",
-            "metadata": {
-                "description": "Name of the shared services UDR"
-            }
-        },
-        "shared-services-routes":{
-            "type": "array",
-            "metadata": {
-                 "description": "Specifies the shared services UDR"
-             }
-        },
         "palo-alto-egress-nva-lb-ip-address": {
             "type": "string",
             "metadata": {
@@ -163,6 +157,7 @@
         "nva-lb-name": "[concat(variables('resource-prefix'), '-lb')]",
         "availabilitySet-name": "[concat(variables('resource-prefix'), '-as')]",
         "virtualMachine-name-prefix": "[concat(variables('resource-prefix'), '-egress-vm')]",
+        "trust-subnet-ID": "[concat(parameters('vnet-id'), '/subnets/', parameters('trust-subnet-name'))]",
         "shared-services-subnet-ID": "[concat(parameters('vnet-id'), '/subnets/', parameters('shared-services-subnet-name'))]",
         "untrust-subnet-ID": "[concat(parameters('vnet-id'), '/subnets/', parameters('untrust-subnet-name'))]",
         "uniqueString": "[uniqueString(subscription().id, resourceGroup().id)]",
@@ -172,15 +167,10 @@
         "trust-frontendIP-config-id": "[concat(variables('lb-ID'),'/frontendIPConfigurations/LoadBalancerFrontEnd')]",
         "lb-pool-id": "[concat(variables('lb-ID'),'/backendAddressPools/', parameters('nva-backend-pool-name'))]",
         "lb-probe-id": "[concat(variables('lb-ID'),'/probes/tcpProbe')]",
-        "shared-services-udr-name": "[concat(parameters('deployment-prefix'), '-', parameters('shared-services-udr-name'), '-udr')]",
         "mgmt-asg-id": "[resourceId(parameters('vnet-resourceGroup'),'Microsoft.Network/applicationSecurityGroups', concat(parameters('deployment-prefix'), '-', parameters('mgmt-asg-name'), '-asg'))]",
         "trust-asg-id": "[resourceId(parameters('vnet-resourceGroup'),'Microsoft.Network/applicationSecurityGroups', concat(parameters('deployment-prefix'), '-', parameters('trust-asg-name'), '-asg'))]",
         "untrust-asg-id": "[resourceId(parameters('vnet-resourceGroup'),'Microsoft.Network/applicationSecurityGroups', concat(parameters('deployment-prefix'), '-', parameters('untrust-asg-name'), '-asg'))]",
-        "custom-data-field": "[concat('storage-account=', parameters('bootstrap-storage-account'), ',access-key=', parameters('bootstrap-storage-account-access-key'), ',file-share=', parameters('bootstrap-storage-share-name'), ',share-directory=', concat(parameters('bootstrap-storage-share-name'), '/egress'))]",
-        "image": "centos",
-        "containerName": "centossleep",
-        "cpuCores": "1.0",
-        "memoryInGb": "1.5"
+        "custom-data-field": "[concat('storage-account=', parameters('bootstrap-storage-account'), ',access-key=', parameters('bootstrap-storage-account-access-key'), ',file-share=', parameters('bootstrap-storage-share-name'), ',share-directory=', 'egress')]"
     },
     "resources": [
         {
@@ -240,7 +230,7 @@
                   "name": "LoadBalancerFrontEnd",
                   "properties": {
                     "subnet": {
-                        "id": "[variables('shared-services-subnet-ID')]"
+                        "id": "[variables('trust-subnet-ID')]"
                     },
                     "privateIPAddress": "[parameters('palo-alto-egress-nva-lb-ip-address')]",
                     "privateIPAllocationMethod": "Static"
@@ -357,7 +347,7 @@
                                 "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('virtualMachine-name-prefix'), copyindex(1), '-nic1-pip'))]"
                             },
                             "subnet": {
-                                "id": "[variables('shared-services-subnet-id')]"
+                                "id": "[variables('shared-services-subnet-ID')]"
                             },
                             "applicationSecurityGroups": [
                                 {
@@ -416,6 +406,9 @@
             "tags": {
                 "displayName": "[concat(variables('virtualMachine-name-prefix'), copyindex(1), '-nic3')]"
             },
+            "dependsOn": [
+                "[variables('nva-lb-name')]"
+            ],
             "copy": {
                 "name": "nic3Loop",
                 "count": "[parameters('virtualMachine-count')]"
@@ -429,7 +422,7 @@
                         "properties": {
                             "privateIPAllocationMethod": "Dynamic",
                             "subnet": {
-                                "id": "[variables('shared-services-subnet-id')]"
+                                "id": "[variables('trust-subnet-id')]"
                             },
                             "applicationSecurityGroups": [
                                 {
@@ -538,72 +531,6 @@
                 }
             },
             "resources": []
-        },
-        {
-            "name": "ACISleep",
-            "type": "Microsoft.ContainerInstance/containerGroups",
-            "apiVersion": "2018-02-01-preview",
-            "location": "[resourceGroup().location]",
-            "dependsOn": [
-                "vmLoop"
-            ],
-            "properties": {
-                "containers": [
-                    {
-                        "name": "[variables('containerName')]",
-                        "properties": {
-                            "image": "[variables('image')]",
-                            "command": [
-                                "sleep",
-                                "5m"
-                            ],
-                            "resources": {
-                                "requests": {
-                                    "cpu": "[variables('cpuCores')]",
-                                    "memoryInGb": "[variables('memoryInGb')]"
-                                }
-                            }
-                        }
-                    }
-                ],
-                "restartPolicy": "OnFailure",
-                "osType": "Linux"
-            }
-        },
-        {
-            "apiVersion": "2017-05-10",
-            "name": "nestedDeploySharedSvcsUDR",
-            "type": "Microsoft.Resources/deployments",
-            "condition": false,
-            "resourceGroup": "[parameters('vnet-resourceGroup')]",
-            "dependsOn": [
-                "ACISleep"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "parameters": {},
-                    "variables": {},
-                    "resources": [
-                        {
-                            "type": "Microsoft.Network/routeTables",
-                            "apiVersion": "2017-10-01",
-                            "location": "[resourceGroup().location]",
-                            "name": "[variables('shared-services-udr-name')]",
-                            "tags": {
-                                "displayName": "[variables('shared-services-udr-name')]"
-                            },
-                            "properties": {
-                                "routes": "[parameters('shared-services-routes')]",
-                                "disableBgpRoutePropagation": true
-                            }
-                        }
-                    ]
-                },
-                "parameters": {}
-            }
         }
     ],
     "functions":[

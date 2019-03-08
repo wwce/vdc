@@ -323,7 +323,7 @@
                 <static-route>
                   <entry name="loadbalancer">
                     <nexthop>
-                      <ip-address>10.4.0.33</ip-address>
+                      <ip-address>10.4.0.97</ip-address>
                     </nexthop>
                     <bfd>
                       <profile>None</profile>
@@ -342,7 +342,7 @@
                   </entry>
                   <entry name="default">
                     <nexthop>
-                      <ip-address>10.4.0.33</ip-address>
+                      <ip-address>10.4.0.97</ip-address>
                     </nexthop>
                     <bfd>
                       <profile>None</profile>
@@ -361,7 +361,7 @@
                   </entry>
                   <entry name="192-nets">
                     <nexthop>
-                      <ip-address>10.4.0.33</ip-address>
+                      <ip-address>10.4.0.97</ip-address>
                     </nexthop>
                     <bfd>
                       <profile>None</profile>
@@ -380,7 +380,7 @@
                   </entry>
                   <entry name="172-nets">
                     <nexthop>
-                      <ip-address>10.4.0.33</ip-address>
+                      <ip-address>10.4.0.97</ip-address>
                     </nexthop>
                     <bfd>
                       <profile>None</profile>
@@ -399,7 +399,7 @@
                   </entry>
                   <entry name="10-nets">
                     <nexthop>
-                      <ip-address>10.4.0.33</ip-address>
+                      <ip-address>10.4.0.97</ip-address>
                     </nexthop>
                     <bfd>
                       <profile>None</profile>
