@@ -1,22 +1,30 @@
-{
+{  
     "policies":[  
     {  
-        "name":"workloadNetPermittedResourceTypes",
-        "description":"Policy to prevent the creation of unauthorized resource types within the resource group.",
+        "name":"diagnosticsEnabledInAKSCluster",
+        "description":"Policy to prevent the disabling diagnostics in AKS Cluster.",
         "rules":{  
-            "if":{
-                "not":{
-                    "field":"type",
-                    "in":[
-                        "Microsoft.Network/routeTables", 
-                        "Microsoft.Network/networkSecurityGroups", 
-                        "Microsoft.Network/applicationSecurityGroups",
-                        "Microsoft.Network/virtualNetworks"
-                    ]
-                }
+            "if": {
+                "field": "type",
+                "in": ["Microsoft.ContainerService/managedClusters"]
             },
-            "then":{
-                "effect":"audit"
+            "then": {
+                "effect": "auditIfNotExists",
+                "details": {
+                    "type": "Microsoft.Insights/diagnosticSettings",
+                    "existenceCondition": {
+                        "allOf": [
+                            {
+                                "field": "Microsoft.Insights/diagnosticSettings/logs.enabled",
+                                "equals": "true"
+                            },
+                            {
+                                "field": "Microsoft.Insights/diagnosticSettings/metrics.enabled",
+                                "equals": "true"
+                            }
+                        ]
+                    }
+                }
             }
         }
     }
