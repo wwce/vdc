@@ -8,6 +8,12 @@
                 "description": "Deployment prefix. E.g. Organization-DeploymentType"
             }
         },
+        "shared-services-deployment-prefix": {
+            "type": "string",
+            "metadata": {
+                "description": "Deployment prefix for Shared Services. E.g. Organization-DeploymentType"
+            }
+        },
         "resource-name": {
             "type": "string",
             "metadata": {
@@ -173,9 +179,6 @@
     },
     "variables": {
         "auth-rule-resource-id": "[parameters('diagnostics-event-hub-auth-rule-id')]",
-        "reader": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-        "azure-kubernetes-service-cluster-admin-role": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '0ab0b1a8-8aac-4efd-b8c2-3ee1fb270be8')]",
-        "azure-kubernetes-service-cluster-user-role": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '4abbcc35-e782-43d8-92c5-2d3f1bd2253f')]",
         "emptyContent": {},
         "omsAgentConfig": {
             "omsagent": {
@@ -184,9 +187,76 @@
                     "logAnalyticsWorkspaceResourceID": "[parameters('oms-id')]"
                 }
             }
-        }
+        },
+        "azure-fw-resource-group": "[concat(parameters('shared-services-deployment-prefix'), '-net-rg')]",
+        "azure-fw-name": "[concat(parameters('shared-services-deployment-prefix'), '-az-fw')]",
+        "azure-fw-application-rule-collection": [
+            {
+                "name": "aks-traffic",
+                "properties": {
+                    "provisioningState": "Succeeded",
+                    "priority": 120,
+                    "action": {
+                        "type": "Allow"
+                    },
+                    "rules": [
+                        {
+                            "name": "cluster",
+                            "protocols": [
+                                {
+                                    "protocolType": "Http",
+                                    "port": 80
+                                },
+                                {
+                                    "protocolType": "Https",
+                                    "port": 443
+                                }
+                            ],
+                            "fqdnTags": [],
+                            "targetFqdns": [
+                                "*"
+                            ],
+                            "sourceAddresses": [
+                                "10.2.0.0/17"
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
     },
     "resources": [
+        {
+            "apiVersion": "2017-05-10",
+            "name": "nestedDeployCreateAzureNetworkRules",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "kn-ssvcs-net-rg",
+            "subscriptionId": "[subscription().subscriptionId]",
+            "dependsOn": [],
+            "properties": {
+              "mode": "Incremental",
+              "template": {
+                "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                "contentVersion": "1.0.0.0",
+                "parameters": {},
+                "variables": {},
+                "resources": [
+                  {
+                    "type": "Microsoft.Network/azureFirewalls",
+                    "apiVersion": "2018-08-01",
+                    "location": "[resourceGroup().location]",
+                    "name": "[variables('azure-fw-name')]",
+                    "properties": {
+                        "ipConfigurations": "[reference(resourceId(subscription().subscriptionId, variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').ipConfigurations]",
+                        "networkRuleCollections": "[reference(resourceId(subscription().subscriptionId, variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').networkRuleCollections]",
+                        "natRuleCollections": "[reference(resourceId(subscription().subscriptionId, variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').natRuleCollections]",
+						"applicationRuleCollections": "[concat(reference(resourceId(subscription().subscriptionId, variables('azure-fw-resource-group'), 'Microsoft.Network/azureFirewalls', variables('azure-fw-name')), '2018-08-01').applicationRuleCollections, variables('azure-fw-application-rule-collection'))]"
+                    }
+                  }
+                ]
+              }
+            }
+        },
         {
             "type": "Microsoft.ContainerService/managedClusters",
             "name": "[parameters('resource-name')]",
@@ -291,83 +361,6 @@
             ],
             "dependsOn": [
             ]
-        },
-        {
-            "comments": "Add aks-ref-arch-k8s-admins with Azure Kubernetes Service Cluster User Role",
-            "type": "Microsoft.Authorization/roleAssignments",
-            "apiVersion": "2017-05-01",
-            "name": "18429739-58bf-43ab-9c3f-37c2bd12491b",
-            "properties": {
-              "roleDefinitionId": "[variables('azure-kubernetes-service-cluster-user-role')]",
-              "principalId": "[parameters('aks-admin-user-id')]",
-              "scope": "[concat(subscription().id, '/resourceGroups/', resourceGroup().name)]"
-            }
-        },
-        {
-            "comments": "Add aks-ref-arch-k8s-noc with Azure Kubernetes Service Cluster User Role",
-            "type": "Microsoft.Authorization/roleAssignments",
-            "apiVersion": "2017-05-01",
-            "name": "b9d0b84d-6be2-4c86-90bf-7f67c1fd6cad",
-            "properties": {
-              "roleDefinitionId": "[variables('azure-kubernetes-service-cluster-user-role')]",
-              "principalId": "[parameters('aks-noc-user-id')]",
-              "scope": "[concat(subscription().id, '/resourceGroups/', resourceGroup().name)]"
-            }
-        },
-        {
-            "comments": "Add aks-ref-arch-k8s-devs with Azure Kubernetes Service Cluster User Role",
-            "type": "Microsoft.Authorization/roleAssignments",
-            "apiVersion": "2017-05-01",
-            "name": "147015ba-c8f6-4d3a-a9be-d6199e186b7c",
-            "properties": {
-              "roleDefinitionId": "[variables('azure-kubernetes-service-cluster-user-role')]",
-              "principalId": "[parameters('aks-devs-user-id')]",
-              "scope": "[concat(subscription().id, '/resourceGroups/', resourceGroup().name)]"
-            }
-        },
-        {
-            "comments": "Add aks-ref-arch-k8s-admins with Azure Kubernetes Service Cluster Admin Role",
-            "type": "Microsoft.Authorization/roleAssignments",
-            "apiVersion": "2017-05-01",
-            "name": "d519f17a-f608-49e3-967b-6db180e54613",
-            "properties": {
-              "roleDefinitionId": "[variables('azure-kubernetes-service-cluster-admin-role')]",
-              "principalId": "[parameters('aks-admin-user-id')]",
-              "scope": "[concat(subscription().id, '/resourceGroups/', resourceGroup().name)]"
-            }
-        },
-        {
-            "comments": "Add aks-ref-arch-k8s-admins with Reader Role",
-            "type": "Microsoft.Authorization/roleAssignments",
-            "apiVersion": "2017-05-01",
-            "name": "ef3f8371-2048-49c2-bb5c-d00af244f711",
-            "properties": {
-              "roleDefinitionId": "[variables('reader')]",
-              "principalId": "[parameters('aks-admin-user-id')]",
-              "scope": "[concat(subscription().id, '/resourceGroups/', resourceGroup().name)]"
-            }
-        },
-        {
-            "comments": "Add aks-ref-arch-k8s-noc with Reader Role",
-            "type": "Microsoft.Authorization/roleAssignments",
-            "apiVersion": "2017-05-01",
-            "name": "16750ce0-45c3-42cd-850e-58d03fe5af4f",
-            "properties": {
-              "roleDefinitionId": "[variables('reader')]",
-              "principalId": "[parameters('aks-noc-user-id')]",
-              "scope": "[concat(subscription().id, '/resourceGroups/', resourceGroup().name)]"
-            }
-        },
-        {
-            "comments": "Add aks-ref-arch-k8s-devs with Reader Role",
-            "type": "Microsoft.Authorization/roleAssignments",
-            "apiVersion": "2017-05-01",
-            "name": "a1a74305-4acc-41c1-b324-61215c5379d7",
-            "properties": {
-              "roleDefinitionId": "[variables('reader')]",
-              "principalId": "[parameters('aks-devs-user-id')]",
-              "scope": "[concat(subscription().id, '/resourceGroups/', resourceGroup().name)]"
-            }
         }
     ],
     "outputs": {

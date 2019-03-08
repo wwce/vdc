@@ -1,0 +1,33 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "ra-role-assignments": {
+            "type": "array",
+            "metadata": {
+                "description": "Array of Role Assignment Information"
+            }
+        }
+    },
+    "variables": {
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Authorization/roleAssignments",
+            "apiVersion": "2017-05-01",
+            "copy": {
+                "name": "roleAssignmentLoop",
+                "count": "[length(parameters('ra-role-assignments'))]"
+            },
+            "name": "[guid(subscription().id, resourceGroup().id, parameters('ra-role-assignments')[copyIndex()].roleDefinitionId, parameters('ra-role-assignments')[copyIndex()].principalId)]",
+            "properties": {
+              "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', parameters('ra-role-assignments')[copyIndex()].roleDefinitionId)]",
+              "principalId": "[parameters('ra-role-assignments')[copyIndex()].principalId]",
+              "scope": "[parameters('ra-role-assignments')[copyIndex()].scope]"
+            }
+        }
+    ],
+    "outputs": {
+        
+    }
+}

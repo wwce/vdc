@@ -2,6 +2,9 @@
     "deployment-prefix": {
         "value": "${general.organization-name}-${workload.deployment-name}"
     },
+    "shared-services-deployment-prefix": {
+        "value": "${general.organization-name}-${shared-services.deployment-name}"
+    },
     "resource-name": {
         "value": "${workload.resource-group-prefix}-k8s"
     },
