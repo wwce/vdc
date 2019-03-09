@@ -27,5 +27,52 @@
                 }
             }
         }
+    },
+    {
+        "name":"workloadHasRBACRolesAssigned",
+        "description":"Policy to check the RBAC role assignment.",
+        "rules":{  
+            "if": {
+                "field": "type",
+                "in": [
+                "Microsoft.ContainerService/managedClusters"
+                ]
+            },
+            "then": {
+                "effect": "auditIfNotExists",
+                "details": {
+                "type": "Microsoft.Authorization/roleDefinitions",
+                "existenceCondition": {
+                    "allOf": [
+                    {
+                        "anyOf": [
+                        {
+                            "field": "Microsoft.Authorization/roleDefinitions/roleName",
+                            "equals": "Azure Kubernetes Service Cluster Admin Role"
+                        }
+                        ]
+                    },
+                    {
+                        "anyOf": [
+                        {
+                            "field": "Microsoft.Authorization/roleDefinitions/roleName",
+                            "equals": "Azure Kubernetes Service Cluster User Role"
+                        }
+                        ]
+                    },
+                    {
+                        "anyOf": [
+                        {
+                            "field": "Microsoft.Authorization/roleDefinitions/roleName",
+                            "equals": "Reader"
+                        }
+                        ]
+                    }
+                    ]
+                }
+                }
+            }
+        }
     }
+    
 ]}
