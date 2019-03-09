@@ -66,16 +66,54 @@
                 ]
             },
             "kubernetes": {
-                "kubernetes-version": "1.12.5",
+                "kubernetes-version": "1.12.6",
                 "os-type": "Linux",
                 "network-plugin": "azure",
                 "max-pods": 30,
                 "enable-rbac": false,
                 "enable-http-application-routing": false,
                 "enable-oms-agent": true,
+                "rbac": [
+                    {
+                        "roleDefinitionId": "0ab0b1a8-8aac-4efd-b8c2-3ee1fb270be8",
+                        "principalId": "00000000-0000-0000-0000-000000000000",
+                        "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${general.workload.deployment-name}-rg"
+                    },
+                    {
+                        "roleDefinitionId": "0ab0b1a8-8aac-4efd-b8c2-3ee1fb270be8",
+                        "principalId": "00000000-0000-0000-0000-000000000000",
+                        "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${general.workload.deployment-name}-rg"
+                    },
+                    {
+                        "roleDefinitionId": "0ab0b1a8-8aac-4efd-b8c2-3ee1fb270be8",
+                        "principalId": "00000000-0000-0000-0000-000000000000",
+                        "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${general.workload.deployment-name}-rg"
+                    },
+                    {
+                        "roleDefinitionId": "4abbcc35-e782-43d8-92c5-2d3f1bd2253f",
+                        "principalId": "00000000-0000-0000-0000-000000000000",
+                        "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${general.workload.deployment-name}-rg"
+                    },
+                    {
+                        "roleDefinitionId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
+                        "principalId": "00000000-0000-0000-0000-000000000000",
+                        "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${general.workload.deployment-name}-rg"
+                    },
+                    {
+                        "roleDefinitionId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
+                        "principalId": "00000000-0000-0000-0000-000000000000",
+                        "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${general.workload.deployment-name}-rg"
+                    },
+                    {
+                        "roleDefinitionId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
+                        "principalId": "00000000-0000-0000-0000-000000000000",
+                        "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${general.workload.deployment-name}-rg"
+                    }
+                ],
                 "aks-admin-user-id": "00000000-0000-0000-0000-000000000000",
                 "aks-noc-user-id": "00000000-0000-0000-0000-000000000000",
-                "aks-devs-user-id": "00000000-0000-0000-0000-000000000000"
+                "aks-devs-user-id": "00000000-0000-0000-0000-000000000000",
+                "tiller-namespace": "tiller"
             },
             "acr": {
                 "admin-user-enabled": true,
@@ -101,8 +139,10 @@
             "workload-net",
             "kv",
             "acr",
+            "ra",
             "aks",
-            "tiller-helm"
+            "scripts-pre-reqs",
+            "create-ca-cert"
         ],
         "module-validation-dependencies": [
         ],
@@ -165,6 +205,14 @@
                     "dependencies": []
                 },
                 {
+                    "module": "ra",
+                    "resource-group-name": "${general.organization-name}-${workload.deployment-name}-rg",
+                    "source": {
+                        "version": "1.0"
+                    },
+                    "dependencies": []
+                },
+                {
                     "module": "aks",
                     "resource-group-name": "${general.organization-name}-${workload.deployment-name}-rg",
                     "source": {
@@ -177,11 +225,19 @@
                     ]
                 },
                 {
-                    "module": "tiller-helm",
+                    "module": "scripts-pre-reqs",
                     "type": "bash",
-                    "command": "scripts/aks/install-secured-tiller-instance.sh",
+                    "command": "scripts/aks/install-kubectl.sh",
                     "dependencies": [
                         "aks"
+                    ]
+                }, 
+                {
+                    "module": "create-ca-cert",
+                    "type": "bash",
+                    "command": "scripts/aks/create-and-upload-ca-cert.sh ${workload.keyvault.name} ${workload.kubernetes.ca-cert-key-name} ${workload.kubernetes.ca-name}",
+                    "dependencies": [
+                        "scripts-pre-reqs"
                     ]
                 }
             ]
@@ -248,6 +304,7 @@
             "sku": "standalone"
         },
         "keyvault": {
+            "name": "${general.organization-name}-${general.workload.deployment-name}-kv",
             "secrets": "${general.workload.keyvault.secrets}"
         },
         "network": {
@@ -376,7 +433,7 @@
             "subnets": [
                 {
                     "name": "default",
-                    "address-prefix": "10.2.0.0/23",
+                    "address-prefix": "10.2.0.0/17",
                     "network-security-group": "${workload.network.network-security-groups[0].name}",
                     "user-defined-route": "${workload.network.user-defined-routes[0].name}",
                     "service-endpoints": [
@@ -401,9 +458,15 @@
             "enable-rbac": "${general.workload.kubernetes.enable-rbac}",
             "enable-http-application-routing": "${general.workload.kubernetes.enable-http-application-routing}",
             "enable-oms-agent": "${general.workload.kubernetes.enable-oms-agent}",
+            "rbac": "${general.workload.kubernetes.rbac}",
             "aks-admin-user-id": "${general.workload.kubernetes.aks-admin-user-id}",
             "aks-noc-user-id": "${general.workload.kubernetes.aks-noc-user-id}",
-            "aks-devs-user-id": "${general.workload.kubernetes.aks-devs-user-id}"
+            "aks-devs-user-id": "${general.workload.kubernetes.aks-devs-user-id}",
+            "ca-cert-key-name": "${general.organization-name}-${general.workload.deployment-name}-ca",
+            "ca-name": "${general.organization-name}-${general.workload.deployment-name}-ca",
+            "cluster-name": "${general.organization-name}-${general.workload.deployment-name}-k8s",
+            "cluster-resource-group-name": "${general.organization-name}-${general.workload.deployment-name}-rg",
+            "tiller-namespace": "${general.workload.kubernetes.tiller-namespace}"
         },
         "acr": {
             "name": "${general.organization-name}${workload.deployment-name}acr",
