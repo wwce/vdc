@@ -4,21 +4,13 @@ _Deploy archetypes and modules_
 
 ✏ link:readme.md[>> View other scripts]
 
-// TODO: what are the required roles?
-
-To run the script, you need to open a terminal/command line and navigate to the root of the folder of the toolkit. The Docker image that starts at the correct script folder location.
-
-Before beginning, you need to sign into the Azure CLI tool using the following command:
-
-`az login`
-
-This prompts you to log in using the Azure web interface. 
-
-If your account is associated with more than one subscription, you'll then need to set the default subscription you're deploying resources to after you login:
-
-`az account set --subscription {subscription GUID}`
-
-Once this is complete, you can launch a deployment from the terminal/command-line interface by launching the link:../../vdc.py[script]:
+.Before Using
+[NOTE] 
+====
+- link:script-auth.adoc[Authenticate with Azure] before invoking the script.
+- Be sure that you are in the root folder of the toolkit.
+- The permissions required to execute this script are determined by the modules being deployed.
+====
 
 .Docker
 [source,bash]
