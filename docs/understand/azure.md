@@ -1,4 +1,4 @@
-# Understanding Azure
+# Prerequisite Azure knowledge
 
 Before using the Azure Virtual Datacenter Automation Toolkit, we recommend that you familiarize yourself with the following core Azure technologies and services:
 

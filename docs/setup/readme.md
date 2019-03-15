@@ -1,6 +1,6 @@
 # Setting up the toolkit
 
-We recommend using the Docker image to run the toolkit. 
+We recommend using the Docker image to run the toolkit.
 However, you can run the toolkit locally if you choose.
 After getting the toolkit setup, you'll be ready to make your first deployment with the toolkit.
 

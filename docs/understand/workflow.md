@@ -1,4 +1,4 @@
-# Common Workflow
+# Common workflow
 
 This is an example of how the tools in the Azure Virtual Datacenter Automation Toolkit are generally used.
 

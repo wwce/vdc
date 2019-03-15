@@ -3,6 +3,7 @@
 This option for running the toolkit is typically used when customizing the scripts or extending the functionality of the toolkit.
 
 The basic steps are:
+
 1. Download the source files for the toolkit
 1. [Install the Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli?view=azure-cli-latest)
 1. [Install Python](https://www.python.org/downloads/release/python-360/)

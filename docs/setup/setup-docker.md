@@ -5,6 +5,7 @@ We recommend using the Docker image to run the toolkit. The Docker image will pr
 > If you prefer to run the toolkit wihout Docker, please see these [instructions](./setup-local.md).
 
 The basic steps are:
+
 1. Download the source files for the toolkit
 1. Ensure Docker is install
 1. Configure Docker for your host OS
@@ -70,6 +71,7 @@ tools
 ## Regarding mounting folders
 
 The Docker image does not contain the following folders:
+
 - [`archetypes`](../../archetypes)
 - [`modules`](../../modules)
 - [`tests`](../../tests)
