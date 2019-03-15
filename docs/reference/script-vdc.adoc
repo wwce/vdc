@@ -12,7 +12,8 @@ _Deploy archetypes and modules into a subscription_
 - The permissions required to execute this script are determined by the modules being deployed.
 ====
 
-This script deploys an link:../understand/toolkit.md#archetypes[_archetype_], or a specified link:../understand/toolkit.md#modules[_module_] within an archetype, to the target subscription. It also applies the policies located at link:..\..\modules\policies\subscription\1.0\arm.policies.json[`modules\policies\subscription\1.0\arm.policies.json`] to the target subscription. This is in addition to any policies that are included within the specified modules.
+This script deploys an link:../understand/toolkit.md#archetypes[_archetype_], or a specified link:../understand/toolkit.md#modules[_module_] within an archetype, to the target subscription. It also assigns the policies located at link:..\..\modules\policies\subscription\1.0\arm.policies.json[`modules\policies\subscription\1.0\arm.policies.json`] to the target subscription. Policies included within the specified modules are assigned at the resource group level.
+All of the policy definitions are located in the target subscrpition.
 
 NOTE: This script does not create management groups or assign policies to management groups.
 
@@ -32,7 +33,7 @@ py vdc.py {command} {environment type} {arguments}
 
 There are two commands you can supply. 
 
-- `create` executes a deployment. 
+- `create` executes a deployment of an archetype or a specified module with an archetype. 
 - `validate` executes a validation of the deployment. Note that some resources may actually be deployed during a validation.
 
 == Environment types

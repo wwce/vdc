@@ -53,4 +53,4 @@ The toolkit provides three additional scripts for managing your Azure environmen
 
 ## Next steps
 
-Learn about the [environment types](environment-types.md) in the toolkit.
+Learn about the [typical usage pattern](workflow.md) for the tools in the toolkit.

@@ -132,4 +132,4 @@ DevOps is responsible for building and deploying workload applications and servi
 - `Microsoft.Authorization/roleDefinitions/read`
 - `Microsoft.Authorization/roleDefinitions/write`
 
-Each of the deployment steps described later in this guide are designed to be performed by one of these roles. <!-- TODO: How true is this^ statement? --> Organizations can vary widely on how their internal IT teams are structured, but before executing a deployment step you need to make sure the executing user has the required subscription permissions to deploy the resources during that step.
+Each of the deployment steps described later in this guide are designed to be performed by one of these roles. Organizations can vary widely on how their internal IT teams are structured, but before executing a deployment step you need to make sure the executing user has the required subscription permissions to deploy the resources during that step.
