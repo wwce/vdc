@@ -75,36 +75,43 @@
                 "enable-oms-agent": true,
                 "rbac": [
                     {
+                        "comments": "Azure Service Cluster Admin Role - Use Admin Persona Principal Id",
                         "roleDefinitionId": "0ab0b1a8-8aac-4efd-b8c2-3ee1fb270be8",
                         "principalId": "00000000-0000-0000-0000-000000000000",
                         "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${general.workload.deployment-name}-rg"
                     },
                     {
+                        "comments": "Azure Service Cluster Admin Role - Use Dev Persona Principal Id",
                         "roleDefinitionId": "0ab0b1a8-8aac-4efd-b8c2-3ee1fb270be8",
                         "principalId": "00000000-0000-0000-0000-000000000000",
                         "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${general.workload.deployment-name}-rg"
                     },
                     {
+                        "comments": "Azure Service Cluster Admin Role - Use NOC Persona Principal Id",
                         "roleDefinitionId": "0ab0b1a8-8aac-4efd-b8c2-3ee1fb270be8",
                         "principalId": "00000000-0000-0000-0000-000000000000",
                         "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${general.workload.deployment-name}-rg"
                     },
                     {
+                        "comments": "Azure Service Cluster User Role - Use Admin Persona Principal Id",
                         "roleDefinitionId": "4abbcc35-e782-43d8-92c5-2d3f1bd2253f",
                         "principalId": "00000000-0000-0000-0000-000000000000",
                         "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${general.workload.deployment-name}-rg"
                     },
                     {
+                        "comments": "Reader Role - Use Admin Persona Principal Id",
                         "roleDefinitionId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
                         "principalId": "00000000-0000-0000-0000-000000000000",
                         "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${general.workload.deployment-name}-rg"
                     },
                     {
+                        "comments": "Reader Role - Use Dev Persona Principal Id",
                         "roleDefinitionId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
                         "principalId": "00000000-0000-0000-0000-000000000000",
                         "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${general.workload.deployment-name}-rg"
                     },
                     {
+                        "comments": "Reader Role - Use NOC Persona Principal Id",
                         "roleDefinitionId": "acdd72a7-3385-48ef-bd42-f606fba81ae7",
                         "principalId": "00000000-0000-0000-0000-000000000000",
                         "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${general.workload.deployment-name}-rg"
