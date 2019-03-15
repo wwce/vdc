@@ -1,17 +1,17 @@
 # Roles and permissions
 
-The Azure Virtual Datacenter Automation Toolkit encourages the use of separation of responsibilities using role-based access control (RBAC) to determine which users and teams can create and manage specific resources.
+The Azure Virtual Datacenter Automation Toolkit encourages the use of separation of responsibilities using [role-based access control (RBAC)](https://docs.microsoft.com/azure/active-directory/role-based-access-control-configure) to determine which users and teams can create and manage specific resources.
 
 Before deploying, you need to create the appropriate roles in your Azure AD tenant and assign the appropriate users to these roles. See the [reference documentation for `role-creation.py`](../reference/script-role-creation.adoc) for instructions on using the provided scripts to deploy roles for your subscription.
 
-The toolkit provides 4 roles that act as a baseline recommendation:
+The toolkit provides 4 custom roles that act as a baseline recommendation:
 
 - SecOps
 - NetOps
 - SysOps
 - DevOps
 
-These roles are defined in [`aad.roles.json`](../../roles/aad.roles.json).
+These custom roles are defined in [`aad.roles.json`](../../roles/aad.roles.json).
 
 ## SecOps
 
@@ -133,3 +133,7 @@ DevOps is responsible for building and deploying workload applications and servi
 - `Microsoft.Authorization/roleDefinitions/write`
 
 Each of the deployment steps described later in this guide are designed to be performed by one of these roles. Organizations can vary widely on how their internal IT teams are structured, but before executing a deployment step you need to make sure the executing user has the required subscription permissions to deploy the resources during that step.
+
+## Next steps
+
+After going through all of the material in the [Understand](readme.md) section, you should move on to the [Setup](../setup/readme.md) section.
