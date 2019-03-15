@@ -1,6 +1,13 @@
+# Common Workflows
+
+There are two commons workflows for the toolkit. The workflows are very similar but differ.
+
+
+
 ## Use case 1 - subscription policy assignments
 
-create subscription
+1. Create a subscription using [`subscription.py`](../reference/script-subscription.adoc).
+2. Assign custom roles to the new subscription using [`role-creation.py](../reference/script-role-creation.adoc).
 assign roles
 deploy stuff
 - mouldes\policies are applied to the subscription

@@ -1,6 +1,6 @@
 = vdc.py
 
-_Deploy archetypes and modules_
+_Deploy archetypes and modules into a subscription_
 
 ✏ link:readme.md[>> View other scripts]
 
@@ -11,6 +11,10 @@ _Deploy archetypes and modules_
 - Be sure that you are in the root folder of the toolkit.
 - The permissions required to execute this script are determined by the modules being deployed.
 ====
+
+This script is deploys an _archetype_, or a specified _module_ within an archetype, to the target subscription. It also applies the policies located at link:..\..\modules\policies\subscription\1.0\arm.policies.json[`modules\policies\subscription\1.0\arm.policies.json`] to the target subscription. This is in addition to any policies that are included within the specified modules.
+
+NOTE: This script does not create management groups or assign policies to management groups.
 
 .Docker
 [source,bash]
