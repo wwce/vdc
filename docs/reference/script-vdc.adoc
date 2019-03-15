@@ -12,7 +12,7 @@ _Deploy archetypes and modules into a subscription_
 - The permissions required to execute this script are determined by the modules being deployed.
 ====
 
-This script is deploys an _archetype_, or a specified _module_ within an archetype, to the target subscription. It also applies the policies located at link:..\..\modules\policies\subscription\1.0\arm.policies.json[`modules\policies\subscription\1.0\arm.policies.json`] to the target subscription. This is in addition to any policies that are included within the specified modules.
+This script deploys an link:../understand/toolkit.md#archetypes[_archetype_], or a specified link:../understand/toolkit.md#modules[_module_] within an archetype, to the target subscription. It also applies the policies located at link:..\..\modules\policies\subscription\1.0\arm.policies.json[`modules\policies\subscription\1.0\arm.policies.json`] to the target subscription. This is in addition to any policies that are included within the specified modules.
 
 NOTE: This script does not create management groups or assign policies to management groups.
 
