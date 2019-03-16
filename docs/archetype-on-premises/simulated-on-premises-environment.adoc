@@ -24,41 +24,81 @@ NOTE: The `deployment-user-id` is the user's Azure Active Directory object id.
 
 == Run the deployment
 
-Start the "on-premises" deployment by running the following command in the terminal
+Deploy the `on-premises` archetype by running the following command in the terminal
 or command-line interface:
 
-[Linux/OSX]
+.Docker
+[source,bash]
+python vdc.py create on-premises -path archetypes/on-premises/archetype.json --upload-scripts
 
->   *python3 vdc.py create on-premises -path
->   "archetypes/on-premises/archetype.json" --upload-scripts*
+.Linux/OSX
+[source,bash]
+python3 vdc.py create on-premises -path archetypes/on-premises/archetype.json --upload-scripts
 
-[Windows]
+.Windows
+[source,cmd]
+py vdc.py create on-premises -path archetypes/on-premises/archetype.json --upload-scripts
 
->   *py vdc.py create on-premises -path
->   "archetypes/on-premises/archetype.json" --upload-scripts*
+== What's deployed
 
-[Docker]
+This deployment creates two resource groups. The resource groups are name using value your provided in the configuration.
 
->   *python vdc.py create on-premises -path
->   "archetypes/on-premises/archetype.json" --upload-scripts*
+- `{organization name}-{deployment name}-onprem-net-rg` 
+- `{organization name}-{deployment name}-onprem-ad-rg` 
 
-This deployment creates two resource groups:
+Let's assume `org` and `example` for `{organization name}` and `{deployment name}`.
 
-*{organization name}-{deployment name}-onprem-net-rg* - hosting the networking resources for the simulated on-premises environment. These resources are described in the following table.
+=== `org-example-onprem-net-rg`
 
-| **Resource**                                                      | **Type**                | **Description**                                                                    |
-|-------------------------------------------------------------------|-------------------------|------------------------------------------------------------------------------------|
-| {organization name}-{deployment name}-default-nsg                 | Network security group  | Network security group attached to the default \\ subnet.                          |
-| {organization name}-{deployment name}-vnet                        | Virtual network         | Simulated on-premises virtual network.                                             |
-| {organization name}-{deployment name}-gw                          | Virtual network gateway | Gateway used to connect the                                                        |
-| {organization name}-{deployment name}-gw-pip                      | Public IP address       | Publicly accessible IP address used by the gateway.                                |
+This resource group contains the networking resources for the simulated on-premises environment.
 
-*{organization name}-{deployment name}-onprem-ad-rg* - hosting the active directory servers and related resources used in the simulated on-premises environment. These resources are described in the following table.
+[options="header",cols="a,,"]
+|===
+| Resource | Type | Description
 
-| **Resource**                                                      | **Type**                | **Description**                                                                    |
-|-------------------------------------------------------------------|-------------------------|------------------------------------------------------------------------------------|
-| {organization name}{deployment name}ad{random characters}         | Storage account         | Storage account used to store diagnostic logs related to the AD server.            |
-| {organization name}-{deployment name}-ad-vm                       | Virtual machine         | Active Directory server VM.                                                        |
-| {organization name}-{deployment name}-ad-vm-nic                   | Network interface       | Virtual network interface for primary AD server.                                   |
-| {organization name}-{deployment name}-ad-vm-nic-pip               | Public IP address       | Public endpoint that allows you to access the simulated domain server VM remotely. |
-| {organization name}{deployment name}advmosdisk{random characters} | Disk                    | OS disk for the AD server VM.                                                      |
+| `org-example-default-nsg`
+| Network security group
+| Network security group attached to the default subnet.
+
+
+| `org-example-vnet`
+| Virtual network
+| Simulated on-premises virtual network.
+
+| `org-example-gw`
+| Virtual network gateway 
+| Gateway used to connect the shared service network in Azure.
+
+| `org-example-gw-pip`
+| Public IP address
+| Publicly accessible IP address used by the gateway.
+|===
+
+=== `org-example-onprem-ad-rg`
+
+This reosurce group contains the Active Directory servers and related resources used in the simulated on-premises environment.
+
+[options="header",cols="a,,"]
+|===
+| Resource | Type | Description
+
+| `org-example-ad{random characters}`
+| Storage account
+| Storage account used to store diagnostic logs related to the AD server.
+
+| `org-example-ad-vm`
+| Virtual machine
+| Active Directory server VM
+
+| `org-example-ad-vm-nic`
+| Network interface
+| Virtual network interface for primary AD server.
+
+| `org-example-ad-vm-nic-pip`
+| Public IP address 
+| Public endpoint that allows you to access the simulated domain server VM remotely.
+
+| `org-example-advmosdisk{random characters}`
+| Disk
+| OS disk for the AD server VM.
+|===
