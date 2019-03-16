@@ -1,23 +1,10 @@
 = Simulated on-premises deployment parameters
 
-These parameters are used to deploy the simulated on-premises environment (/archetypes/on-premises/archetype.json).
+These parameters are used to deploy the simulated on-premises environment. They are located in the `general` section of the `archetype.json` configuration file.
 
-== Shared-services settings (on-premises parameters file)
+== Simulated on-premises settings
 
-[options="header",cols="a,,"]
-|===
-| Parameter name | Type | Description 
-
-| `subscription-id`
-| Subscription ID (GUID)
-| ID of the subscription that shared-services resources are deployed to.
-
-| `deployment-name`
-| String
-| Name of the shared-services deployment.
-|===
-
-== Simulated on-premises settings (on-premises parameters file)
+These are located under `general.on-premises`.
 
 [options="header",cols="a,,a"]
 |===
@@ -84,4 +71,21 @@ See link:https://docs.microsoft.com/azure/vpn-gateway/vpn-gateway-about-vpn-gate
 | link:TODO#common-module-dependency-parameters[Module Dependencies object]
 | This object defines the locations, dependencies, and behavior of resource modules used for a deployment. |
 
+|===
+
+== Shared services settings
+
+These are located under `general.shared-services`.
+
+[options="header",cols="a,,"]
+|===
+| Parameter name | Type | Description 
+
+| `subscription-id`
+| Subscription ID (GUID)
+| ID of the subscription that shared-services resources are deployed to.
+
+| `deployment-name`
+| String
+| Name of the shared-services deployment.
 |===
