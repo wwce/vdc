@@ -43,12 +43,12 @@ py vdc.py create on-premises -path archetypes/on-premises/archetype.json --uploa
 
 This deployment creates two resource groups. The resource groups are name using value your provided in the configuration.
 
-- `{organization name}-{deployment name}-onprem-net-rg` 
-- `{organization name}-{deployment name}-onprem-ad-rg` 
+- `org-onprem-net-rg` 
+- `org-onprem-ad-rg` 
 
-Let's assume `org` and `example` for `{organization name}` and `{deployment name}`.
+Where `org` will be replaced by `organization-name` from the configruation, and `on-prem` will be replaced by `deployment-name` from the configuration.
 
-=== `org-example-onprem-net-rg`
+=== `org-onprem-net-rg`
 
 This resource group contains the networking resources for the simulated on-premises environment.
 
@@ -56,25 +56,25 @@ This resource group contains the networking resources for the simulated on-premi
 |===
 | Resource | Type | Description
 
-| `org-example-default-nsg`
+| `org-onprem-default-nsg`
 | Network security group
 | Network security group attached to the default subnet.
 
 
-| `org-example-vnet`
+| `org-onprem-vnet`
 | Virtual network
 | Simulated on-premises virtual network.
 
-| `org-example-gw`
+| `org-onprem-gw`
 | Virtual network gateway 
 | Gateway used to connect the shared service network in Azure.
 
-| `org-example-gw-pip`
+| `org-onprem-gw-pip`
 | Public IP address
 | Publicly accessible IP address used by the gateway.
 |===
 
-=== `org-example-onprem-ad-rg`
+=== `org-onprem-onprem-ad-rg`
 
 This reosurce group contains the Active Directory servers and related resources used in the simulated on-premises environment.
 
@@ -82,23 +82,23 @@ This reosurce group contains the Active Directory servers and related resources 
 |===
 | Resource | Type | Description
 
-| `org-example-ad{random characters}`
+| `org-onprem-ad{random_characters}`
 | Storage account
 | Storage account used to store diagnostic logs related to the AD server.
 
-| `org-example-ad-vm`
+| `org-onprem-ad-vm`
 | Virtual machine
 | Active Directory server VM
 
-| `org-example-ad-vm-nic`
+| `org-onprem-ad-vm-nic`
 | Network interface
 | Virtual network interface for primary AD server.
 
-| `org-example-ad-vm-nic-pip`
+| `org-onprem-ad-vm-nic-pip`
 | Public IP address 
 | Public endpoint that allows you to access the simulated domain server VM remotely.
 
-| `org-example-advmosdisk{random characters}`
+| `org-onprem-advmosdisk{random_characters}`
 | Disk
 | OS disk for the AD server VM.
 |===
