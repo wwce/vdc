@@ -10,7 +10,7 @@ This is intended to simulate the experience of a _trusted datacenter extension_,
 
 If you're planning to use a simulated on-premises, you should deploy it before starting the sample shared services deployment.
 
-== Prerequisite: create and configure your parameters file
+== Create your archetype configuration file
 
 The toolkit provides an example configuration file for the simulated on-premises environment. You will need to create a new version of this file before running your deployment.
 

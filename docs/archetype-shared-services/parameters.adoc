@@ -1,0 +1,130 @@
+== Shared-services deployment parameters
+
+These parameters are defined in the shared-services configuration file
+(/archetypes/shared-services/archetype.json).
+
+=== On-premises settings (Shared-services parameters file)
+
+[width="100%",cols="9%,9%,82%",options="header",]
+|===
+|*Parameter name* |*Type* |*Description*
+|subscription-id |Subscription ID (GUID) |ID of the subscription that
+contains your simulated on-premises resources. Only used when test
+on-premises environments are Azure-based (optional).
+
+|location |String |The Azure region where on-premises resources are
+deployed (for example, ``West US'' or ``France South'').
+https://azure.microsoft.com/regions/[Full list of regions]. Only needed
+when using an Azure hosted simulated on-premises environment.
+
+|vnet-rg |String |If using an Azure hosted simulated on-premises, this
+is the name of the resource group containing that environment’s virtual
+network. Only used when test on-premises environments are Azure-based
+(optional).
+
+|gateway-name |String |If using an Azure hosted simulated on-premises,
+this is the name of the virtual gateway for that environment. Only used
+when test on-premises environments are Azure-based (optional).
+
+|address-range |CIDR range |CIDR range for the on-premises network.
+
+|primaryDC-IP |IPV4 address |IP address of on-premises domain
+controller.
+
+|allow-rdp-address-range |IPV4 address/CIDR range |Allowed IP address or
+range authorized to connect to the VDC shared-services management VMs
+from on-premises.
+
+|AD-sitename |String |Site name used to register VDC hosted Active
+Directory Domain Services (ADDS) servers with the on-premises domain.
+|===
+
+=== Shared-services settings (Shared services parameters file)
+
+[width="100%",cols="11%,5%,84%",options="header",]
+|===
+|*Parameter name* |*Type* |*Description*
+|subscription-id |Subscription ID (GUID) |ID of the subscription that
+shared-services resources are deployed to.
+
+|deployment-name |String |Shorthand name of the shared-services itself.
+Used as a secondary naming prefix when provisioning resources. This must
+be unique among your organization’s VDC instances. If you use a
+duplicate name, the deployment will overwrite existing deployments or
+not complete successfully. This value should not contain spaces but may
+contain dashes and underscores.
+
+|region |String |The Azure region where shared-services resources are
+deployed (for example, ``West US'' or ``France South'').
+https://azure.microsoft.com/regions/[Full list of regions]
+
+|ancillary-region |String |Alternate Azure region where the operations
+and monitoring resources are deployed. This should not be the same as
+the region where the shared-services is hosted to ensure redundancy.
+https://azure.microsoft.com/regions/[Full list of regions]
+
+|gateway-type |String |Specifies the type of connection with the
+on-premises network—either ``vpn'' or ``expressroute''.
+|===
+
+| gateway-sku | String | Specifies the Gateway SKU used. Allowable
+values:
+
+Basic
+
+VpnGw1
+
+VpnGw2
+
+VpnGw3
+
+https://docs.microsoft.com/azure/vpn-gateway/vpn-gateway-about-vpn-gateway-settings#gwsku[Gateway
+SKU details] | | vpn-type | String | Specifies the
+https://docs.microsoft.com/azure/vpn-gateway/vpn-gateway-connect-multiple-policybased-rm-ps#about-policy-based-and-route-based-vpn-gateways[type
+of VPN gateway] used to connect with the on-premises network—either
+``RouteBased'' or ``PolicyBased.'' | | enable-ddos-protection | String |
+Specifies if
+https://docs.microsoft.com/azure/virtual-network/ddos-protection-overview[Azure
+DDoS Protection] is enabled on the shared-services virtual network
+automatically on creation. | | azure-firewall-private-ip | IPV4 address
+| IP address assigned to the Azure Firewall controlling VDC access to
+the Internet. | | ubuntu-nva-lb-ip-address | IPV4 address | IP address
+assigned to the Linux VM-based Firewall controlling VDC access to the
+Internet. (Optional. Used when deploying Ubuntu VM for firewall
+purposes.) | | ubuntu-nva-address-start | IPV4 address | IP address
+assigned to the Linux VM-based Firewall controlling VDC access to the
+Internet. (Optional. Used when deploying Ubuntu VM for firewall
+purposes.) | | squid-nva-address-start | IPV4 address | IP address
+assigned to the Squid proxy NVA. (Optional. Used when deploying a Squid
+NVA for proxy services.) | | domain-admin-user | String | Domain user
+with rights to add trust relationship between on-premises domain and VDC
+hosted domain controllers. Note that to prevent conflicts when Key Vault
+stores this user information as a secret, domain-admin-user must be
+different than local-admin-user. | | domain-name | String | Domain name
+used by your on-premises network. | | local-admin-user | String | User
+account to create as local admin on VMs created within the
+shared-services. Note that to prevent conflicts when Key Vault stores
+this user information as a secret, domain-admin-user must be different
+than local-admin-user. | | adds-address-start | IPV4 address | IP
+address for the first ADDS server deployed to the shared-services
+subnet. Additional servers use an IP address incremented from this
+starting address. | | enable-encryption | Boolean | Determines if
+virtual disks are automatically encrypted on creation. Windows VM
+encryption is only supported. When this value is set to true, the VDC
+deployment automation engine will use the values from
+encryption-keys-for to create certificates in Key Vault. | | network |
+link:#common-network-parameters[Network object] | Configuration
+parameters for the shared-services virtual network. Note that for the
+Hub deployment, the subnet entries for the _AzureFirewallSubnet_ and
+_GatewaySubnet_ subnets are required and should not be modified from the
+versions in the sample parameters file. | | encryption-keys-for |
+String[Array] | Lists the module names that need encryption keys
+generated in Key Vault. If modules are specified, the VDC deployment
+automation engine will create certificates in Key Vault. These
+certificates are passed to a VM deployment to provide Bitlocker
+encryption (Windows encryption VMs are only supported). This parameter
+is used by the deployment automation engine only when enable-encryption
+property is set to true. | | module-dependencies |
+link:#common-module-dependency-parameters[Module Dependencies object] |
+This object defines the locations, dependencies, and behavior of
+resource modules used for a deployment. |
