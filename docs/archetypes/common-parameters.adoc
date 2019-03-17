@@ -86,85 +86,74 @@ The `network` parameters object is used in many archetype configurations files t
     * `destinationApplicationSecurityGroups` - Array of ASGs that apply to the destination
     * `sourceApplicationSecurityGroups` - Array of ASGs that apply to the source 
 
-|===
-
 | `user-defined-routes`
 | Object[Array]
 | An array of User Defined Route (NSG) definitions, each definition contains two parameters:
+
 - name [String]: name for the UDR collection.
 - routes [Object]: collection of UDR definitions.
-user-defined-routes/routes | Object[Array] | An array of UDR
-definitions. Each definition contains the following parameters:
-- name [String] - Name of the route.
-- properties [Object] - The route property object contains the following
-parameters:
-- addressPrefix [CIDR range] - IP addresses that the route applies to.
-- nextHopIpAddress [IPV4 address] - IP address to route traffic to.
-- nextHopType [String] - One of the
-https://docs.microsoft.com/azure/network-watcher/network-watcher-next-hop-overview[allowed
-next hop types]. subnets | Object[Array] | An array of subnet
-definitions for the virtual network. Each definition contains the
+
+| `user-defined-routes/routes`
+| Object[Array]
+| An array of UDR definitions. Each definition contains the following parameters:
+
+- `name` [String] - Name of the route.
+- `properties` [Object] - The route property object contains the following parameters:
+
+    * `addressPrefix` [CIDR range] - IP addresses that the route applies to.
+    * `nextHopIpAddress` [IPV4 address] - IP address to route traffic to.
+    * `nextHopType` [String] - One of the link:https://docs.microsoft.com/azure/network-watcher/network-watcher-next-hop-overview[allowed next hop types]. 
+
+| `subnets`
+| Object[Array]
+| An array of subnet definitions for the virtual network. Each definition contains the
 following parameters:
-- name [String] - Subnet name
-- address-prefix [CIDR range] - IP address range definition for the
-subnet.
-- network-security-group [String] - Name of NSG to attach to the subnet.
-- user-defined-route [String] - Name of UDR collection to attach to the
-subnet.
-- service-endpoints [Array] - List of PaaS service endpoint to attach to
-the subnet. dns-servers | IPV4 Address[Array] | An array of one or more
-DNS entries that the virtual network will use for name resolution.
+
+- `name` [String] - Subnet name
+- `address-prefix` [CIDR range] - IP address range definition for the subnet.
+- `network-security-group` [String] - Name of NSG to attach to the subnet.
+- `user-defined-route` [String] - Name of UDR collection to attach to the subnet.
+- `service-endpoints` [Array] - List of link:https://docs.microsoft.com/azure/virtual-network/virtual-network-service-endpoints-overview[service endpoints] to attach to the subnet. 
+
+| `dns-servers`
+| IPV4 Address[Array]
+| An array of one or more DNS entries that the virtual network will use for name resolution.
 
 |===
 
 == Common module dependency parameters
 
-The module-dependencies parameters object is used by multiple parameters
-files to define the location of deployment module files, the module
-version being used, and dependencies for that module. Module dependency
-parameters are required unless otherwise specified.
+The `module-dependencies` parameters object is used in many archetype configurations files to define the path to the module files, the version of the module being used, and dependencies for that module. Module dependency parameters are required unless otherwise specified.
 
-[width="100%",cols="2%,,98%",options="header",]
+[cols="a,,a", options="header"]
 |===
-|Parameter name |Type |Description
-|import-module |String |Optional path value specifying where resource
-modules folders are located. If specified, the deployment scripts will
-look for the module files in a subfolder (corresponding to the module
-name) of this path. Supports absolute file paths or relative paths
-[using the file() function]. Relative paths should be based off of the
-root vdc automation folder.
+| Parameter name | Type | Description 
+
+| `import-module`
+| String
+| Optional path value specifying where resource modules folders are located. 
+
+If specified, the toolkit will look for the module files in a subfolder (corresponding to the module name) of this path. Supports absolute file paths or relative paths [using the `file()` function]. Relative paths should be based off of the root toolkit folder.
+
+If not specified, the toolkit will look for module folders under the root toolkit folder unless paths are
+specified in the module dependency definition’s source object. 
+
+// TODO ^ this could be more clear
+
+| `modules`
+| Object[Array]
+| The modules array contains a list of module dependency definitions. Each definition contains the following properties describing a module:
+
+- `module` [String] - Deployment module name. Should correspond to the name listed in the parameter file’s `module-deployment-order` array and the folder name where the module source files are located.
+- `same-resource-group` [Boolean] - If set to true, this setting forces dependent resources to deploy in the same resource group as the resource (optional).
+- `create-resource-group` [Boolean] - If set to false, this setting deploys the resource in the same resource group as its dependency (optional).
+- `resource-group-name` [String] Allows you to override the default resource group name used in a deployment (optional).
+- `source` [Object] - Information about the source files that make up the module. Contains the following properties:
+
+    * `version` [String] - version of the module code used for the deployment. Should match the version folder where source files are located.
+    * `template-path` [String] - Path specifying location of the Resource Manager template file used by the module. Overrides the `import-module` parameter if used and offers the same pathing options (optional).
+    * `parameters-path` [String] - Path specifying location of the Resource Manager parameters file used by the module. Overrides the `import-module` parameter if used and offers the same pathing options (optional).
+    * `policy-path` [String] - Path specifying location of the Resource Manager policy file used by the module. Overrides the `import-module` parameter if used and offers the same pathing options (optional).
+    * `dependencies` [Array] - list of modules this module is dependent on.
+
 |===
-
-If this value is not specified, the deployment will look for resource
-module folders under the root vdc automation folder unless paths are
-specified in the module dependency definition’s source object. modules |
-Object[Array] | The modules array contains a list of module dependency
-definitions. Each definition contains the following properties
-describing a deployment module:
-
-- module [String] - Deployment module name. Should correspond to the
-name listed in the parameter file’s module-deployment-order array and
-the folder name where the module source files are located.
-- same-resource-group [Boolean] - If set to true, this setting forces
-dependent resources to deploy in the same resource group as the resource
-(optional).
-- create-resource-group [Boolean] - If set to false, this setting
-deploys the resource in the same resource group as its dependency
-(optional).
-- resource-group-name [String] Allows you to override the default
-resource group name used in a deployment (optional).
-- source [Object] - Information about the source files that make up the
-module. Contains the following properties:
-*- version [String] - version of the module code used for the
-deployment. Should match the version folder where source files are
-located.
-*- template-path [String] - Path specifying location of the ARM
-deployment file used by the module. Overrides the import-module
-parameter if used and offers the same pathing options (optional).
-*- parameters-path [String] - Path specifying location of the ARM
-parameters file used by the module. Overrides the import-module
-parameter if used and offers the same pathing options (optional).
-*- policy-path [String] - Path specifying location of the ARM policy
-file used by the module. Overrides the import-module parameter if used
-and offers the same pathing options (optional).
-- dependencies [Array] - list of modules this module is dependent on.
