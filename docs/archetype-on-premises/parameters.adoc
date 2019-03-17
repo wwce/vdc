@@ -48,7 +48,7 @@ See link:https://docs.microsoft.com/azure/vpn-gateway/vpn-gateway-about-vpn-gate
 | IP address of on-premises domain controller.
 
 | `network`
-| link:TODO#common-network-parameters[Network object]
+| link:../archetypes/common-parameters.adoc#network-parameters[Network object]
 | Configuration parameters for the simulated on-premises virtual network.
 
 | `domain-name`
@@ -68,7 +68,7 @@ See link:https://docs.microsoft.com/azure/vpn-gateway/vpn-gateway-about-vpn-gate
 | Domain user with rights to add trust relationship between on-premises domain and VDC hosted domain controllers.
 
 | `module-dependencies`
-| link:TODO#common-module-dependency-parameters[Module Dependencies object]
+| link:../archetypes/common-parameters.adoc#module-dependency-parameters[Module Dependencies object]
 | This object defines the locations, dependencies, and behavior of resource modules used for a deployment. |
 
 |===

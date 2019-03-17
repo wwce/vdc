@@ -1,10 +1,8 @@
-= Shared parameters
+= Common parameters
 
-Several groups of parameters are used in multiple parameters files.
+These groups of parameters are commonly used all many archetypes.
 
-== General settings
-
-These parameters define settings used by all archetypes.
+== General parameters
 
 [cols="a,,a", options="header"]
 |===
@@ -42,7 +40,7 @@ folder names in both the link:../../modules[modules] folder where corresponding 
 // TODO: correct the link to validation
 |===
 
-== Common network parameters
+== Network parameters
 
 The `network` parameters object is used in many archetype configurations files to define virtual network settings for a deployment. Note that all parameters in this section are required. If a setting is unused, leave it as blank rather than omit the parameter. It’s recommended that when creating a new network component, such as a subnet definition, to copy an existing definition and modify it rather than creating a new definition manually. This is to ensure you’ve correctly included all the required parameters.
 
@@ -121,7 +119,7 @@ following parameters:
 
 |===
 
-== Common module dependency parameters
+== Module dependency parameters
 
 The `module-dependencies` parameters object is used in many archetype configurations files to define the path to the module files, the version of the module being used, and dependencies for that module. Module dependency parameters are required unless otherwise specified.
 

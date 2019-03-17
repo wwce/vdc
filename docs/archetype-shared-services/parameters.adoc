@@ -156,7 +156,7 @@ Note that to prevent conflicts when Key Vault stores this user information as a 
 `encryption-keys-for` to create certificates in Key Vault.
 
 | `network`
-| link:TODO#common-network-parameters[Network object]
+| link:../archetypes/common-parameters.adoc#network-parameters[Network object]
 | The configuration for the shared services virtual network. 
 Note that for the hub network, the subnet entries for the _AzureFirewallSubnet_ and _GatewaySubnet_ subnets are required and should not be modified from the versions in the sample configuration file.
 
@@ -167,7 +167,7 @@ Note that for the hub network, the subnet entries for the _AzureFirewallSubnet_ 
 This parameter is only used by the toolkit when `enable-encryption` is set to true.
 
 | `module-dependencies`
-| link:TODO#common-module-dependency-parameters[Module Dependencies object] 
+| link:../archetypes/common-parameters.adoc#module-dependency-parameters[Module Dependencies object] 
 | This object defines the locations, dependencies, and behavior of resource modules used for a deployment.
 
 |===
