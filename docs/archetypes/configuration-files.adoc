@@ -91,3 +91,7 @@ The toolkit currently supports referencing the following arguments in parameters
 |===
 
 For more information on these arguments, see the link:../reference/script-vdc.adoc[`vdc.py reference`].
+
+== Next steps
+
+Review the link:common-parameters.adocs[common parameters] generally found in all archetype config files. 
