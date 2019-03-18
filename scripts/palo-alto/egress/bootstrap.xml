@@ -2,21 +2,13 @@
 <config version="8.1.0" urldb="paloaltonetworks">
   <mgt-config>
     <users>
-      <entry name="admin">
-        <phash>*</phash>
-        <permissions>
-          <role-based>
-            <superuser>yes</superuser>
-          </role-based>
-        </permissions>
-      </entry>
       <entry name="admin-user">
-        <phash>$1$uvvvnytt$gWd8mgUylKMWWNRTF0JPS.</phash>
         <permissions>
           <role-based>
             <superuser>yes</superuser>
           </role-based>
         </permissions>
+        <phash>$1$njoldhmm$tPtFvN/2DB56CsRpSUZtQ0</phash>
       </entry>
     </users>
   </mgt-config>
@@ -341,17 +333,17 @@
                     </route-table>
                   </entry>
                   <entry name="default">
-                    <nexthop>
-                      <ip-address>10.4.0.97</ip-address>
-                    </nexthop>
-                    <bfd>
-                      <profile>None</profile>
-                    </bfd>
                     <path-monitor>
                       <enable>no</enable>
                       <failure-condition>any</failure-condition>
                       <hold-time>2</hold-time>
                     </path-monitor>
+                    <nexthop>
+                      <ip-address>10.4.0.1</ip-address>
+                    </nexthop>
+                    <bfd>
+                      <profile>None</profile>
+                    </bfd>
                     <interface>ethernet1/1</interface>
                     <metric>10</metric>
                     <destination>0.0.0.0/0</destination>
@@ -428,8 +420,8 @@
             <dhcp-client>
               <send-hostname>yes</send-hostname>
               <send-client-id>no</send-client-id>
-              <accept-dhcp-hostname>no</accept-dhcp-hostname>
-              <accept-dhcp-domain>no</accept-dhcp-domain>
+              <accept-dhcp-hostname>yes</accept-dhcp-hostname>
+              <accept-dhcp-domain>yes</accept-dhcp-domain>
             </dhcp-client>
           </type>
           <update-server>updates.paloaltonetworks.com</update-server>
@@ -593,6 +585,73 @@
                     <member>any</member>
                   </hip-profiles>
                   <action>allow</action>
+                </entry>
+                <entry name="allow-firewall-management">
+                  <to>
+                    <member>Trust</member>
+                    <member>Untrust</member>
+                  </to>
+                  <from>
+                    <member>any</member>
+                  </from>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <application>
+                    <member>dns</member>
+                    <member>ntp</member>
+                    <member>paloalto-autofocus</member>
+                    <member>paloalto-updates</member>
+                    <member>paloalto-wildfire-cloud</member>
+                    <member>pan-db-cloud</member>
+                  </application>
+                  <service>
+                    <member>application-default</member>
+                  </service>
+                  <hip-profiles>
+                    <member>any</member>
+                  </hip-profiles>
+                  <action>allow</action>
+                </entry>
+                <entry name="drop-unknown">
+                  <to>
+                    <member>Trust</member>
+                    <member>Untrust</member>
+                  </to>
+                  <from>
+                    <member>Trust</member>
+                  </from>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <application>
+                    <member>any</member>
+                  </application>
+                  <service>
+                    <member>application-default</member>
+                  </service>
+                  <hip-profiles>
+                    <member>any</member>
+                  </hip-profiles>
+                  <action>reset-client</action>
                 </entry>
               </rules>
             </security>

@@ -733,15 +733,15 @@
                             }
                         },
                         {
-                            "name": "deny-vnet",
+                            "name": "allow-internet",
                             "properties": {
-                                "access": "Deny",
-                                "destinationAddressPrefix": "VirtualNetwork",
+                                "access": "Allow",
+                                "destinationAddressPrefix": "*",
                                 "destinationAddressPrefixes": [],
                                 "destinationPortRange": "*",
                                 "destinationPortRanges": [],
                                 "direction": "Inbound",
-                                "priority": 4096,
+                                "priority": 120,
                                 "protocol": "*",
                                 "sourceAddressPrefix": "VirtualNetwork",
                                 "sourcePortRange": "*",
