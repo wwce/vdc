@@ -546,7 +546,7 @@
                     <member>any</member>
                   </category>
                   <application>
-                    <member>ssl</member>
+                    <member>any</member>
                   </application>
                   <service>
                     <member>application-default</member>
