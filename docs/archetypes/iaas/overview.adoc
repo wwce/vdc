@@ -166,298 +166,254 @@ These deployment creates the `{org}-{deployment-name}-net-rg` resource group tha
 
 == Deploy workload resources
 
-Once the workload operations, Key Vault, and virtual network resources are provisioned, your team can begin deploying the actual workload resources. Performing the following tasks provisions the virtual machines and load balancers needed by DevOps to deploy an application with a data, business, and web tier.
+Once the monitoring, Key Vault, and virtual network resources are provisioned, your team can begin deploying the actual workload resources. Performing the following tasks provisions the virtual machines and load balancers needed by DevOps to deploy an application with a data, business, and web tier.
 
 image:_media/workload-iaas-complate.png[Workload deployed into spoke network]
 
 === Deploy data tier
 
-The ``sqlserver-alwayson'' deployment module creates a pair of
-load-balanced SQL Server virtual machines used for the application’s
-data layer.
+The `sqlserver-alwayson` module creates a pair of load-balanced SQL Server virtual machines used for the application's data layer.
 
-A local user account will be created for these machines. The user name
-is defined in the local-admin-user parameter of the main deployment
-parameters file. The password for this user is generated and stored in
-the workload key vault as part of the ``kv'' deployment.
+A local user account will be created for these machines. The user name is defined in the `local-admin-user` parameter of the archetype configuration file. The password for this user is generated and stored in the workload key vault as part of the `kv` module deployment.
 
-Start this deployment by running the following command in the terminal
-or command-line interface:
+Start this deployment by running the following command in the terminal or command-line interface:
 
-{empty}[Linux/OSX]
+.Docker
+[source,bash]
+python vdc.py create shared-services -path archetypes/iaas/archetype.json -m sqlserver-alwayson
 
-____
-_python3 vdc.py create workload -path ``archetypes/iaas/archetype.json''
--m ``sqlserver-alwayson''_
-____
+.Linux/OSX
+[source,bash]
+python3 vdc.py create shared-services -path archetypes/iaas/archetype.json -m sqlserver-alwayson
 
-{empty}[Windows]
+.Windows
+[source,cmd]
+py vdc.py create shared-services -path archetypes/iaas/archetype.json -m sqlserver-alwayson
 
-____
-_py vdc.py create workload -path ``archetypes/iaas/archetype.json'' -m
-``sqlserver-alwayson''_
-____
 
-{empty}[Docker]
+These deployment creates the `{org}-{deployment-name}-sqlserver-alwayson-rg` resource group that hosts the resources described in the following table.
 
-____
-_py vdc.py create workload -path ``archetypes/iaas/archetype.json'' -m
-``sqlserver-alwayson''_
-____
-
-This deployment creates the _\{organization name}-\{deployment
-name}-sqlserver-alwayson-rg_ resource group that hosts the following
-resources.
-
-[width="100%",cols="33%,8%,59%",options="header",]
+[options="header",cols="a,,a"]
 |===
-|*Resource* |*Type* |*Description*
-|sqlsvr1datadisk1\{random characters} |Disk |First data disk for SQL
-Server virtual machine #1.
+| Resource | Type | Description
 
-|sqlsvr1datadisk2\{random characters} |Disk |Second data disk for SQL
-Server virtual machine #1.
+| `sqlsvr1datadisk1{random-characters}`
+| Disk
+| First data disk for SQL Server virtual machine #1.
 
-|sqlsvr1osdisk\{random characters} |Disk |OS disk for SQL Server virtual
-machine #1.
+| `sqlsvr1datadisk2{random-characters}`
+| Disk
+| Second data disk for SQL Server virtual machine #1.
 
-|sqlsvr2datadisk1\{random characters} |Disk |First data disk for SQL
-Server virtual machine #2.
+| `sqlsvr1osdisk{random-characters}`
+| Disk
+| OS disk for SQL Server virtual machine #1.
 
-|sqlsvr2datadisk2\{random characters} |Disk |Second data disk for SQL
-Server virtual machine #2.
+| sqlsvr2datadisk1{random-characters}
+| Disk
+| First data disk for SQL Server virtual machine #2.
 
-|sqlsvr2osdisk\{random characters} |Disk |OS disk for SQL Server virtual
-machine #2.
+| `sqlsvr2datadisk2{random-characters}`
+| Disk
+| Second data disk for SQL Server virtual machine #2.
 
-|sqlsvr-as |Availability set |Availability set for virtual machines.
+| `sqlsvr2osdisk{random-characters}`
+| Disk
+| OS disk for SQL Server virtual machine #2.
 
-|sqlsvrcw\{random characters} |Storage account |Windows Server
-https://docs.microsoft.com/windows-server/failover-clustering/deploy-cloud-witness[Cloud
-Witness] storage account.
+| `sqlsvr-as`
+| Availability set
+| Availability set for virtual machines.
 
-|sqlsvrdiag\{random characters} |Storage account |SQL Server virtual
-machine diagnostic storage account.
+| `sqlsvrcw{random-characters}`
+| Storage account
+| Windows Server link:https://docs.microsoft.com/windows-server/failover-clustering/deploy-cloud-witness[Cloud Witness] storage account.
 
-|`{org}-{deployment-name}-sqlsvr-lb |Load balancer |Load
-balancer for virtual machines.
+| `sqlsvrdiag{random-characters}`
+| Storage account
+|SQL Server virtual machine diagnostic storage account.
 
-|`{org}-{deployment-name}-sqlsvr-vm1 |Virtual machine
-|SQL Server virtual machine #1.
+| `{org}-{deployment-name}-sqlsvr-lb`
+| Load balancer
+| Load balancer for virtual machines.
 
-|`{org}-{deployment-name}-sqlsvr-vm1-nic |Network
-interface |NIC for SQL Server virtual machine #1.
+| `{org}-{deployment-name}-sqlsvr-vm1`
+| Virtual machine
+| SQL Server virtual machine #1.
 
-|`{org}-{deployment-name}-sqlsvr-vm2 |Virtual machine
-|SQL Server virtual machine #2.
+| `{org}-{deployment-name}-sqlsvr-vm1-nic`
+| Network interface
+| NIC for SQL Server virtual machine #1.
 
-|`{org}-{deployment-name}-sqlsvr-vm2-nic |Network
-interface |NIC for SQL Server virtual machine #2.
+| `{org}-{deployment-name}-sqlsvr-vm2`
+| Virtual machine
+| SQL Server virtual machine #2.
+
+| `{org}-{deployment-name}-sqlsvr-vm2-nic`
+| Network interface
+| NIC for SQL Server virtual machine #2.
 |===
 
 === Deploy web tier
 
-The ``vmapp-lb'' deployment module creates the two virtual machines and
-a load balancer used by the application’s web-tier assets.
+The `vmapp-lb` module creates the two virtual machines and a load balancer used by the application's web-tier assets.
 
-A local user account will be created for these machines. The user name
-is defined in the local-admin-user parameter of the main deployment
-parameters file. The password for this user is generated and stored in
-the workload key vault as part of the ``kv'' deployment.
+A local user account will be created for these machines. The user name is defined in the `local-admin-user` parameter of the archetype configuration file. The password for this user is generated and stored in the workload key vault as part of the `kv` deployment.
 
-Note that both the web tier and business tier use the vmapp-lb module to
-deploy their resources. To avoid needing to modify the parameter files
-for this module when deploying one or the other, the sample provides two
-module parameter files. These are defined in the workload parameter
-file’s module dependencies section as _vmapp-web-lb_ and _vmapp-biz-lb_,
-with the correct module parameter file location defined for each. In
-this step we will be calling _vmapp-web-lb_.
+Note that both the web tier and business tier use the `vmapp-lb` module to deploy their resources. The toolkit provides two parameter files, one for web and one for business, in the module. These are referenced in the archetype configuration's module dependencies section as _vmapp-web-lb_ and _vmapp-biz-lb_, with the corresponding module parameter file locations for each. In this step we will be calling _vmapp-web-lb_.
 
-Start this deployment by running the following command in the terminal
-or command-line interface:
+Start this deployment by running the following command in the terminal or command-line interface:
 
-{empty}[Linux/OSX]
+.Docker
+[source,bash]
+python vdc.py create shared-services -path archetypes/iaas/archetype.json -m vmapp-web-lb
 
-____
-_python3 vdc.py create workload -path ``archetypes/iaas/archetype.json''
--m ``__vmapp-web-lb__''_
-____
+.Linux/OSX
+[source,bash]
+python3 vdc.py create shared-services -path archetypes/iaas/archetype.json -m vmapp-web-lb
 
-{empty}[Windows]
+.Windows
+[source,cmd]
+py vdc.py create shared-services -path archetypes/iaas/archetype.json -m vmapp-web-lb
 
-____
-_py vdc.py create workload -path ``archetypes/iaas/archetype.json'' -m
-``__vmapp-web-lb__''_
-____
+These deployment creates the `{org}-{deployment-name}-web-rg` resource group that hosts the resources described in the following table.
 
-{empty}[Docker]
-
-____
-_python vdc.py create workload -path ``archetypes/iaas/archetype.json''
--m ``__vmapp-web-lb__''_
-____
-
-This deployment creates the _\{organization name}-\{deployment
-name}-web-rg_ resource group that hosts the resources detailed in the
-following table.
-
-[width="100%",cols="60%,10%,30%",options="header",]
+[options="header",cols="a,,a"]
 |===
-|*Resource* |*Type* |*Description*
-|`{org}-{deployment-name}-web-app-lb |Load balancer |Load
-balancer for Web-tier virtual machines.
+| Resource | Type | Description
 
-|`{org}-{deployment-name}-web-app-vm1 |Virtual machine
-|Web-tier virtual machine #1.
+|`{org}-{deployment-name}-web-app-lb`
+| Load balancer
+| Load balancer for Web-tier virtual machines.
 
-|`{org}-{deployment-name}-web-app-vm1-nic |Network
-interface |NIC for virtual machine #1.
+| `{org}-{deployment-name}-web-app-vm1`
+| Virtual machine
+| Web-tier virtual machine #1.
 
-|\{organization name}\{deployment name (dashes
-removed)}webappvm1osdisk\{random characters} |Disk |OS disk for virtual
-machine #1.
+| `{org}-{deployment-name}-web-app-vm1-nic`
+| Network interface
+| NIC for virtual machine #1.
 
-|`{org}-{deployment-name}-web-app-vm2 |Virtual machine
-|Web-tier virtual machine #2.
+| `{org}-{deployment-name}webappvm1osdisk{random-characters} (with any dashes removed)
+| Disk
+| OS disk for virtual machine #1.
 
-|`{org}-{deployment-name}-web-app-vm2-nic |Network
-interface |NIC for virtual machine #2.
+|`{org}-{deployment-name}-web-app-vm2`
+| Virtual machine
+| Web-tier virtual machine #2.
 
-|\{organization name}\{deployment name (dashes
-removed)}webappvm2osdisk\{random characters} |Disk |OS disk for virtual
-machine #2.
+| `{org}-{deployment-name}-web-app-vm2-nic`
+| Network interface
+| NIC for virtual machine #2.
 
-|web-app-as |Availability set |Availability set for Web-tier virtual
-machines.
+| `{org}-{deployment-name}webappvm2osdisk{random-characters`} (with any dashes removed)
+| Disk
+| OS disk for virtual machine #2.
 
-|webappdiag\{random characters} |Storage account |Web-tier virtual
-machine diagnostic storage account.
+| `web-app-as`
+| Availability set
+| Availability set for Web-tier virtual machines.
+
+| `webappdiag{random-characters}`
+| Storage account
+| Web-tier virtual machine diagnostic storage account.
 |===
 
 === Deploy Application Gateway to hub virtual network
 
 *Required role: NetOps*
 
-As part of this workload deployment, you will need to deploy an Azure
-Application Gateway to the hub network. This gateway will provide access
+As part of this workload deployment, you will need to deploy an Azure Application Gateway to the shared services network. This gateway will provide access
 to the web-tier load balancer from the public internet.
 
-To deploy the application gateway, start the ``app-gateway'' deployment
-by running the following command in the terminal or command-line
-interface:
+To deploy the application gateway, start the `app-gateway` deployment by running the following command in the terminal or command-line interface:
 
-{empty}[Linux/OSX]
+.Docker
+[source,bash]
+python vdc.py create shared-services -path archetypes/iaas/archetype.json -m app-gateway
 
-____
-_python3 vdc.py create workload -path ``archetypes/iaas/archetype.json''
--m ``app-gateway''_
-____
+.Linux/OSX
+[source,bash]
+python3 vdc.py create shared-services -path archetypes/iaas/archetype.json -m app-gateway
 
-{empty}[Windows]
+.Windows
+[source,cmd]
+py vdc.py create shared-services -path archetypes/iaas/archetype.json -m app-gateway
 
-____
-_py vdc.py create workload -path ``archetypes/iaas/archetype.json'' -m
-``app-gateway''_
-____
+This deployment will deploy resource to the shared services subscription's `{org}-{shared-services-deployment-name}-net-rg` resource group.
 
-{empty}[Docker]
-
-____
-_python vdc.py create workload -path ``archetypes/iaas/archetype.json''
--m ``app-gateway''_
-____
-
-This deployment will deploy resource to the hub subscription’s
-_\{organization name}-\{hub name}-net-rg_ resource group that hosts the
-resources detailed in the following table.
-
-[width="100%",cols="50%,12%,38%",options="header",]
+[options="header",cols="a,,a"]
 |===
-|*Resource* |*Type* |*Description*
-|`{org}-{deployment-name}-app-gw |Virtual network gateway
-|Application gateway used to provide access to the Web tier from the
-internet.
+| Resource | Type | Description
 
-|`{org}-{deployment-name}-app-gw-pip |Public IP address
-|Publicly accessible IP address used by the application gateway.
+| `{org}-{deployment-name}-app-gw`
+| Virtual network gateway
+| Application gateway used to provide access to the Web tier from the internet.
+
+| `{org}-{deployment-name}-app-gw-pip`
+| Public IP address
+| Publicly accessible IP address used by the application gateway.
 |===
 
 === Deploy business tier
 
-After deploying the application gateway, you will deploy two business
-tier VMs by modifying the workload parameters file and then using the
-same ``vmapp-lb'' deployment module you used to deploy the application’s
-web tier.
+After deploying the application gateway, you will deploy two business tier VMs using the same `vmapp-lb` deployment module you used to deploy the application's web tier.
 
-To avoid needing to modify the parameter files for this module when
-deploying one or the other, the sample provides two module parameter
-files. These are defined in the workload parameter file’s module
-dependencies section as _vmapp-web-lb_ and _vmapp-biz-lb_, with the
-correct module parameter file location defined for each. In this step we
-will be calling _vmapp-biz-lb_.
+A local user account will be created for these machines. The user name is defined in the `local-admin-user` parameter of the archetype configuration file. The password for this user is generated and stored in the workload key vault as part of the `kv` deployment.
 
-A local user account will be created for these machines. The user name
-is defined in the local-admin-user parameter of the main deployment
-parameters file. The password for this user is generated and stored in
-the workload key vault as part of the ``kv'' deployment.
+Start this deployment by running the following command in the terminal or command-line interface:
 
-Start this deployment by running the following command in the terminal
-or command-line interface:
+.Docker
+[source,bash]
+python vdc.py create shared-services -path archetypes/iaas/archetype.json -m vmapp-biz-lb
 
-{empty}[Linux/OSX]
+.Linux/OSX
+[source,bash]
+python3 vdc.py create shared-services -path archetypes/iaas/archetype.json -m vmapp-biz-lb
 
-____
-_python3 vdc.py workload -path ``archetypes/iaas/archetype.json'' -m
-``__vmapp-biz-lb__''_
-____
+.Windows
+[source,cmd]
+py vdc.py create shared-services -path archetypes/iaas/archetype.json -m vmapp-biz-lb
 
-{empty}[Windows]
+These deployment creates the `{org}-{deployment-name}-biz-rg` resource group that hosts the resources described in the following table.
 
-____
-_py vdc.py workload -path ``archetypes/iaas/archetype.json'' -m
-``__vmapp-biz-lb__''_
-____
-
-{empty}[Docker]
-
-____
-_python vdc.py workload -path ``archetypes/iaas/archetype.json'' -m
-``__vmapp-biz-lb__''_
-____
-
-This deployment creates the _\{organization name}-\{deployment
-name}-biz-rg_ resource group that hosts the resources listed in the
-following table.
-
-[width="100%",cols="60%,10%,30%",options="header",]
+[options="header",cols="a,,a"]
 |===
-|*Resource* |*Type* |*Description*
-|`{org}-{deployment-name}-biz-app-lb |Load balancer |Load
-balancer for business-tier virtual machines.
+| Resource | Type | Description
 
-|`{org}-{deployment-name}-biz-app-vm1 |Virtual machine
-|Business-tier virtual machine #1.
+| `{org}-{deployment-name}-biz-app-lb`
+| Load balancer
+| Load balancer for business-tier virtual machines.
 
-|`{org}-{deployment-name}-biz-app-vm1-nic |Network
-interface |NIC for virtual machine #1.
+| `{org}-{deployment-name}-biz-app-vm1`
+| Virtual machine
+| Business-tier virtual machine #1.
 
-|\{organization name}\{deployment name (dashes
-removed)}bizappvm1osdisk\{random characters} |Disk |OS disk for virtual
-machine #1.
+| `{org}-{deployment-name}-biz-app-vm1-nic`
+| Network interface
+| NIC for virtual machine #1.
 
-|`{org}-{deployment-name}-biz-app-vm2 |Virtual machine
-|Business-tier virtual machine #2.
+| `{org}-{deployment-name}bizappvm1osdisk{random-characters} (with any dashes removed)
+| Disk
+| OS disk for virtual machine #1.
 
-|`{org}-{deployment-name}-biz-app-vm2-nic |Network
-interface |NIC for virtual machine #2.
+| `{org}-{deployment-name}-biz-app-vm2`
+| Virtual machine
+| Business-tier virtual machine #2.
 
-|\{organization name}\{deployment name (dashes
-removed)}bizappvm2osdisk\{random characters} |Disk |OS disk for virtual
-machine #2.
+| `{org}-{deployment-name}-biz-app-vm2-nic`
+| Network interface
+| NIC for virtual machine #2.
 
-|biz-app-as |Availability set |Availability set for biz-tier virtual
-machines.
+| `{org}-{deployment-name}bizappvm2osdisk{random-characters} (with any dashes removed)
+| Disk
+| OS disk for virtual machine #2.
 
-|bizappdiag\{random characters} |Storage account |Business-tier virtual
-machine diagnostic storage account.
+| `biz-app-as`
+| Availability set
+| Availability set for business-tier virtual machines.
+
+| `bizappdiag{random-characters}`
+| Storage account
+| Business-tier virtual machine diagnostic storage account.
 |===
