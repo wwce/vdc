@@ -1,4 +1,7 @@
 = Deploying the sample shared services environment
+:toc:
+:toc-placement: auto
+:toclevels: 1
 
 The following sections provide a step-by-step guide to deploying VDC components using the sample deployments provided. Before starting this process, you need to make sure you have completed the following:
 
@@ -75,9 +78,7 @@ This deployment creates the `{org}-{deployment-name}-la-rg` resource group that 
 
 The next step is deploying the `kv` module, which creates a Key Vault for the shared services and generates the encryption keys that other resources will use in subsequent deployment steps.
 
-In addition to the Key Vault itself, this deployment also generates passwords for the `local-admin-user` and `domain-admin-user` names defined in the archetype configuration file and stores them as secrets in the
-vault. These passwords will be used throughout the deployment process when provisioning VMs in the shared services environment and accessing on-premises resources. To modify the default values for these passwords
-edit the link:../../modules/kv/1.0/azureDeploy.parameters.json[Key Vault (`kv`) module parameters file] and update the `secrets-object` parameter.
+In addition to the Key Vault itself, this deployment also generates passwords for the `local-admin-user` and `domain-admin-user` names defined in the archetype configuration file and stores them as secrets in the vault. These passwords will be used throughout the deployment process when provisioning VMs in the shared services environment and accessing on-premises resources. To modify the default values for these passwords edit the link:../../modules/kv/1.0/azureDeploy.parameters.json[Key Vault (`kv`) module parameters file] and update the `secrets-object` parameter.
 
 image:_media/shared-services-step2-kv.png[Key Vault module]
 
@@ -105,7 +106,7 @@ This deployment creates the `{org}-{deployment-name}-kv-rg` resource group that 
 | Key Vault
 | Key Vault instance for the shared services. One certificate deployed by default.
 
-| `{org}-{deployment-name}-{random-characters}`
+| `{org}{deployment-name}kvdiag{random-characters}` (with any dashes removed)
 | Storage account
 | Location of Key Vault audit logs.
 |===
@@ -164,7 +165,7 @@ This deployment creates the `{org}-{deployment-name}-net-rg` resource group that
 |===
 | Resource | Type | Description
 
-| `{org}-{deployment-name}-diag{random-characters}`
+| `{org}{deployment-name}diag{random-characters}` (with any dashes removed)
 | Storage account
 | Storage account for diagnostic data related to the shared services virtual network.
 
@@ -316,7 +317,7 @@ This deployment creates the `{org}-{deployment-name}-jb-rg` resource group that 
 |===
 | Resource | Type | Description
 
-| `{org}-{deployment-name}-jb{random characters}`
+| `{org}{deployment-name}jbdiag{random characters}` (with any dashes removed)
 | Storage account
 | Storage account used to store diagnostic logs related to the jump box virtual machines.
 
@@ -411,7 +412,7 @@ This deployment creates the `{org}-{deployment-name}-ad-rg` resource group that 
 | Availability set
 | Availability set for ADDS servers.
 
-| `{org}-{deployment-name}addsdiag{random-characters}`
+| `{org}-{deployment-name}addsdiag{random-characters}` (with any dashes removed)
 | Storage account
 | Storage account used to store diagnostic logs related to the ADDS servers.
 

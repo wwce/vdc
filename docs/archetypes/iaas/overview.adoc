@@ -1,244 +1,176 @@
-== Spoke example 2: IaaS N-tier architecture
+= Archetype: IaaS N-tier architecture
+:toc:
+:toc-placement: auto
+:toclevels: 1
 
-In this second example, the toolkit provides example deployments for
-creating an
-https://docs.microsoft.com/azure/architecture/guide/architecture-styles/n-tier[N-tier
-application] using virtual machines. This creates a single virtual
-machine running SQL Server, and two load-balanced virtual machines for
+This archetype is based on the link:https://docs.microsoft.com/azure/architecture/guide/architecture-styles/n-tier[N-tier application] reference architecture using virtual machines. The archetype deploys a single virtual machine running SQL Server and two load-balanced virtual machines for
 each of your application tiers.
 
-=== Prerequisite: create and configure your parameters file
+== Create your archetype configuration file
 
-As discussed in the
-link:03-parameters-files.md#parameters-files[parameter files] topic, the
-VDC Automation Toolkit provides a default test version of the top-level
-deployment parameter file. You will need to create a new version of this
-file before running your deployment.
+The toolkit provides an example configuration file for the shared services environment. You will need to create a new version of this file before running your deployment.
 
-To do this, navigate to the toolkit’s
-link:../archetypes/iaas[archetypes/iaas] folder, then make a copy of the
-_archetype.test.json_, and name this copy _archetype.json_. Then proceed
-to edit archetype.json providing the subscription, organization,
-networking, and other configuration information that you want to use for
-your deployment. Make sure you use values for the hub and on-premises
-parameters consistent with those components of your VDC deployment.
+1. Navigate to the toolkit's link:../../archetypes/shared-services[archetypes/shared-services] folder.
+1. Make a copy of the `archetype.test.json` and name the copy `archetype.json`.
+1. Edit `archetype.json` providing the subscription, organization, networking, and other configuration information that you want to use for your deployment. You will need to use some of the same values when creating the configuration for the shared services environment.
 
-If your copy of the toolkit is associated with a git repository, the
-link:../.gitignore[.gitignore] file provided by the default VDC
-Automation Toolkit is set to prevent this archetype.json file from being
-pushed to your code repository.
+If your copy of the toolkit is associated with the git repository, the link:../../.gitignore[.gitignore] file is set to prevent your deployment `archetype.json` file from being pushed to your code repository.
 
-=== Deploy workload infrastructure
+== Run the deployment
 
-All workload environments require a common set of operations, key vault,
-and virtual network resources before they can connect to the hub network
-and host workloads. The following steps will deploy these required
-resources.
+All workload environments require a common set of operations, key vault, and virtual network resources before they can connect to the hub network
+and host workloads. The following steps will deploy these required resources.
 
-image:media/VDC1.5_Spoke2-blank.png[image]
+image:_media/workload-iaas-empty.png[Before deploying the workload]
 
-==== Step 1: Deploy workload operations and monitoring resources
+=== Step 1: Deploy operations and monitoring resources
 
 *Required role: SysOps*
 
-This step provisions the operations and monitoring resources for the
-workload environment.
+This step provisions the operations and monitoring resources for the workload environment.
 
-Start the ``ops'' deployment by running the following command in the
-terminal or command-line interface:
+Start the `la` deployment by running the following command in the terminal or command-line interface:
 
-{empty}[Linux/OSX]
+.Docker
+[source,bash]
+python vdc.py create shared-services -path archetypes/iaas/archetype.json -m la
 
-____
-_python3 vdc.py create workload -path ``archetypes/iaas/archetype.json''
--m ``la''_
-____
+.Linux/OSX
+[source,bash]
+python3 vdc.py create shared-services -path archetypes/iaas/archetype.json -m la
 
-{empty}[Windows]
+.Windows
+[source,cmd]
+py vdc.py create shared-services -path archetypes/iaas/archetype.json -m la
 
-____
-_py vdc.py create workload -path ``archetypes/iaas/archetype.json'' -m
-``la''_
-____
+This deployment creates the `{org}-{deployment-name}-la-rg` resource group that hosts the resources described in the following table.
 
-{empty}[Docker]
-
-____
-_python vdc.py create workload -path ``archetypes/iaas/archetype.json''
--m ``la''_
-____
-
-This deployment creates the _\{organization name}-\{deployment
-name}-la-rg_ resource group that hosts the resources in the following
-table.
-
-[width="100%",cols="42%,14%,44%",options="header",]
+[options="header",cols="a,,"]
 |===
-|*Resource* |*Type* |*Description*
-|\{organization name}-\{deployment name}-oms |Log Analytics |Log
-Analytics instance for monitoring the hub network.
+| Resource | Type | Description
+
+| `{org}-{deployment-name}-la`
+| Log Analytics
+| Log Analytics instance for monitoring the workload's network.
 |===
 
-==== Step 2: Deploy workload Key Vault
+== Step 2: Deploy Key Vault
 
 *Required role: SecOps*
 
-This step deploys the workload ``kv'' resource, which deploys a Key
-Vault for the workload environment and generates the encryption keys
-that are used for resources deployed by the workspace DevOps teams.
+The next step is deploying the `kv` module, which creates a Key Vault for the shared services and generates the encryption keys that other resources will use in subsequent deployment steps.
 
-In addition to the workload Key Vault, this deployment generates a
-password for the local-admin-user name defined in the workload
-parameters file, as well as a base64 certificate string and certificate
-password used for encrypting resources later in the deployment process.
-These values are stored as secrets in the vault. To modify the default
-values for these passwords edit the
-link:../modules/workload-kv/1.0/azureDeploy.parameters.json[Key Vault
-deployment parameters file] and update the secrets-object parameter.
+In addition to the workload Key Vault, this deployment generates a password for the `local-admin-user` name defined in the workload parameters file, as well as a base64 certificate string and certificate password used for encrypting resources later in the deployment process. These values are stored as secrets in the vault. To modify the default values for these passwords edit the link:../../modules/kv/1.0/azureDeploy.parameters.json[Key Vault (`kv`) module parameters file] and update the `secrets-object` parameter.
 
-Start the ``kv'' deployment by running the following command in the
-terminal or command-line interface:
+Start the `kv` deployment by running the following command in the terminal or command-line interface:
 
-{empty}[Linux/OSX]
+.Docker
+[source,bash]
+python vdc.py create shared-services -path archetypes/iaas/archetype.json -m kv
 
-____
-_python3 vdc.py create workload -path ``archetypes/iaas/archetype.json''
--m ``workload-kv''_
-____
+.Linux/OSX
+[source,bash]
+python3 vdc.py create shared-services -path archetypes/iaas/archetype.json -m kv
 
-{empty}[Windows]
+.Windows
+[source,cmd]
+py vdc.py create shared-services -path archetypes/iaas/archetype.json -m kv
 
-____
-_py vdc.py create workload -path ``archetypes/iaas/archetype.json'' -m
-``workload-kv''_
-____
+This deployment creates the `{org}-{deployment-name}-kv-rg` resource group that hosts the resources described in the following table.
 
-{empty}[Docker]
-
-____
-_python vdc.py create workload -path ``archetypes/iaas/archetype.json''
--m ``workload-kv''_
-____
-
-This deployment creates the _\{organization name}-\{deployment
-name}-kv-rg_ resource group that hosts the resources listed in the
-following table.
-
-[width="100%",cols="40%,11%,49%",options="header",]
+[options="header",cols="a,,"]
 |===
-|*Resource* |*Type* |*Description*
-|\{organization name}-\{deployment name}-kv |Key Vault |Key Vault
-instance for the workload. One certificate deployed by default.
+| Resource | Type | Description
 
-|\{organization name}\{deployment name (dashes removed)}kvdiag |Storage
-account |Location of Key Vault audit logs.
+| `{org}-{deployment-name}-kv` 
+| Key Vault
+| Key Vault instance for the shared services. One certificate deployed by default.
+
+| `{org}{deployment-name}kvdiag` (with any dashes removed)
+| Storage account
+| Location of Key Vault audit logs.
 |===
 
-==== Step 3: Deploy workload virtual network
+== Step 3: Deploy the virtual network
 
 *Required role: NetOps*
 
 This step involves two resource deployments in the following order:
 
-* The ``nsg'' deployment module creates the network security groups
-(NSGs) and Azure security groups (ASGs) that secure the workload virtual
-network. By default, the example workload net deployment creates a set
-of NSGs and ASGs compatible with an _n_-tier application, consisting of
-web, business, and data tiers.
-* The ``net'' deployment module creates the workload virtual network,
-along with setting up the default subnet and User Defined Routes (UDRs)
-used to route traffic to the hub network. This deployment also creates
-the VNet peering that connects the hub and workload networks.
+- The `nsg` module creates the network security groups (NSGs) and Azure security groups (ASGs) that secure the workload's virtual network. By default, the example workload net deployment creates a set of NSGs and ASGs compatible with an n-tier application, consisting of web, business, and data tiers. 
+- The `workload-net` module creates the workload's virtual network, along with setting up the default subnet and User Defined Routes (UDRs)
+used to route traffic to the shared servicves network. This deployment also creates the VNet peering that connects the shared servicves and workload networks.
 
-Start the ``nsg'' deployment by running the following command in the
-terminal or command-line interface:
+Start the `nsg` deployment by running the following command in the terminal or command-line interface:
 
-{empty}[Linux/OSX]
+.Docker
+[source,bash]
+python vdc.py create shared-services -path archetypes/iaas/archetype.json -m nsg
 
-____
-_python3 vdc.py create workload -path ``archetypes/iaas/archetype.json''
--m ``nsg''_
-____
+.Linux/OSX
+[source,bash]
+python3 vdc.py create shared-services -path archetypes/iaas/archetype.json -m nsg
 
-{empty}[Windows]
+.Windows
+[source,cmd]
+py vdc.py create shared-services -path archetypes/iaas/archetype.json -m nsg
 
-____
-_py vdc.py create workload -path ``archetypes/iaas/archetype.json'' -m
-``nsg''_
-____
+Then start the `workload-net` deployment by running the following command in the terminal or command-line interface:
 
-{empty}[Docker]
+.Docker
+[source,bash]
+python vdc.py create shared-services -path archetypes/iaas/archetype.json -m workload-net
 
-____
-_python vdc.py create workload -path ``archetypes/iaas/archetype.json''
--m ``nsg''_
-____
+.Linux/OSX
+[source,bash]
+python3 vdc.py create shared-services -path archetypes/iaas/archetype.json -m workload-net
 
-Then start the ``net'' deployment by running the following command in
-the terminal or command-line interface:
+.Windows
+[source,cmd]
+py vdc.py create shared-services -path archetypes/iaas/archetype.json -m workload-net
 
-{empty}[Linux/OSX]
+These deployment creates the `{org}-{deployment-name}-net-rg` resource group that hosts the resources described in the following table.
 
-____
-_python3 vdc.py create workload -path ``archetypes/iaas/archetype.json''
--m ``workload-net''_
-____
-
-{empty}[Windows]
-
-____
-_py vdc.py create workload -path ``archetypes/iaas/archetype.json'' -m
-``workload-net''_
-____
-
-{empty}[Docker]
-
-____
-_python vdc.py create workload -path ``archetypes/iaas/archetype.json''
--m ``workload-net''_
-____
-
-These deployments create the _\{organization name}-\{deployment
-name}-net-rg_ resource group that hosts the resources detailed in the
-following table.
-
-[width="100%",cols="40%,18%,42%",options="header",]
+[options="header",cols="a,,a"]
 |===
-|*Resource* |*Type* |*Description*
-|\{organization name}-\{deployment name}-business-asg |Application
-security group |ASG for business-tier assets.
+| Resource | Type | Description
 
-|\{organization name}-\{deployment name}-data-asg |Application security
-group |ASG for data-tier assets.
+|`{org}-{deployment-name}-business-asg`
+| Application security group
+| ASG for business-tier resources.
 
-|\{organization name}-\{deployment name}-web-asg |Application security
-group |ASG for web-tier assets.
+| `{org}-{deployment-name}-data-asg`
+| Application security group
+| ASG for data-tier resources.
 
-|\{organization name}-\{deployment name}-vnet |Virtual network |The
-primary workload virtual network, with a single default subnet.
+| `{org}-{deployment-name}-web-asg`
+| Application security group
+| ASG for web-tier resources.
 
-|\{organization name}-\{deployment name}-\{defaultsubnetname}-nsg
-|Network security group |Network security group attached to the default
-subnet.
+| `{org}-{deployment-name}-vnet`
+| Virtual network
+| The primary workload's virtual network with a single default subnet.
 
-|\{organization name}-\{deployment name}-udr |Route table |User Defined
-Routes for routing traffic to and from the hub network.
+| `{org}-{deployment-name}-{defaultsubnetname}-nsg`
+| Network security group
+| Network security group attached to the default subnet.
 
-|\{deployment name (dashes removed)} |Storage account |Storage location
-for virtual network diagnostic data.
+| `{org}-{deployment-name}-udr`
+| Route table
+| User Defined Routes for routing traffic to and from the shared services network.
+
+| `{org}{deployment-name}diag{random-characters}` (with any dashes removed)
+| Storage account 
+| Storage location for virtual network diagnostic data.
 |===
 
-=== Deploy workload resources
+== Deploy workload resources
 
-Once the workload operations, Key Vault, and virtual network resources
-are provisioned, your team can begin deploying actual workload
-resources. Performing the following tasks provisions the virtual
-machines and load balancers needed by DevOps to deploy an application
-with a data, business, and web tier.
+Once the workload operations, Key Vault, and virtual network resources are provisioned, your team can begin deploying the actual workload resources. Performing the following tasks provisions the virtual machines and load balancers needed by DevOps to deploy an application with a data, business, and web tier.
 
-image:media/VDC1.5_Spoke2-complete.png[image]
+image:_media/workload-iaas-complate.png[Workload deployed into spoke network]
 
-==== Deploy data tier
+=== Deploy data tier
 
 The ``sqlserver-alwayson'' deployment module creates a pair of
 load-balanced SQL Server virtual machines used for the application’s
@@ -307,23 +239,23 @@ Witness] storage account.
 |sqlsvrdiag\{random characters} |Storage account |SQL Server virtual
 machine diagnostic storage account.
 
-|\{organization name}-\{deployment name}-sqlsvr-lb |Load balancer |Load
+|`{org}-{deployment-name}-sqlsvr-lb |Load balancer |Load
 balancer for virtual machines.
 
-|\{organization name}-\{deployment name}-sqlsvr-vm1 |Virtual machine
+|`{org}-{deployment-name}-sqlsvr-vm1 |Virtual machine
 |SQL Server virtual machine #1.
 
-|\{organization name}-\{deployment name}-sqlsvr-vm1-nic |Network
+|`{org}-{deployment-name}-sqlsvr-vm1-nic |Network
 interface |NIC for SQL Server virtual machine #1.
 
-|\{organization name}-\{deployment name}-sqlsvr-vm2 |Virtual machine
+|`{org}-{deployment-name}-sqlsvr-vm2 |Virtual machine
 |SQL Server virtual machine #2.
 
-|\{organization name}-\{deployment name}-sqlsvr-vm2-nic |Network
+|`{org}-{deployment-name}-sqlsvr-vm2-nic |Network
 interface |NIC for SQL Server virtual machine #2.
 |===
 
-==== Deploy web tier
+=== Deploy web tier
 
 The ``vmapp-lb'' deployment module creates the two virtual machines and
 a load balancer used by the application’s web-tier assets.
@@ -372,23 +304,23 @@ following table.
 [width="100%",cols="60%,10%,30%",options="header",]
 |===
 |*Resource* |*Type* |*Description*
-|\{organization name}-\{deployment name}-web-app-lb |Load balancer |Load
+|`{org}-{deployment-name}-web-app-lb |Load balancer |Load
 balancer for Web-tier virtual machines.
 
-|\{organization name}-\{deployment name}-web-app-vm1 |Virtual machine
+|`{org}-{deployment-name}-web-app-vm1 |Virtual machine
 |Web-tier virtual machine #1.
 
-|\{organization name}-\{deployment name}-web-app-vm1-nic |Network
+|`{org}-{deployment-name}-web-app-vm1-nic |Network
 interface |NIC for virtual machine #1.
 
 |\{organization name}\{deployment name (dashes
 removed)}webappvm1osdisk\{random characters} |Disk |OS disk for virtual
 machine #1.
 
-|\{organization name}-\{deployment name}-web-app-vm2 |Virtual machine
+|`{org}-{deployment-name}-web-app-vm2 |Virtual machine
 |Web-tier virtual machine #2.
 
-|\{organization name}-\{deployment name}-web-app-vm2-nic |Network
+|`{org}-{deployment-name}-web-app-vm2-nic |Network
 interface |NIC for virtual machine #2.
 
 |\{organization name}\{deployment name (dashes
@@ -402,7 +334,7 @@ machines.
 machine diagnostic storage account.
 |===
 
-==== Deploy Application Gateway to hub virtual network
+=== Deploy Application Gateway to hub virtual network
 
 *Required role: NetOps*
 
@@ -442,15 +374,15 @@ resources detailed in the following table.
 [width="100%",cols="50%,12%,38%",options="header",]
 |===
 |*Resource* |*Type* |*Description*
-|\{organization name}-\{deployment name}-app-gw |Virtual network gateway
+|`{org}-{deployment-name}-app-gw |Virtual network gateway
 |Application gateway used to provide access to the Web tier from the
 internet.
 
-|\{organization name}-\{deployment name}-app-gw-pip |Public IP address
+|`{org}-{deployment-name}-app-gw-pip |Public IP address
 |Publicly accessible IP address used by the application gateway.
 |===
 
-==== Deploy business tier
+=== Deploy business tier
 
 After deploying the application gateway, you will deploy two business
 tier VMs by modifying the workload parameters file and then using the
@@ -500,23 +432,23 @@ following table.
 [width="100%",cols="60%,10%,30%",options="header",]
 |===
 |*Resource* |*Type* |*Description*
-|\{organization name}-\{deployment name}-biz-app-lb |Load balancer |Load
+|`{org}-{deployment-name}-biz-app-lb |Load balancer |Load
 balancer for business-tier virtual machines.
 
-|\{organization name}-\{deployment name}-biz-app-vm1 |Virtual machine
+|`{org}-{deployment-name}-biz-app-vm1 |Virtual machine
 |Business-tier virtual machine #1.
 
-|\{organization name}-\{deployment name}-biz-app-vm1-nic |Network
+|`{org}-{deployment-name}-biz-app-vm1-nic |Network
 interface |NIC for virtual machine #1.
 
 |\{organization name}\{deployment name (dashes
 removed)}bizappvm1osdisk\{random characters} |Disk |OS disk for virtual
 machine #1.
 
-|\{organization name}-\{deployment name}-biz-app-vm2 |Virtual machine
+|`{org}-{deployment-name}-biz-app-vm2 |Virtual machine
 |Business-tier virtual machine #2.
 
-|\{organization name}-\{deployment name}-biz-app-vm2-nic |Network
+|`{org}-{deployment-name}-biz-app-vm2-nic |Network
 interface |NIC for virtual machine #2.
 
 |\{organization name}\{deployment name (dashes
