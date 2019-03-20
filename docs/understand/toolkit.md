@@ -19,8 +19,6 @@ As you can see from these samples, an archetype can satisfy a variety of needs. 
 
 Archetypes are defined in the toolkit using a JSON notation. Take a look at the [configuration for the sample shared services archetype](../archetypes/shared-services/archetype.test.json) for a represenative example.  Archetypes are located in the `archetypes` folder.
 
-<!-- TODO: document this notation -->
-
 The configuration file, typically named `archetype.json`, for an archetype contains arguments and a set of _modules_ that make up the archetype.
 
 ## Modules
@@ -49,8 +47,8 @@ The toolkit provides three additional scripts for managing your Azure environmen
 - `role_creation.py` - For creating roles and permissions in a subscription _before_ making a deployment.
 - `policy_assignment.py` - For updating policy _after_ deploying resources.
 
-<!-- TODO: link to usage docs for each script. Maybe that's in Next steps? -->
-
 ## Next steps
 
-Learn about the [typical usage pattern](workflow.md) for the tools in the toolkit.
+- Learn about the [typical usage pattern](workflow.md) for the tools in the toolkit.
+- Learn more about the toolkit's [sample archetypes](archetypes.adoc) and [modules](modules.adoc).
+- See the [refernence documentation for the scripts(../reference/readme.md)].
