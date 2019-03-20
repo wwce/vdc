@@ -10,7 +10,7 @@ each of your application tiers.
 
 The toolkit provides an example configuration file for the shared services environment. You will need to create a new version of this file before running your deployment.
 
-1. Navigate to the toolkit's link:../../archetypes/shared-services[archetypes/shared-services] folder.
+1. Navigate to the toolkit's link:../../archetypes/ntier-iaas[archetypes/ntier-iaas] folder.
 1. Make a copy of the `archetype.test.json` and name the copy `archetype.json`.
 1. Edit `archetype.json` providing the subscription, organization, networking, and other configuration information that you want to use for your deployment. You will need to use some of the same values when creating the configuration for the shared services environment.
 

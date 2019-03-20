@@ -1,29 +1,32 @@
-== iaas deployment parameters (workload section)
+== IaaS N-tier deployment parameters
 
-These parameters are specific to the
-link:../archetypes/iaas/parameters/archetype.test.json[iaas example]
-workload deployment.
+These parameters are specific to the link:../archetypes/ntier-iaas/parameters/archetype.test.json[IaaS example] workload deployment. They are in the `workload` section.
 
-[width="100%",cols="8%,6%,86%",options="header",]
+[options="header",cols="a,,a"]
 |===
-|*Parameter name* |*Type* |*Description*
-|vmapp-start-ip-address |IPV4 Address |IP address of first virtual
-machine instance. Additional instances will increment off this value.
+| Parameter name | Type | Description
 
-|vmapp-lb-ip-address |IPV4 Address |IP address of the virtual machine
-load balancer.
+| `vmapp-start-ip-address`
+| IPV4 Address
+| IP address of first virtual machine instance. Additional instances will increment off this value.
 
-|vmapp-prefix``:''web-app |String |Prefix to apply to virtual machine
-names
+| `vmapp-lb-ip-address`
+| IPV4 Address
+| IP address of the virtual machine load balancer.
 
-|sql-server-cluster-name |String |Name of SQL Server failover cluster.
+| `sql-server-cluster-name`
+| String
+| Name of SQL Server failover cluster.
 
-|sql-server-start-ip-address |IPV4 Address |IP address of first SQL
-Server instance. Additional instances will increment off this value.
+| `sql-server-start-ip-address`
+| IPV4 Address
+| IP address of first SQL Server instance. Additional instances will increment off this value.
 
-|sql-server-ilb-ip-address |IPV4 Address |IP address of the SQL Server
-load balancer.
+| `sql-server-ilb-ip-address`
+| IPV4 Address
+| IP address of the SQL Server load balancer.
 
-|sql-server-cluster-ip-address |IPV4 Address |IP address for used by
-clients to connect to the SQL Server failover cluster.
+| `sql-server-cluster-ip-address`
+| IPV4 Address
+| IP address for used by clients to connect to the SQL Server failover cluster.
 |===
