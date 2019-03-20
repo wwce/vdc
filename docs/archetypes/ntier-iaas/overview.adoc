@@ -9,7 +9,7 @@ This archetype is based on the link:https://docs.microsoft.com/azure/architectur
 
 The toolkit provides an example configuration file for the shared services environment. You will need to create a new version of this file before running your deployment.
 
-1. Navigate to the toolkit's link:../../archetypes/ntier-iaas[archetypes/ntier-iaas] folder.
+1. Navigate to the toolkit's link:../../../archetypes/ntier-iaas[archetypes/ntier-iaas] folder.
 1. Make a copy of the `archetype.test.json` and name the copy `archetype.json`.
 1. Edit `archetype.json` providing the subscription, organization, networking, and other configuration information that you want to use for your deployment. You will need to use some of the same values when creating the configuration for the shared services environment.
 
@@ -97,8 +97,7 @@ This deployment creates the `{org}-{deployment-name}-kv-rg` resource group that 
 This step involves two resource deployments in the following order:
 
 - The `nsg` module creates the network security groups (NSGs) and Azure security groups (ASGs) that secure the workload's virtual network. By default, the example workload net deployment creates a set of NSGs and ASGs compatible with an n-tier application, consisting of web, business, and data tiers. 
-- The `workload-net` module creates the workload's virtual network, along with setting up the default subnet and User Defined Routes (UDRs)
-used to route traffic to the shared servicves network. This deployment also creates the VNet peering that connects the shared servicves and workload networks.
+- The `workload-net` module creates the workload's virtual network, along with setting up the default subnet and User Defined Routes (UDRs) used to route traffic to the shared servicves network. This deployment also creates the VNet peering that connects the shared servicves and workload networks.
 
 Start the `nsg` deployment by running the following command in the terminal or command-line interface:
 

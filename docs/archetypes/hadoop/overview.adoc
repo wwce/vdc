@@ -1,358 +1,274 @@
-== Workload example 3: Hadoop deployment
+= Archetype: Hadoop deployment
+:toc:
+:toc-placement: auto
+:toclevels: 2
 
-The toolkit’s third example workload workload is a
-https://azure.microsoft.com/blog/hortonworks-extends-iaas-offering-on-azure-with-cloudbreak/[Cloudbreak]
-managed Hadoop deployment, which takes advantage of Azure’s managed
-https://azure.microsoft.com/services/postgresql/[Database for
-PostgreSQL] and https://azure.microsoft.com/services/mysql/[Database for
-MySQL] offerings.
+This archetype is based on the link:https://azure.microsoft.com/blog/hortonworks-extends-iaas-offering-on-azure-with-cloudbreak/[Cloudbreak] managed Hadoop deployment, which takes advantage of Azure’s managed link:https://azure.microsoft.com/services/postgresql/[Database for PostgreSQL] and link:[https://azure.microsoft.com/services/mysql/[Database for MySQL] offerings.
 
-=== Prerequisite: create and configure your parameters file
+== Create your archetype configuration file
 
-As discussed in the
-link:03-parameters-files.md#parameters-files[parameter files] topic, the
-VDC Automation Toolkit provides a default test version of the top-level
-deployment parameter file. You will need to create a new version of this
-file before running your deployment.
+The toolkit provides an example configuration file for the shared services environment. You will need to create a new version of this file before running your deployment.
 
-To do this, navigate to the toolkit’s
-link:../archetypes/cloudbreak[archetypes/cloudbreak] folder, then make a
-copy of the _archetype.test.json_, and name this copy _archetype.json_.
-Then proceed to edit archetype.json providing the subscription,
-organization, networking, and other configuration information that you
-want to use for your deployment. Make sure you use values for the hub
-and on-premises parameters consistent with those components of your VDC
-deployment.
+1. Navigate to the toolkit's link:../../archetypes/cloudbreak[archetypes/cloudbreak] folder.
+1. Make a copy of the `archetype.test.json` and name the copy `archetype.json`.
+1. Edit `archetype.json` providing the subscription, organization, networking, and other configuration information that you want to use for your deployment. You will need to use some of the same values when creating the configuration for the shared services environment.
 
-If your copy of the toolkit is associated with a git repository, the
-link:../.gitignore[.gitignore] file provided by the default VDC
-Automation Toolkit is set to prevent this azureDeploy.parameters.json
-file from being pushed to your code repository.
+If your copy of the toolkit is associated with the git repository, the link:../../.gitignore[.gitignore] file is set to prevent your deployment `archetype.json` file from being pushed to your code repository.
 
-=== Deploy workload infrastructure
+== Run the deployment
 
-All workload environments require a common set of operations, key vault,
-and virtual network resources before they can connect to the hub network
-and host workloads. The following steps will deploy these required
-resources.
+This archetype includes a set of reosurces (Log Analytics, Key Vault, and VNet) for integrating with the shared service environment. The following steps will deploy these required resources.
 
-==== Step 1: Deploy workload operations and monitoring resources
+=== Step 1: Deploy workload operations and monitoring resources
 
 *Required role: SysOps*
 
-This step provisions the operations and monitoring resources for the
-workload environment.
+This step provisions the operations and monitoring resources for the workload environment.
 
-Start the ``ops'' deployment by running the following command in the
-terminal or command-line interface:
+Start the `la` module by running the following command in the terminal or command-line interface:
 
-{empty}[Linux/OSX]
+.Docker
+[source,bash]
+python vdc.py create workload -path archetypes/cloudbreak/archetype.json -m la
 
-____
-_python3 vdc.py create workload -path
-``archetypes/cloudbreak/archetype.json'' -m ``la''_
-____
+.Linux/OSX
+[source,bash]
+python3 vdc.py create workload -path archetypes/cloudbreak/archetype.json -m la
 
-{empty}[Windows]
+.Windows
+[source,cmd]
+py vdc.py create workload -path archetypes/cloudbreak/archetype.json -m la
 
-____
-_py vdc.py create workload -path
-``archetypes/cloudbreak/archetype.json'' -m ``la''_
-____
+This deployment creates the `{org}-{deployment-name}-la-rg` resource group that hosts the resources described in the following table.
 
-{empty}[Docker]
-
-____
-_python vdc.py create workload -path
-``archetypes/cloudbreak/archetype.json'' -m ``la''_
-____
-
-This deployment creates the _\{organization name}-\{deployment
-name}-la-rg_ resource group that hosts the resources in the following
-table.
-
-[width="100%",cols="42%,14%,44%",options="header",]
+[options="header",cols="a,,"]
 |===
-|*Resource* |*Type* |*Description*
-|\{organization name}-\{deployment name}-oms |Log Analytics |Log
-Analytics instance for monitoring the hub network.
+| Resource | Type | Description
+
+| `{org}-{deployment-name}-la`
+| Log Analytics
+| Log Analytics instance for monitoring the workload's network.
 |===
 
-==== Step 2: Deploy workload Key Vault
+=== Step 2: Deploy Key Vault
 
 *Required role: SecOps*
 
-This step deploys the workload ``kv'' resource, which deploys a Key
-Vault for the workload environment and generates the encryption keys
-that are used for resources deployed by the workspace DevOps teams.
+The next step is deploying the `kv` module, which creates a Key Vault for the shared services and generates the encryption keys that other resources will use in subsequent deployment steps.
 
-In addition to the workload Key Vault, this deployment generates a
-password for the local-admin-user name defined in the workload
-parameters file. This password is stored as a secret in the vault. To
-modify the default values for these passwords edit the
-link:../modules/workload-kv/1.0/azureDeploy.parameters.json[Key Vault
-deployment parameters file] and update the secrets-object parameter.
+In addition to the workload Key Vault, this deployment generates a password for the `local-admin-user` name defined in the workload parameters file, as well as a base64 certificate string and certificate password used for encrypting resources later in the deployment process. These values are stored as secrets in the vault. To modify the default values for these passwords edit the link:../../modules/kv/1.0/azureDeploy.parameters.json[Key Vault (`kv`) module parameters file] and update the `secrets-object` parameter.
 
-Start the ``kv'' deployment by running the following command in the
-terminal or command-line interface:
+Start the `kv` deployment by running the following command in the terminal or command-line interface:
 
-{empty}[Linux/OSX]
+.Docker
+[source,bash]
+python vdc.py create workload -path archetypes/cloudbreak/archetype.json -m kv
 
-____
-_python3 vdc.py create workload -path
-``archetypes/cloudbreak/archetype.json'' -m ``workload-kv''_
-____
+.Linux/OSX
+[source,bash]
+python3 vdc.py create workload -path archetypes/cloudbreak/archetype.json -m kv
 
-{empty}[Windows]
+.Windows
+[source,cmd]
+py vdc.py create workload -path archetypes/cloudbreak/archetype.json -m kv
 
-____
-_py vdc.py create workload -path
-``archetypes/cloudbreak/archetype.json'' -m ``workload-kv''_
-____
+This deployment creates the `{org}-{deployment-name}-kv-rg` resource group that hosts the resources described in the following table.
 
-{empty}[Docker]
-
-____
-_python vdc.py create workload -path
-``archetypes/cloudbreak/archetype.json'' -m ``workload-kv''_
-____
-
-This deployment creates the _\{organization name}-\{deployment
-name}-kv-rg_ resource group that hosts the resources listed in the
-following table.
-
-[width="100%",cols="40%,11%,49%",options="header",]
+[options="header",cols="a,,"]
 |===
-|*Resource* |*Type* |*Description*
-|\{organization name}-\{deployment name}-kv |Key Vault |Key Vault
-instance for the workload. One certificate deployed by default.
+| Resource | Type | Description
 
-|\{organization name}\{deployment name (dashes removed)}kvdiag\{random
-characters} |Storage account |Location of Key Vault audit logs.
+| `{org}-{deployment-name}-kv` 
+| Key Vault
+| Key Vault instance for the workload. One certificate deployed by default.
+
+| `{org}{deployment-name}kvdiag` (with any dashes removed)
+| Storage account
+| Location of Key Vault audit logs.
 |===
 
-==== Step 3: Deploy workload virtual network
+=== Step 3: Deploy the virtual network
 
 *Required role: NetOps*
 
 This step involves two resource deployments in the following order:
 
-* The ``nsg'' deployment module creates the network security groups
-(NSGs) and Azure security groups (ASGs) that secure the workload virtual
-network. By default, the example workload net deployment creates a set
-of NSGs and ASGs compatible with an _n_-tier application, consisting of
-web, business, and data tiers.
-* The ``net'' deployment module creates the workload virtual network,
-along with setting up the default subnet and User Defined Routes (UDRs)
-used to route traffic to the hub network. This deployment also creates
-the VNet peering that connects the hub and workload networks.
+- The `nsg` module creates the network security groups (NSGs) and Azure security groups (ASGs) that secure the workload's virtual network. By default, the example workload net deployment creates a set of NSGs and ASGs compatible with an n-tier application, consisting of web, business, and data tiers. 
+- The `workload-net` module creates the workload's virtual network, along with setting up the default subnet and User Defined Routes (UDRs) used to route traffic to the shared servicves network. This deployment also creates the VNet peering that connects the shared servicves and workload networks.
 
-Start the ``nsg'' deployment by running the following command in the
-terminal or command-line interface:
+Start the `nsg` deployment by running the following command in the terminal or command-line interface:
 
-{empty}[Linux/OSX]
+.Docker
+[source,bash]
+python vdc.py create workload -path archetypes/cloudbreak/archetype.json -m nsg
 
-____
-_python3 vdc.py create workload -path
-``archetypes/cloudbreak/archetype.json'' -m ``nsg''_
-____
+.Linux/OSX
+[source,bash]
+python3 vdc.py create workload -path archetypes/cloudbreak/archetype.json -m nsg
 
-{empty}[Windows]
+.Windows
+[source,cmd]
+py vdc.py create workload -path archetypes/cloudbreak/archetype.json -m nsg
 
-____
-_py vdc.py create workload -path
-``archetypes/cloudbreak/archetype.json'' -m ``nsg''_
-____
+Then start the `workload-net` deployment by running the following command in the terminal or command-line interface:
 
-{empty}[Docker]
+.Docker
+[source,bash]
+python vdc.py create workload -path archetypes/cloudbreak/archetype.json -m workload-net
 
-____
-_python vdc.py create workload -path
-``archetypes/cloudbreak/archetype.json'' -m ``nsg''_
-____
+.Linux/OSX
+[source,bash]
+python3 vdc.py create workload -path archetypes/cloudbreak/archetype.json -m workload-net
 
-Then start the ``net'' deployment by running the following command in
-the terminal or command-line interface:
+.Windows
+[source,cmd]
+py vdc.py create workload -path archetypes/cloudbreak/archetype.json -m workload-net
 
-{empty}[Linux/OSX]
+These deployment creates the `{org}-{deployment-name}-net-rg` resource group that hosts the resources described in the following table.
 
-____
-_python3 vdc.py create workload -path
-``archetypes/cloudbreak/archetype.json'' -m ``workload-net''_
-____
-
-{empty}[Windows]
-
-____
-_py vdc.py create workload -path
-``archetypes/cloudbreak/archetype.json'' -m ``workload-net''_
-____
-
-{empty}[Docker]
-
-____
-_python vdc.py create workload -path
-``archetypes/cloudbreak/archetype.json'' -m ``workload-net''_
-____
-
-These deployments create the _\{organization name}-\{deployment
-name}-net-rg_ resource group that hosts the resources detailed in the
-following table.
-
-[width="100%",cols="41%,15%,44%",options="header",]
+[options="header",cols="a,,a"]
 |===
-|*Resource* |*Type* |*Description*
-|\{organization name}-\{deployment name}-vnet |Virtual network |The
-primary workload virtual network, with a single default subnet.
+| Resource | Type | Description
 
-|\{organization name}-\{deployment name}-\{defaultsubnetname}-nsg
-|Network security group |Network security group attached to the default
-subnet.
+|`{org}-{deployment-name}-business-asg`
+| Application security group
+| ASG for business-tier resources.
 
-|\{organization name}-\{deployment name}-udr |Route table |User Defined
-Routes for routing traffic to and from the hub network.
+| `{org}-{deployment-name}-data-asg`
+| Application security group
+| ASG for data-tier resources.
 
-|business-asg |Azure security group |ASG for business-tier assets.
+| `{org}-{deployment-name}-web-asg`
+| Application security group
+| ASG for web-tier resources.
 
-|web-asg |Azure security group |ASG for web-tier assets.
+| `{org}-{deployment-name}-vnet`
+| Virtual network
+| The primary workload's virtual network with a single default subnet.
 
-|data-asg |Azure security group |ASG for data-tier assets.
+| `{org}-{deployment-name}-{defaultsubnetname}-nsg`
+| Network security group
+| Network security group attached to the default subnet.
 
-|\{deployment name (dashes removed)}diag\{random characters} |Storage
-account |Storage location for virtual network diagnostic data.
+| `{org}-{deployment-name}-udr`
+| Route table
+| User Defined Routes for routing traffic to and from the shared services network.
+
+| `{org}{deployment-name}diag{random-characters}` (with any dashes removed)
+| Storage account 
+| Storage location for virtual network diagnostic data.
 |===
 
-=== Deploy workload resources
+== Deploy workload resources
 
-Once the workload operations, Key Vault, and virtual network resources
-are provisioned, your team can begin deploying actual workload
-resources. Performing the following tasks provisions the availability
-sets, virtual machines, Azure PostgreSQL, and Azure MySQL resources
-needed to deploy a virtual machine running a Cloudbreak managed Hadoop
-application.
+Once the workload operations, Key Vault, and virtual network resources are provisioned, your team can begin deploying actual workload resources. Performing the following tasks provisions the availability sets, virtual machines, Azure PostgreSQL, and Azure MySQL resources needed to deploy a virtual machine running a Cloudbreak managed Hadoop application.
 
-A local user account will be created for these machines. The user name
-is defined in the local-admin-user parameter of the main deployment
-parameters file. The password for this user is generated and stored in
-the workload key vault as part of the ``kv'' deployment.
+A local user account will be created for these machines. The user name is defined in the `local-admin-user` parameter of the archetype configuration file. The password for this user is generated and stored in the workload's key vault as part of the `kv` deployment.
 
-==== Deploy Hadoop Cloudbreak resources
+=== Deploy Hadoop Cloudbreak resources
 
-Start the ``cb'' deployment by running the following command in the
-terminal or command-line interface:
+Start the `cb` deployment by running the following command in the terminal or command-line interface:
 
-{empty}[Linux/OSX]
+.Docker
+[source,bash]
+python vdc.py create workload -path archetypes/cloudbreak/archetype.json -m cb
 
-____
-_python3 vdc.py create workload -path
-``archetypes/cloudbreak/archetype.json'' -m ``cb''_
-____
+.Linux/OSX
+[source,bash]
+python3 vdc.py create workload -path archetypes/cloudbreak/archetype.json -m cb
 
-{empty}[Windows]
+.Windows
+[source,cmd]
+py vdc.py create workload -path archetypes/cloudbreak/archetype.json -m cb
 
-____
-_py vdc.py create workload -path
-``archetypes/cloudbreak/archetype.json'' -m ``cb''_
-____
+These deployment creates the `{org}-{deployment-name}-cb-rg` resource group that hosts the resources described in the following table.
 
-{empty}[Docker]
-
-____
-_python vdc.py create workload -path
-``archetypes/cloudbreak/archetype.json'' -m ``cb''_
-____
-
-This deployment creates the _\{organization name}-\{deployment
-name}-cb-rg_ resource group that hosts the resources listed in the
-following table.
-
-[width="100%",cols="44%,25%,31%",options="header",]
+[options="header",cols="a,,a"]
 |===
-|*Resource* |*Type* |*Description*
-|cb-as |Availability set |Availability set for Hadoop virtual machines.
+| Resource | Type | Description
 
-|\{organization name}\{deployment name}cb\{random characters} |Storage
-account |Storage account for Hadoop Cloudbreak VM.
+| `cb-as`
+| Availability set
+| Availability set for Hadoop virtual machines.
 
-|\{organization name}\{deployment name}cbdiag\{random characters}
-|Storage account |Virtual machine diagnostic storage account.
+| `{org}-{deployment-name}cb{random-characters}`
+| Storage account
+| Storage account for Hadoop Cloudbreak VM.
 
-|\{organization name}-\{deployment name}-mysql01 |Azure Database for
-MySQL server |MySQL server for Hadoop.
+| `{org}-{deployment-name}cbdiag{random-characters}`
+| Storage account
+| Virtual machine diagnostic storage account.
 
-|\{organization name}-\{deployment name}-postgresql01 |Azure Database
-for PostgreSQL server |PostgreSQL server for Hadoop.
+| `{org}-{deployment-name}-mysql01`
+| Azure Database for MySQL server
+| MySQL server for Hadoop.
 
-|\{organization name}-\{deployment name}-hdp-cb-vm1 |Virtual machine
-|Hadoop Cloudbreak VM.
+| `{org}-{deployment-name}-postgresql01`
+| Azure Database for PostgreSQL server
+| PostgreSQL server for Hadoop.
 
-|\{organization name}-\{deployment name}-hdp-cb-vm1-nic1 |Network
-interface |Network interface for VM.
+| `{org}-{deployment-name}-hdp-cb-vm1`
+| Virtual machine
+| Hadoop Cloudbreak VM.
+
+| `{org}-{deployment-name}-hdp-cb-vm1-nic1`
+| Network interface
+| Network interface for VM.
 |===
 
-==== Deploy Kerberos Domain Controller (KDC)
+=== Deploy Kerberos Domain Controller (KDC)
 
-To enable Kerberos authentication for your Hadoop application, you will
-need a server in the workload virtual network capable of handling
-authentication claims. This resource deployment will create a two VMs
-and an availability set to support a primary and secondary Kerberos
-Domain Controller that your Hadoop app can use for authentication.
+To enable Kerberos authentication for your Hadoop application, you will need a server in the workload virtual network capable of handling authentication claims. This resource deployment will create a two VMs
+and an availability set to support a primary and secondary Kerberos Domain Controller that your Hadoop app can use for authentication.
 
-Start the ``kdc'' deployment by running the following command in the
-terminal or command-line interface:
+Start the `kdc` deployment by running the following command in the terminal or command-line interface:
 
-{empty}[Linux/OSX]
+.Docker
+[source,bash]
+python vdc.py create workload -path archetypes/cloudbreak/archetype.json -m kdc
 
-____
-_python3 vdc.py create workload -path
-``archetypes/cloudbreak/archetype.json'' -m ``kdc''_
-____
+.Linux/OSX
+[source,bash]
+python3 vdc.py create workload -path archetypes/cloudbreak/archetype.json -m kdc
 
-{empty}[Windows]
+.Windows
+[source,cmd]
+py vdc.py create workload -path archetypes/cloudbreak/archetype.json -m kdc
 
-____
-_py vdc.py create workload -path
-``archetypes/cloudbreak/archetype.json'' -m ``kdc''_
-____
+These deployment creates the `{org}-{deployment-name}-kdc-rg` resource group that hosts the resources described in the following table.
 
-{empty}[Docker]
-
-____
-_python vdc.py create workload -path
-``archetypes/cloudbreak/archetype.json'' -m ``kdc''_
-____
-
-This deployment creates the _\{organization name}-\{deployment
-name}-kdc-rg_ resource group that hosts the resources listed in the
-following table.
-
-[width="100%",cols="45%,11%,44%",options="header",]
+[options="header",cols="a,,a"]
 |===
-|*Resource* |*Type* |*Description*
-|\{organization name}-\{deployment name}-kdc-as |Availability set
-|Availability set for KDC servers.
+| Resource | Type | Description
 
-|\{organization name}\{deployment name (spaces removed)}kdcdiag\{random
-characters} |Storage account |Storage account used to store diagnostic
-logs related to the KDC servers.
+| `{org}-{deployment-name}-kdc-as`
+| Availability set
+| Availability set for KDC servers.
 
-|\{organization name}-\{deployment name}-kdc-vm1 |Virtual machine
-|Primary KDC server.
+| `{org}-{deployment-name}kdcdiag{random-characters}` (spaces removed)
+| Storage account |Storage account used to store diagnostic logs related to the KDC servers.
 
-|\{organization name}-\{deployment name}-kdc-vm1-nic |Network interface
-|Virtual network interface for primary KDC server.
+| `{org}-{deployment-name}-kdc-vm1`
+| Virtual machine
+| Primary KDC server.
 
-|\{organization name}\{deployment name (spaces
-removed)}kdcvm1osdsk\{random characters} |Disk |Virtual OS disk for
-primary KDC server.
+| `{org}-{deployment-name}-kdc-vm1-nic`
+| Network interface
+| Virtual network interface for primary KDC server.
 
-|\{organization name}-\{deployment name}-kdc-vm2 |Virtual machine
-|Secondary KDC server.
+| `{org}-{deployment-name}kdcvm1osdsk{random-characters}` (spaces removed)
+| Disk
+| Virtual OS disk for primary KDC server.
 
-|\{organization name}-\{deployment name}-kdc-vm2-nic |Network interface
-|Virtual network interface for secondary KDC server.
+| `{org}-{deployment-name}-kdc-vm2`
+| Virtual machine
+| Secondary KDC server.
 
-|\{organization name}\{deployment name (spaces
-removed)}kdcvm2osdsk\{random characters} |Disk |Virtual OS disk for
-secondary KDC server.
+| `{org}-{deployment-name}-kdc-vm2-nic`
+| Network interface
+| Virtual network interface for secondary KDC server.
+
+| `{org}-{deployment-name}kdcvm2osdsk{random-characters}` (spaces removed)
+| Disk
+| Virtual OS disk for secondary KDC server.
 |===
