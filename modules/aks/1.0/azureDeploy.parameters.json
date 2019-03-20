@@ -18,19 +18,19 @@
         "value": "${workload.dns-prefix}"
     },
     "os-disk-size-gb": {
-        "value": 0
+        "value": "${workload.kubernetes.os-disk-size-gb}"
     },
     "agent-count": {
-        "value": 3
+        "value": "${workload.kubernetes.agent-count}"
     },
     "agent-vm-size": {
-        "value": "Standard_DS2_v2"
+        "value": "${workload.kubernetes.agent-vm-size}"
     },
     "service-principal-client-id": {
-        "value": "c900d827-3f83-4ca6-b6c6-a861e2aa3796"
+        "value": "${workload.kubernetes.service-principal-client-id}"
     },
     "service-principal-client-secret": {
-        "value": "P@ssword123"
+        "value": "${workload.kubernetes.service-principal-client-secret}"
     },
     "os-type": {
         "value": "${workload.kubernetes.os-type}"
@@ -41,6 +41,18 @@
     "network-plugin": {
         "value": "${workload.kubernetes.network-plugin}"
     },
+    "rbac-server-appid": {
+        "value":"${workload.kubernetes.rbac-server-appid}"
+    },
+    "rbac-server-secret": {
+        "value":"${workload.kubernetes.rbac-server-secret}"
+    },
+    "rbac-client-appid": {
+        "value":"${workload.kubernetes.rbac-client-appid}"
+    },
+    "rbac-tenant": {
+        "value":"${workload.kubernetes.rbac-tenant}"
+    },	    
     "enable-rbac": {
         "value": "${workload.kubernetes.enable-rbac}"
     },
@@ -48,21 +60,12 @@
         "value": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${workload.resource-group-prefix}-net-rg/providers/Microsoft.Network/virtualNetworks/${workload.resource-group-prefix}-vnet/subnets/default"
     },
     "service-cidr": {
-        "value": "10.0.0.0/16"
+        "value": "${workload.kubernetes.service-cidr}"
     },
     "dns-service-ip": {
-        "value": "10.0.0.10"
+        "value": "${workload.kubernetes.dns-service-ip}"
     },
     "docker-bridge-cidr": {
-        "value": "172.17.0.1/16"
-    },
-    "aks-admin-user-id": {
-        "value": "${workload.kubernetes.aks-admin-user-id}"
-    },
-    "aks-noc-user-id": {
-        "value": "${workload.kubernetes.aks-noc-user-id}"
-    },
-    "aks-devs-user-id": {
-        "value": "${workload.kubernetes.aks-devs-user-id}"
+        "value": "${workload.kubernetes.docker-bridge-cidr}"
     }
 }

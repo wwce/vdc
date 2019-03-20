@@ -1,12 +1,12 @@
 {
     "general": {
-        "organization-name": "kn",
+        "organization-name": "org",
         "tenant-id": "00000000-0000-0000-0000-000000000000",
         "deployment-user-id": "00000000-0000-0000-0000-000000000000",
         "vdc-storage-account-name": "knvdcstorage",
         "vdc-storage-account-rg": "vdc-storage-rg",
         "on-premises": {
-            "deployment-name": "ssvcs",
+            "deployment-name": "onprem",
             "subscription-id": "00000000-0000-0000-0000-000000000000",
             "region": "West US 2",
             "network": {
@@ -70,9 +70,20 @@
                 "os-type": "Linux",
                 "network-plugin": "azure",
                 "max-pods": 30,
-                "enable-rbac": false,
+                "os-disk-size-gb": 60,
+                "agent-count": 2,
+                "agent-vm-size": "Standard_DS3_v2",
+
                 "enable-http-application-routing": false,
                 "enable-oms-agent": true,
+
+                "service-principal-client-id":"00000000-0000-0000-0000-000000000000",
+                "service-principal-client-secret":"00000000-0000-0000-0000-000000000000",
+                "rbac-server-appid": "00000000-0000-0000-0000-000000000000",
+                "rbac-server-secret": "",
+                "rbac-client-appid": "00000000-0000-0000-0000-000000000000",
+                "rbac-tenant":"00000000-0000-0000-0000-000000000000",
+
                 "rbac": [
                     {
                         "comments": "Azure Service Cluster Admin Role - Use Admin Persona Principal Id",
@@ -81,19 +92,19 @@
                         "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${general.workload.deployment-name}-rg"
                     },
                     {
-                        "comments": "Azure Service Cluster Admin Role - Use Dev Persona Principal Id",
-                        "roleDefinitionId": "0ab0b1a8-8aac-4efd-b8c2-3ee1fb270be8",
+                        "comments": "Azure Service Cluster User Role - Admin",
+                        "roleDefinitionId": "4abbcc35-e782-43d8-92c5-2d3f1bd2253f",
                         "principalId": "00000000-0000-0000-0000-000000000000",
                         "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${general.workload.deployment-name}-rg"
                     },
                     {
-                        "comments": "Azure Service Cluster Admin Role - Use NOC Persona Principal Id",
-                        "roleDefinitionId": "0ab0b1a8-8aac-4efd-b8c2-3ee1fb270be8",
+                        "comments": "Azure Service Cluster User Role - NOC user",
+                        "roleDefinitionId": "4abbcc35-e782-43d8-92c5-2d3f1bd2253f",
                         "principalId": "00000000-0000-0000-0000-000000000000",
                         "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${general.workload.deployment-name}-rg"
                     },
                     {
-                        "comments": "Azure Service Cluster User Role - Use Admin Persona Principal Id",
+                        "comments": "Azure Service Cluster User Role - Devs",
                         "roleDefinitionId": "4abbcc35-e782-43d8-92c5-2d3f1bd2253f",
                         "principalId": "00000000-0000-0000-0000-000000000000",
                         "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${general.workload.deployment-name}-rg"
@@ -117,9 +128,6 @@
                         "scope": "/subscriptions/${general.workload.subscription-id}/resourceGroups/${general.organization-name}-${general.workload.deployment-name}-rg"
                     }
                 ],
-                "aks-admin-user-id": "00000000-0000-0000-0000-000000000000",
-                "aks-noc-user-id": "00000000-0000-0000-0000-000000000000",
-                "aks-devs-user-id": "00000000-0000-0000-0000-000000000000",
                 "tiller-namespace": "tiller"
             },
             "acr": {
@@ -462,18 +470,33 @@
             "os-type": "${general.workload.kubernetes.os-type}",
             "network-plugin": "${general.workload.kubernetes.network-plugin}",
             "max-pods": "${general.workload.kubernetes.max-pods}",
+
+            "os-disk-size-gb": "${general.workload.kubernetes.os-disk-size-gb}",
+            "agent-count": "${general.workload.kubernetes.agent-count}",
+            "agent-vm-size": "${general.workload.kubernetes.agent-vm-size}",
+
             "enable-rbac": "${general.workload.kubernetes.enable-rbac}",
             "enable-http-application-routing": "${general.workload.kubernetes.enable-http-application-routing}",
             "enable-oms-agent": "${general.workload.kubernetes.enable-oms-agent}",
+            
             "rbac": "${general.workload.kubernetes.rbac}",
-            "aks-admin-user-id": "${general.workload.kubernetes.aks-admin-user-id}",
-            "aks-noc-user-id": "${general.workload.kubernetes.aks-noc-user-id}",
-            "aks-devs-user-id": "${general.workload.kubernetes.aks-devs-user-id}",
+            
             "ca-cert-key-name": "${general.organization-name}-${general.workload.deployment-name}-ca",
             "ca-name": "${general.organization-name}-${general.workload.deployment-name}-ca",
             "cluster-name": "${general.organization-name}-${general.workload.deployment-name}-k8s",
             "cluster-resource-group-name": "${general.organization-name}-${general.workload.deployment-name}-rg",
-            "tiller-namespace": "${general.workload.kubernetes.tiller-namespace}"
+            "tiller-namespace": "${general.workload.kubernetes.tiller-namespace}",
+
+            "service-principal-client-id":"${general.workload.kubernetes.service-principal-client-id}",
+            "service-principal-client-secret":"${general.workload.kubernetes.service-principal-client-secret}",
+            "rbac-server-appid": "${general.workload.kubernetes.rbac-server-appid}",
+            "rbac-server-secret": "${general.workload.kubernetes.rbac-server-secret}",
+            "rbac-client-appid": "${general.workload.kubernetes.rbac-client-appid}",
+            "rbac-tenant":"${general.workload.kubernetes.rbac-tenant}",
+
+            "service-cidr": "10.0.0.0/16",
+            "dns-service-ip": "10.0.0.10",
+            "docker-bridge-cidr": "172.17.0.1/16"
         },
         "acr": {
             "name": "${general.organization-name}${workload.deployment-name}acr",

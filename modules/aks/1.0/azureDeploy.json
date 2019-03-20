@@ -2,12 +2,6 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "deployment-prefix": {
-            "type": "string",
-            "metadata": {
-                "description": "Deployment prefix. E.g. Organization-DeploymentType"
-            }
-        },
         "shared-services-deployment-prefix": {
             "type": "string",
             "metadata": {
@@ -18,12 +12,6 @@
             "type": "string",
             "metadata": {
                 "description": "The name of the Managed Cluster resource."
-            }
-        },
-        "resource-group-id": {
-            "type": "string",
-            "metadata": {
-                "description": "The id of the Managed Cluster resource group."
             }
         },
         "location": {
@@ -158,22 +146,28 @@
                 "description": "Storage account for the diagnostics events"
             }
         },
-        "aks-admin-user-id": {
+        "rbac-server-appid": {
             "type": "string",
             "metadata": {
-                "description": "Principal Id for Admin User"
+                "description": "RBAC server app id"
             }
         },
-        "aks-noc-user-id": {
+        "rbac-server-secret": {
             "type": "string",
             "metadata": {
-                "description": "Principal Id for NOC User"
+                "description": "RBAC server app secret"
             }
         },
-        "aks-devs-user-id": {
+        "rbac-client-appid": {
             "type": "string",
             "metadata": {
-                "description": "Principal Id for Devs User"
+                "description": "RBAC client app id"
+            }
+        },
+        "rbac-tenant": {
+            "type": "string",
+            "metadata": {
+                "description": "RBAC tenant"
             }
         }
     },
@@ -192,7 +186,7 @@
         "azure-fw-name": "[concat(parameters('shared-services-deployment-prefix'), '-az-fw')]",
         "azure-fw-application-rule-collection": [
             {
-                "name": "aks-traffic",
+                "name": "[concat('aks-traffic-', parameters('resource-name'))]",
                 "properties": {
                     "provisioningState": "Succeeded",
                     "priority": 120,
@@ -228,9 +222,9 @@
     "resources": [
         {
             "apiVersion": "2017-05-10",
-            "name": "nestedDeployCreateAzureNetworkRules",
+            "name": "nestedDeployCreateAzureApplicationRules",
             "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "kn-ssvcs-net-rg",
+            "resourceGroup": "[concat(parameters('shared-services-deployment-prefix'),'-net-rg')]",
             "subscriptionId": "[subscription().subscriptionId]",
             "dependsOn": [],
             "properties": {
@@ -279,7 +273,7 @@
                     }
                 ],
                 "servicePrincipalProfile": {
-                    "ClientId": "[parameters('service-principal-client-id')]",
+                    "clientId": "[parameters('service-principal-client-id')]",
                     "Secret": "[parameters('service-principal-client-secret')]"
                 },
                 "networkProfile": {
@@ -287,6 +281,12 @@
                     "serviceCidr": "[parameters('service-cidr')]",
                     "dnsServiceIP": "[parameters('dns-service-ip')]",
                     "dockerBridgeCidr": "[parameters('docker-bridge-cidr')]"
+                },
+                "aadProfile": {
+                    "clientAppID": "[parameters('rbac-client-appid')]",
+                    "serverAppID": "[parameters('rbac-server-appid')]",
+                    "serverAppSecret": "[parameters('rbac-server-secret')]",
+                    "tenantID": "[parameters('rbac-tenant')]"
                 },
                 "addonProfiles": "[if( empty(parameters('oms-id')) , variables('emptyContent'), variables('omsAgentConfig'))]"
                 
@@ -360,6 +360,7 @@
                 }
             ],
             "dependsOn": [
+                "nestedDeployCreateAzureApplicationRules"
             ]
         }
     ],
