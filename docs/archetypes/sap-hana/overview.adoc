@@ -25,7 +25,6 @@ If your copy of the toolkit is associated with the git repository, the link:../.
 
 All workload environments require a common set of operations, key vault, and virtual network resources before they can connect to the hub network and host workloads. The following steps will deploy these required resources.
 
-
 === Step 1: Deploy operations and monitoring resources
 
 *Required role: SysOps*
