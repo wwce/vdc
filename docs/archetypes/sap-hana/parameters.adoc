@@ -4,13 +4,15 @@ These parameters are specific to the
 link:../archetypes/sap-hana/archetype.test.json[sap-hana] workload
 deployment.
 
-[cols=",,",options="header",]
-|===
-|*Parameter name* |*Type* |*Description*
-|iscsi-ip |IPV4 Address |IP address of the iSCSI virtual storage array
-|===
+[cols=``,,'',options=``header'',] |=== |__Parameter name__ |__Type__
+|__Description__ |iscsi-ip |IPV4 Address |IP address of the iSCSI
+virtual storage array |===
 
-| iscsi-os-type | String | iSCSI virtual storage array operating system
+[verse]
+--
+iscsi-os-type | String | iSCSI virtual storage array operating system
+--
+
 type. Allowed values:
 
 Windows Server 2016 Datacenter
@@ -23,7 +25,11 @@ SLES 12 SP2
 
 SLES 12 SP2 BYOS
 
-| | iscsi-iqn1 | String | iSCSI qualified name (IQN) of first iSCSI
+[verse]
+--
+| iscsi-iqn1 | String | iSCSI qualified name (IQN) of first iSCSI
+--
+
 instance. | | iscsi-iqn1-client1 | String | iSCSI qualified name (IQN)
 of first iSCSI instance’s client1. | | iscsi-iqn1-client2 | String |
 iSCSI qualified name (IQN) of first iSCSI instance’s client2. | |
