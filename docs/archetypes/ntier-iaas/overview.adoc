@@ -3,8 +3,7 @@
 :toc-placement: auto
 :toclevels: 1
 
-This archetype is based on the link:https://docs.microsoft.com/azure/architecture/guide/architecture-styles/n-tier[N-tier application] reference architecture using virtual machines. The archetype deploys a single virtual machine running SQL Server and two load-balanced virtual machines for
-each of your application tiers.
+This archetype is based on the link:https://docs.microsoft.com/azure/architecture/guide/architecture-styles/n-tier[N-tier application] reference architecture using virtual machines. The archetype deploys a single virtual machine running SQL Server and two load-balanced virtual machines for each of your application tiers.
 
 == Create your archetype configuration file
 
@@ -33,15 +32,15 @@ Start the `la` deployment by running the following command in the terminal or co
 
 .Docker
 [source,bash]
-python vdc.py create shared-services -path archetypes/iaas/archetype.json -m la
+python vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m la
 
 .Linux/OSX
 [source,bash]
-python3 vdc.py create shared-services -path archetypes/iaas/archetype.json -m la
+python3 vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m la
 
 .Windows
 [source,cmd]
-py vdc.py create shared-services -path archetypes/iaas/archetype.json -m la
+py vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m la
 
 This deployment creates the `{org}-{deployment-name}-la-rg` resource group that hosts the resources described in the following table.
 
@@ -66,15 +65,15 @@ Start the `kv` deployment by running the following command in the terminal or co
 
 .Docker
 [source,bash]
-python vdc.py create shared-services -path archetypes/iaas/archetype.json -m kv
+python vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m kv
 
 .Linux/OSX
 [source,bash]
-python3 vdc.py create shared-services -path archetypes/iaas/archetype.json -m kv
+python3 vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m kv
 
 .Windows
 [source,cmd]
-py vdc.py create shared-services -path archetypes/iaas/archetype.json -m kv
+py vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m kv
 
 This deployment creates the `{org}-{deployment-name}-kv-rg` resource group that hosts the resources described in the following table.
 
@@ -105,29 +104,29 @@ Start the `nsg` deployment by running the following command in the terminal or c
 
 .Docker
 [source,bash]
-python vdc.py create shared-services -path archetypes/iaas/archetype.json -m nsg
+python vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m nsg
 
 .Linux/OSX
 [source,bash]
-python3 vdc.py create shared-services -path archetypes/iaas/archetype.json -m nsg
+python3 vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m nsg
 
 .Windows
 [source,cmd]
-py vdc.py create shared-services -path archetypes/iaas/archetype.json -m nsg
+py vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m nsg
 
 Then start the `workload-net` deployment by running the following command in the terminal or command-line interface:
 
 .Docker
 [source,bash]
-python vdc.py create shared-services -path archetypes/iaas/archetype.json -m workload-net
+python vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m workload-net
 
 .Linux/OSX
 [source,bash]
-python3 vdc.py create shared-services -path archetypes/iaas/archetype.json -m workload-net
+python3 vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m workload-net
 
 .Windows
 [source,cmd]
-py vdc.py create shared-services -path archetypes/iaas/archetype.json -m workload-net
+py vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m workload-net
 
 These deployment creates the `{org}-{deployment-name}-net-rg` resource group that hosts the resources described in the following table.
 
@@ -180,15 +179,15 @@ Start this deployment by running the following command in the terminal or comman
 
 .Docker
 [source,bash]
-python vdc.py create shared-services -path archetypes/iaas/archetype.json -m sqlserver-alwayson
+python vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m sqlserver-alwayson
 
 .Linux/OSX
 [source,bash]
-python3 vdc.py create shared-services -path archetypes/iaas/archetype.json -m sqlserver-alwayson
+python3 vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m sqlserver-alwayson
 
 .Windows
 [source,cmd]
-py vdc.py create shared-services -path archetypes/iaas/archetype.json -m sqlserver-alwayson
+py vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m sqlserver-alwayson
 
 
 These deployment creates the `{org}-{deployment-name}-sqlserver-alwayson-rg` resource group that hosts the resources described in the following table.
@@ -266,15 +265,15 @@ Start this deployment by running the following command in the terminal or comman
 
 .Docker
 [source,bash]
-python vdc.py create shared-services -path archetypes/iaas/archetype.json -m vmapp-web-lb
+python vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m vmapp-web-lb
 
 .Linux/OSX
 [source,bash]
-python3 vdc.py create shared-services -path archetypes/iaas/archetype.json -m vmapp-web-lb
+python3 vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m vmapp-web-lb
 
 .Windows
 [source,cmd]
-py vdc.py create shared-services -path archetypes/iaas/archetype.json -m vmapp-web-lb
+py vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m vmapp-web-lb
 
 These deployment creates the `{org}-{deployment-name}-web-rg` resource group that hosts the resources described in the following table.
 
@@ -330,15 +329,15 @@ To deploy the application gateway, start the `app-gateway` deployment by running
 
 .Docker
 [source,bash]
-python vdc.py create shared-services -path archetypes/iaas/archetype.json -m app-gateway
+python vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m app-gateway
 
 .Linux/OSX
 [source,bash]
-python3 vdc.py create shared-services -path archetypes/iaas/archetype.json -m app-gateway
+python3 vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m app-gateway
 
 .Windows
 [source,cmd]
-py vdc.py create shared-services -path archetypes/iaas/archetype.json -m app-gateway
+py vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m app-gateway
 
 This deployment will deploy resource to the shared services subscription's `{org}-{shared-services-deployment-name}-net-rg` resource group.
 
@@ -365,15 +364,15 @@ Start this deployment by running the following command in the terminal or comman
 
 .Docker
 [source,bash]
-python vdc.py create shared-services -path archetypes/iaas/archetype.json -m vmapp-biz-lb
+python vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m vmapp-biz-lb
 
 .Linux/OSX
 [source,bash]
-python3 vdc.py create shared-services -path archetypes/iaas/archetype.json -m vmapp-biz-lb
+python3 vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m vmapp-biz-lb
 
 .Windows
 [source,cmd]
-py vdc.py create shared-services -path archetypes/iaas/archetype.json -m vmapp-biz-lb
+py vdc.py create shared-services -path archetypes/ntier-iaas/archetype.json -m vmapp-biz-lb
 
 These deployment creates the `{org}-{deployment-name}-biz-rg` resource group that hosts the resources described in the following table.
 
