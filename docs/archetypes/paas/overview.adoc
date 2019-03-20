@@ -21,7 +21,6 @@ All workload environments require a common set of operations, key vault, and vir
 
 image:_media/workload-paas-empty.png[Before deploying the workload]
 
-
 === Step 1: Deploy operations and monitoring resources
 
 *Required role: SysOps*
