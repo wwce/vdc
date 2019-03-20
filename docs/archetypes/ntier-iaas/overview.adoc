@@ -17,8 +17,7 @@ If your copy of the toolkit is associated with the git repository, the link:../.
 
 == Run the deployment
 
-All workload environments require a common set of operations, key vault, and virtual network resources before they can connect to the hub network
-and host workloads. The following steps will deploy these required resources.
+All workload environments require a common set of operations, key vault, and virtual network resources before they can connect to the hub network and host workloads. The following steps will deploy these required resources.
 
 image:_media/workload-iaas-empty.png[Before deploying the workload]
 
