@@ -1,7 +1,7 @@
-= Deploying the sample shared services environment
+= Archetype: Shared services environment
 :toc:
 :toc-placement: auto
-:toclevels: 1
+:toclevels: 2
 
 The following sections provide a step-by-step guide to deploying VDC components using the sample deployments provided. Before starting this process, you need to make sure you have completed the following:
 

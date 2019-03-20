@@ -1,7 +1,7 @@
-= Deploying the simulated on-premises environment
+= Archetype: Simulated on-premises environment
 :toc:
 :toc-placement: auto
-:toclevels: 1
+:toclevels: 2
 
 All of the sample archetypes provided in the Azure Virtual Datacenter Automation Toolkit, inclduing the shared services archetype, are configured to work with a _simulated on-premises environment_.
 
