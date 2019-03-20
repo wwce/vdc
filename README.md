@@ -12,24 +12,26 @@ This repository contains the _Azure Virtual Datacenter Automation Toolkit_. The 
 
 ## Getting started
 
-We recommended that you start reading the documentation.
-
 - [Understanding the concepts](./understand/readme.md)
-    - Azure knowledge prerequisites
-    - Toolkit concepts
-    - Environment types in the toolkit
-    - Roles & permissions in the toolkit
+    - [Prerequisite Azure knowledge](azure.md) - Resources for understanding the Azure services that the toolkit utilizes.
+    - [Understanding the Automation Toolkit](toolkit.md) - Explains the important concepts in the toolkit.
+    - [Understanding environment types](environment-types.md) - Describes the built-in environment types that the toolkit can deploy.
+    - [Common workflow](workflow.md) - Covers the typical usage pattern for the tools in the toolkit.
+    - [Roles and permissions](roles.md) - Lists the custom roles that are provided by default in the toolkit.
 - [Setting up the toolkit](./setup/readme.md)
-    - Docker (recommended)
-    - Local
-    - Running your first deployment
+    - [Run the Docker image](setup-docker.md) (Recommended)
+    - [Run on your local machine](setup-local.md)
+    - [Your first deploment](your-first-deployment.md)
+- [Archetypes](./archetypes/readme.md)
+    - [Understanding archetype configuration files](configuration-files.adoc)
+    - [Common paramets in configuration files](common-parameters.adoc)
 - Extending the toolkit
-- Reference
-    - vdc.py
-    - role-creation.py
-    - poliy-assignment.py
-    - create-subscription.py
-
+- [Script Reference](./reference/readme.md)
+    - [policy-assignemnt.py](script-policy-assignment.adoc) Update subscription policy post-deployment
+    - [role-creation.py](script-role-creation.adoc) Create subscription roles
+    - [subscription.py](script-subscription.adoc) Create management groups and subscriptions
+    - [vdc.py](script-vdc.adoc) Deploy archetypes and modules
+    - 
 # Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
