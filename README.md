@@ -13,24 +13,27 @@ This repository contains the _Azure Virtual Datacenter Automation Toolkit_. The 
 ## Getting started
 
 - [Understanding the concepts](docs/understand/readme.md)
-  - [Prerequisite Azure knowledge](docs/azure.md) - Resources for understanding the Azure services that the toolkit utilizes.
-  - [Understanding the Automation Toolkit](docs/toolkit.md) - Explains the important concepts in the toolkit.
-  - [Understanding environment types](docs/environment-types.md) - Describes the built-in environment types that the toolkit can deploy.
-  - [Common workflow](docs/workflow.md) - Covers the typical usage pattern for the tools in the toolkit.
-  - [Roles and permissions](docs/roles.md) - Lists the custom roles that are provided by default in the toolkit.
+  - [Prerequisite Azure knowledge](docs/understand/azure.md) - Resources for understanding the Azure services that the toolkit utilizes.
+  - [Understanding the Automation Toolkit](docs/understand/toolkit.md) - Explains the important concepts in the toolkit.
+  - [Understanding environment types](docs/understand/environment-types.md) - Describes the built-in environment types that the toolkit can deploy.
+  - [Common workflow](docs/understand/workflow.md) - Covers the typical usage pattern for the tools in the toolkit.
+  - [Roles and permissions](docs/understand/roles.md) - Lists the custom roles that are provided by default in the toolkit.
 - [Setting up the toolkit](docs/setup/readme.md)
-  - [Run the Docker image](docs/setup-docker.md) (Recommended)
-  - [Run on your local machine](docs/setup-local.md)
-  - [Your first deploment](docs/your-first-deployment.md)
+  - [Run the Docker image](docs/setup/setup-docker.md) (Recommended)
+  - [Run on your local machine](docs/setup/setup-local.md)
+  - [Your first deploment](docs/setup/your-first-deployment.md)
 - [Archetypes](docs/archetypes/readme.md)
-  - [Understanding archetype configuration files](docs/configuration-files.adoc)
-  - [Common paramets in configuration files](docs/common-parameters.adoc)
+  - [Understanding archetype configuration files](docs/archetypes/configuration-files.adoc)
+  - [Common paramets in configuration files](docs/archetypes/common-parameters.adoc)
+- Use
+  - TODO
 - Extending the toolkit
+  - TODO
 - [Script Reference](docs/reference/readme.md)
-  - [policy-assignemnt.py](docs/script-policy-assignment.adoc) Update subscription policy post-deployment
-  - [role-creation.py](docs/script-role-creation.adoc) Create subscription roles
-  - [subscription.py](docs/script-subscription.adoc) Create management groups and subscriptions
-  - [vdc.py](docs/script-vdc.adoc) Deploy archetypes and modules
+  - [policy-assignemnt.py](docs/reference/script-policy-assignment.adoc) Update subscription policy post-deployment
+  - [role-creation.py](docs/reference/script-role-creation.adoc) Create subscription roles
+  - [subscription.py](docs/reference/script-subscription.adoc) Create management groups and subscriptions
+  - [vdc.py](docs/reference/script-vdc.adoc) Deploy archetypes and modules
 
 ## Contributing
 
