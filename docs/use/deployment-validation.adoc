@@ -12,7 +12,7 @@ NOTE: While the toolkit’s validation mode can help you find structural or synt
 
 == Validation resource dependencies
 
- Certain parts of the validation process may depend on having some resources on the target subscription. For instance, any deployment that creates user accounts that store passwords in a key vault will require a deployed key vault to perform the validation.
+Certain parts of the validation process may depend on having some resources on the target subscription. For instance, any deployment that creates user accounts that store passwords in a key vault will require a deployed key vault to perform the validation.
 
 The link:../archetypes/configuration-files.adoc[archetype configuration files] include the `module-validation-dependencies` array where these dependencies are defined. Any deployment modules included in this array must already be defined in the `modules-to-deploy` array for that deployment. For the sample archetypes in the toolkit, the only validation resource dependency is the key vault deployment:
 
