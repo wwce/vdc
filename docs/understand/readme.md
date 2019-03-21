@@ -7,6 +7,7 @@ These articles will help you understand how the Azure Virtual Datacenter Automat
 1. [Understanding environment types](environment-types.md) - Describes the built-in environment types that the toolkit can deploy.
 1. [Common workflow](workflow.md) - Covers the typical usage pattern for the tools in the toolkit.
 1. [Roles and permissions](roles.md) - Lists the custom roles that are provided by default in the toolkit.
+1. [Modules] - Explains the modules included in the toolkit.
 
 ## Next steps
 
