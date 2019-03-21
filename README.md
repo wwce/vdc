@@ -12,31 +12,31 @@ This repository contains the _Azure Virtual Datacenter Automation Toolkit_. The 
 
 ## Getting started
 
-- [Understanding the concepts](./understand/readme.md)
-    - [Prerequisite Azure knowledge](azure.md) - Resources for understanding the Azure services that the toolkit utilizes.
-    - [Understanding the Automation Toolkit](toolkit.md) - Explains the important concepts in the toolkit.
-    - [Understanding environment types](environment-types.md) - Describes the built-in environment types that the toolkit can deploy.
-    - [Common workflow](workflow.md) - Covers the typical usage pattern for the tools in the toolkit.
-    - [Roles and permissions](roles.md) - Lists the custom roles that are provided by default in the toolkit.
-- [Setting up the toolkit](./setup/readme.md)
-    - [Run the Docker image](setup-docker.md) (Recommended)
-    - [Run on your local machine](setup-local.md)
-    - [Your first deploment](your-first-deployment.md)
-- [Archetypes](./archetypes/readme.md)
-    - [Understanding archetype configuration files](configuration-files.adoc)
-    - [Common paramets in configuration files](common-parameters.adoc)
+- [Understanding the concepts](docs/understand/readme.md)
+  - [Prerequisite Azure knowledge](docs/azure.md) - Resources for understanding the Azure services that the toolkit utilizes.
+  - [Understanding the Automation Toolkit](docs/toolkit.md) - Explains the important concepts in the toolkit.
+  - [Understanding environment types](docs/environment-types.md) - Describes the built-in environment types that the toolkit can deploy.
+  - [Common workflow](docs/workflow.md) - Covers the typical usage pattern for the tools in the toolkit.
+  - [Roles and permissions](docs/roles.md) - Lists the custom roles that are provided by default in the toolkit.
+- [Setting up the toolkit](docs/setup/readme.md)
+  - [Run the Docker image](docs/setup-docker.md) (Recommended)
+  - [Run on your local machine](docs/setup-local.md)
+  - [Your first deploment](docs/your-first-deployment.md)
+- [Archetypes](docs/archetypes/readme.md)
+  - [Understanding archetype configuration files](docs/configuration-files.adoc)
+  - [Common paramets in configuration files](docs/common-parameters.adoc)
 - Extending the toolkit
-- [Script Reference](./reference/readme.md)
-    - [policy-assignemnt.py](script-policy-assignment.adoc) Update subscription policy post-deployment
-    - [role-creation.py](script-role-creation.adoc) Create subscription roles
-    - [subscription.py](script-subscription.adoc) Create management groups and subscriptions
-    - [vdc.py](script-vdc.adoc) Deploy archetypes and modules
-    - 
-# Contributing
+- [Script Reference](docs/reference/readme.md)
+  - [policy-assignemnt.py](docs/script-policy-assignment.adoc) Update subscription policy post-deployment
+  - [role-creation.py](docs/script-role-creation.adoc) Create subscription roles
+  - [subscription.py](docs/script-subscription.adoc) Create management groups and subscriptions
+  - [vdc.py](docs/script-vdc.adoc) Deploy archetypes and modules
+
+## Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.microsoft.com.
+the rights to use your contribution. For details, visit [https://cla.microsoft.com](https://cla.microsoft.com).
 
 When you submit a pull request, a CLA-bot will automatically determine whether you need to provide
 a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions
